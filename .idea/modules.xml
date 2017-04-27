@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/SendSmsApp.iml" filepath="$PROJECT_DIR$/SendSmsApp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/REDbutton.iml" filepath="$PROJECT_DIR$/REDbutton.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
