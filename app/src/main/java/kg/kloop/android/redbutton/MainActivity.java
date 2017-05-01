@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
                     user.setUserEmail(userEmail);
                     textView1.setText(userName + "\n" + userEmail);
                     Log.v("User", "userData: " + userID + "\n" + userName + "\n" + userEmail);
-                } else textView1.setText("You need to log in \nand configure your settings");
+                } else textView1.setText(R.string.login_state_text);
 
             }
         };
@@ -145,9 +145,9 @@ public class MainActivity extends AppCompatActivity {
             try {
                 sendSMS(firstPhoneNumber, message);
                 sendSMS(secondPhoneNumber, message);
-                Toast.makeText(getApplicationContext(), "Sms sent", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), R.string.sms_sent, Toast.LENGTH_LONG).show();
             } catch (Exception e) {
-                Toast.makeText(getApplicationContext(), "Fail. Please try again", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), R.string.sms_fail, Toast.LENGTH_LONG).show();
                 Log.v("SMS", "sms failed: " + e);
                 e.printStackTrace();
             }
@@ -169,17 +169,16 @@ public class MainActivity extends AppCompatActivity {
 
     private void showAlertToEnableGPS() {
         final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-        dialog.setTitle("Enable Location")
-                .setMessage("Your Locations Settings is set to 'Off'.\nPlease Enable Location to " +
-                        "use this app")
-                .setPositiveButton("Location Settings", new DialogInterface.OnClickListener() {
+        dialog.setTitle(R.string.enable_location)
+                .setMessage(R.string.check_gps_false)
+                .setPositiveButton(R.string.location_settings, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface paramDialogInterface, int paramInt) {
                         Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                         startActivity(myIntent);
                     }
                 })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface paramDialogInterface, int paramInt) {
                     }
@@ -193,7 +192,7 @@ public class MainActivity extends AppCompatActivity {
                 longitudeGPS = location.getLongitude();
                 latitudeGPS = location.getLatitude();
             }
-            textView.setText("lat: " + latitudeGPS + "\n" + "lng: " + longitudeGPS);
+            textView.setText(R.string.lat+ latitudeGPS + "\n" + R.string.lng + longitudeGPS);
 
         }
 
@@ -237,9 +236,9 @@ public class MainActivity extends AppCompatActivity {
                     try {
                         sendSMS(firstPhoneNumber, message);
                         sendSMS(secondPhoneNumber, message);
-                        Toast.makeText(getApplicationContext(), "Sms sent", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), R.string.sms_sent, Toast.LENGTH_LONG).show();
                     } catch (Exception e) {
-                        Toast.makeText(getApplicationContext(), "Sms fail. Please try again", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), R.string.sms_fail, Toast.LENGTH_LONG).show();
                         Log.v("SMS", "sms failed: " + e);
                         e.printStackTrace();
                     }
@@ -295,7 +294,7 @@ public class MainActivity extends AppCompatActivity {
                     //User is signed in
                 } else {
                     //    onSignInInit(mFirebaseUser);
-                    Toast.makeText(MainActivity.this, "Your are logged in!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, R.string.login, Toast.LENGTH_SHORT).show();
 
                 }
                 auth.addAuthStateListener(getAuthStateListener());
@@ -303,7 +302,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.sign_out_item:
                 auth.signOut();
                 if(firebaseUser == null){
-                    Toast.makeText(MainActivity.this, "Your are logged out!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, R.string.logout, Toast.LENGTH_SHORT).show();
                 }
                 Log.v("Logout", "item pressed: " + item.getItemId() + "\n" + "should be:    " + R.id.sign_out_item);
                 break;
