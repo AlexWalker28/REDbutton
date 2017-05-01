@@ -13,4 +13,7 @@
     <string name="lng">lng: </string>
     <string name="login">Your are logged in!</string>
     <string name="logout">Your are logged out!</string>
+    <string name="sign_in">Sign in</string>
+    <string name="sign_out">Sign out</string>
+    <string name="settings">Settings</string>
 </resources>

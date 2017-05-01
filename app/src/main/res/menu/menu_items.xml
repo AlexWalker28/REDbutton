@@ -6,16 +6,16 @@
 
     <item
         android:id="@+id/sign_in_item"
-        android:title="Sign in"
+        android:title="@string/sign_in"
         android:orderInCategory="1" />
     <item
         android:id="@+id/sign_out_item"
         android:orderInCategory="2"
-        android:title="Sign out"/>
+        android:title="@string/sign_out"/>
     <item
         android:id="@+id/settings_item"
         android:orderInCategory="3"
-        android:title="Settings"/>
+        android:title="@string/settings"/>
 
 
 </menu>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Help Me Button</string>
+    <string name="title_activity_maps">Карта</string>
+    <string name="login_state_text">Чтобы в полной мере воспользоваться приложением, вам необходимо войти </string>
+    <string name="searching_gps_text">Поиск, используя геоданные...</string>
+    <string name="sms_sent">Сообщение отправлено</string>
+    <string name="sms_fail">Ошибка. Повторите попытку позже</string>
+    <string name="check_gps_false">Ваши настройки геолокации находятся в выключенном состоянии.\nВключите их, чтобы воспользоваться этим приложением</string>
+    <string name="enable_location">Включте геолокацию</string>
+    <string name="location_settings">Перейти к настройкам</string>
+    <string name="cancel">Отменить</string>
+    <string name="lat">Широта: </string>
+    <string name="lng">Долгота: </string>
+    <string name="login">Вы вошли в аккаунт!</string>
+    <string name="logout">Вы вышли из аккаунта!</string>
+    <string name="sign_in">Войти</string>
+    <string name="sign_out">Выйти</string>
+    <string name="settings">Настройки</string>
+</resources>
