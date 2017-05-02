@@ -17,4 +17,8 @@
     <string name="sign_in">Войти</string>
     <string name="sign_out">Выйти</string>
     <string name="settings">Настройки</string>
+    <string name="first_phone_num">Первый номер</string>
+    <string name="second_phone_num">Второй номер</string>
+    <string name="message">Сообщение</string>
+    <string name="save">Сохранить</string>
 </resources>
