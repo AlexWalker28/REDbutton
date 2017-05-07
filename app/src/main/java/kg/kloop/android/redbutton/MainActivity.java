@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -12,6 +13,8 @@ import android.location.LocationManager;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.content.WakefulBroadcastReceiver;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -21,11 +24,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.alexwalker.sendsmsapp.R;
 import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -47,13 +52,15 @@ public class MainActivity extends AppCompatActivity {
     private MenuItem signInMenuItem;
     private MenuItem signOutMenuItem;
     private LocationManager locationManager;
-    double latitudeGPS, longitudeGPS;
     private User user;
     private Event event;
     private Button button;
+    private ProgressBar progressBar;
     private TextView textView;
     private TextView textView1;
     private static final int RC_SIGN_IN = 10;
+    private EventStateReceiver eventStateReceiver;
+    private CustomLatLng coordinates;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,8 +76,6 @@ public class MainActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         auth.addAuthStateListener(getAuthStateListener());
 
-
-
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -83,14 +88,21 @@ public class MainActivity extends AppCompatActivity {
                     }else{
                         user = new User(user.getUserID(), user.getUserName(), user.getUserEmail(),
                                 user.getFirstNumber(), user.getSecondNumber(), user.getMessage());
-                        event = new Event(latitudeGPS, longitudeGPS, user);
-                        databaseReference.push().setValue(event);
+                        coordinates = event.getCoordinates();
+                        event = new Event(coordinates, user);
+                        String childUniqueKey = databaseReference.push().getKey();
+                        databaseReference.child(childUniqueKey).setValue(event);
+                        if(event.getCoordinates() == null){
+                            initReceiver();
+                            Intent serviceIntent = new Intent(MainActivity.this, LocationService.class);
+                            serviceIntent.putExtra(Constants.DATABASE_CHILD_ID, childUniqueKey);
+                            startService(serviceIntent);
+                        }
 
                     }
                 } else showAlertToEnableGPS();
 
                // MessageData messageData = new MessageData(firstPhoneNumber, secondPhoneNumber, message);
-
 
             }
         });
@@ -155,7 +167,10 @@ public class MainActivity extends AppCompatActivity {
     }
     private void sendSMS(String phoneNumber, String message) {
         SmsManager smsManager = SmsManager.getDefault();
-        smsManager.sendTextMessage(phoneNumber, null, message + "\nhttp://maps.google.com/maps?q=" + latitudeGPS + "," + longitudeGPS, null, null);
+        smsManager.sendTextMessage(phoneNumber, null, message
+                + "\nhttp://maps.google.com/maps?q="
+                + event.getCoordinates().getLat()
+                + "," + event.getCoordinates().getLng(), null, null);
     }
 
 
@@ -190,10 +205,13 @@ public class MainActivity extends AppCompatActivity {
     private LocationListener locationListenerGPS = new LocationListener() {
         public void onLocationChanged(Location location) {
             if(location.getLatitude() != 0 && location.getLongitude() != 0){
-                longitudeGPS = location.getLongitude();
-                latitudeGPS = location.getLatitude();
+                CustomLatLng latLng = new CustomLatLng(location.getLatitude(), location.getLongitude());
+                event.setCoordinates(latLng);
             }
-            textView.setText("lat: " + latitudeGPS + "\n" + "lng: " + longitudeGPS);
+            if(event.getCoordinates().getLat() == 0 && event.getCoordinates().getLng() == 0){
+                progressBar.setVisibility(View.VISIBLE);
+            } else progressBar.setVisibility(View.GONE);
+            textView.setText("lat: " + event.getCoordinates().getLat() + "\n" + "lng: " + event.getCoordinates().getLng());
 
         }
 
@@ -322,23 +340,55 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //=================================
+    //Broadcast receiver for service
+    //=================================
+    private void initReceiver() {
+        eventStateReceiver = new EventStateReceiver();
+        IntentFilter intentFilter = new IntentFilter(Constants.BROADCAST_ACTION);
+        LocalBroadcastManager.getInstance(this).registerReceiver(eventStateReceiver, intentFilter);
+    }
+
+    private class EventStateReceiver extends WakefulBroadcastReceiver{
+        private EventStateReceiver(){
+
+        }
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            try{
+                CustomLatLng customLatLng = new CustomLatLng(intent.getDoubleExtra(Constants.EVENT_LAT, 0),
+                        intent.getDoubleExtra(Constants.EVENT_LNG, 0));
+                event.setCoordinates(customLatLng);
+            } catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+    }
 
     @Override
     protected void onStop() {
-        super.onStop();
         if (authStateListener != null) {
             auth.removeAuthStateListener(authStateListener);
         }
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        //if(eventStateReceiver != null) unregisterReceiver(eventStateReceiver);
+        super.onDestroy();
     }
 
     private void init() {
         user = new User();
+        event = new Event();
         sendButton = (Button) findViewById(R.id.redButton);
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference().child("Events");
         auth = FirebaseAuth.getInstance();
         locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
         button = (Button)findViewById(R.id.button2);
+        progressBar = (ProgressBar)findViewById(R.id.progressBar);
         textView = (TextView)findViewById(R.id.textView);
         textView1 = (TextView)findViewById(R.id.textView2);
     }

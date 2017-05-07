@@ -1,35 +1,36 @@
 package kg.kloop.android.redbutton;
 
+import com.google.android.gms.maps.model.LatLng;
+
 /**
  * Created by alexwalker on 15.04.17.
  */
 
 public class Event {
     private User user;
-    private double lat;
-    private double lng;
+    private CustomLatLng coordinates;
 
     public Event() {
     }
 
-    public Event(double lat, double lng, User user) {
-        this.lat = lat;
-        this.lng = lng;
+    public Event(CustomLatLng coordinates, User user) {
+        this.coordinates = coordinates;
         this.user = user;
-    }
-
-    public double getLat() {
-        return lat;
-    }
-
-    public double getLng() {
-        return lng;
     }
 
     public User getUser() {
         return user;
     }
+
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public CustomLatLng getCoordinates() {
+        return coordinates;
+    }
+
+    public void setCoordinates(CustomLatLng coordinates) {
+        this.coordinates = coordinates;
     }
 }
