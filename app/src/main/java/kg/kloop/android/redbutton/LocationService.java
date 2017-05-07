@@ -46,9 +46,7 @@ public class LocationService extends Service {
         setLocationListener();
         requestLocationUpdates();
         sendDataBack();
-        /*if(event.getLat() != 0 && event.getLng() != 0){
-            stopSelf();
-        }
+        /*
         WakefulBroadcastReceiver.completeWakefulIntent(intent);*/
 
         return super.onStartCommand(intent, flags, startId);
@@ -80,6 +78,9 @@ public class LocationService extends Service {
                 }
                 databaseReference.child(childKey).child("coordinates").setValue(customLatLng);
                 sendNotification();
+                if(event.getCoordinates() != null){
+                    stopSelf();
+                }
             }
 
             @Override
