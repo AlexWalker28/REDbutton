@@ -8,7 +8,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.alexwalker.sendsmsapp.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -26,7 +25,7 @@ import java.util.Map;
 
 public class Approve extends AppCompatActivity {
     private FirebaseDatabase firebaseDatabase;
-    private DatabaseReference ref;
+    private DatabaseReference requestsRef;
     private DatabaseReference groupModeratorsRef;
     private ListView listView;
     private ArrayList<String> requests;
@@ -63,7 +62,7 @@ public class Approve extends AppCompatActivity {
         requestsList = new HashMap<>();
 
         firebaseDatabase = FirebaseDatabase.getInstance();
-        ref = firebaseDatabase.getReference().child(GroupDefaults.groupsBranch).child(groupName).child(GroupDefaults.requestsChild);
+        requestsRef = firebaseDatabase.getReference().child(GroupDefaults.groupsBranch).child(groupName).child(GroupDefaults.requestsChild);
         groupModeratorsRef = firebaseDatabase.getReference().child(GroupDefaults.groupsBranch).child(groupName).child(GroupDefaults.moderatorsChild);
 
         requests = new ArrayList<>();
@@ -73,21 +72,22 @@ public class Approve extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String userName = ((TextView)view).getText().toString();
 
-                for (HashMap.Entry<String, Request> entry: requestsList.entrySet()){
-                    Request req = entry.getValue();
-                    if (req.getUserName().equals(userName)){
-                        userIdForChange = req.getUserId();
-                        reqId = entry.getKey();
-                        ref.child(reqId).child(GroupDefaults.approvedChild).child(userId).setValue(true);
-                        Toast.makeText(Approve.this, "Вы одобрили заявку", Toast.LENGTH_SHORT).show();
-                    }
-                }
+//                String userName = ((TextView)view).getText().toString();
+//
+//                for (HashMap.Entry<String, Request> entry: requestsList.entrySet()){
+//                    Request req = entry.getValue();
+//                    if (req.getUserName().equals(userName)){
+//                        userIdForChange = req.getUserId();
+//                        reqId = entry.getKey();
+//                        requestsRef.child(reqId).child(GroupDefaults.approvedChild).child(userId).setValue(true);
+//                        Toast.makeText(Approve.this, "Вы одобрили заявку", Toast.LENGTH_SHORT).show();
+//                    }
+//                }
             }
         });
 
-        ref.addChildEventListener(new ChildEventListener() {
+        requestsRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Request request = dataSnapshot.getValue(Request.class);

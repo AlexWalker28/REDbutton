@@ -82,22 +82,7 @@ public class GroupListAdapter extends BaseAdapter {
 
                     // если является членом группы
                     if (group.isMember()) {
-//                        //если только модератор одобряет заявки
-//                        if (group.isOnlyModeratorApprovingRequests()) {
-//                            if (group.isModerator()){
-//                                //пользователь - модератор, переход на approve activity
-//                                Toast.makeText(context, "вы модератор и можете рассмотреть заявки", Toast.LENGTH_SHORT).show();
-//                            } else {
-//                                Toast.makeText(context, "В этой группе только модератор рассматривает заявки", Toast.LENGTH_SHORT).show();
-//                            }
-//
-//                        } else {
-//                            //заявки одобряют модераторы и пользователи, переход на approve activity
-//
-//                        }
                         ((Tab2) fragment).checkGroupAndUserStatus(group.getGroupName());
-
-
                     } else {
                         Toast.makeText(context, "Ваша заявка еще на рассмотрении", Toast.LENGTH_SHORT).show();
                     }
