@@ -16,6 +16,10 @@
         android:id="@+id/settings_item"
         android:orderInCategory="3"
         android:title="Settings"/>
+    <item
+        android:id="@+id/manual"
+        android:orderInCategory="4"
+        android:title="Manual"/>
 
 
 </menu>
