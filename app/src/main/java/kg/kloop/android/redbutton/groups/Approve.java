@@ -1,11 +1,12 @@
 package kg.kloop.android.redbutton.groups;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -28,8 +29,10 @@ public class Approve extends AppCompatActivity {
     private DatabaseReference requestsRef;
     private DatabaseReference groupModeratorsRef;
     private ListView listView;
-    private ArrayList<String> requests;
-    ArrayAdapter<String> adapter;
+    //private ArrayList<String> requests;
+    //ArrayAdapter<String> adapter;
+    RequestsListAdapter adapter;
+    ArrayList<Request> requests;
     TextView info;
     String userIdForChange;
     String reqId;
@@ -47,8 +50,6 @@ public class Approve extends AppCompatActivity {
         setContentView(R.layout.activity_approve);
         init();
 
-
-
     }
 
     private void init(){
@@ -58,6 +59,7 @@ public class Approve extends AppCompatActivity {
 
         info = (TextView) findViewById(R.id.infotext);
         listView  = (ListView) findViewById(R.id.listView);
+        requests = new ArrayList<>();
 
         requestsList = new HashMap<>();
 
@@ -65,13 +67,22 @@ public class Approve extends AppCompatActivity {
         requestsRef = firebaseDatabase.getReference().child(GroupDefaults.groupsBranch).child(groupName).child(GroupDefaults.requestsChild);
         groupModeratorsRef = firebaseDatabase.getReference().child(GroupDefaults.groupsBranch).child(groupName).child(GroupDefaults.moderatorsChild);
 
-        requests = new ArrayList<>();
-        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, requests);
+        //requests = new ArrayList<>();
+        //adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, requests);
+        adapter = new RequestsListAdapter(this, requests);
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                Request request = (Request) listView.getAdapter().getItem(position);
+
+                if (isModerator){
+                    createAlertDialogForModerator(request);
+                } else {
+                    createAlertDialogForMember(request);
+                }
 
 //                String userName = ((TextView)view).getText().toString();
 //
@@ -93,10 +104,7 @@ public class Approve extends AppCompatActivity {
                 Request request = dataSnapshot.getValue(Request.class);
 
                 if (!isRequestAlreadyApproved(dataSnapshot)) {
-
-                    requests.add(request.getUserName());
-                    requestsList.put(dataSnapshot.getKey(), request);
-
+                    requests.add(request);
                     adapter.notifyDataSetChanged();
                     Log.d(TAG, "requestsList size: " + Integer.toString(requestsList.size()));
                 }
@@ -106,10 +114,6 @@ public class Approve extends AppCompatActivity {
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 if (!isRequestAlreadyApproved(dataSnapshot)){
 
-                    Log.d(TAG, "Changed, but was not approved ");
-                    Request request = dataSnapshot.getValue(Request.class);
-                    requestsList.put(dataSnapshot.getKey(), request);
-                    Log.d(TAG, "requests size: " + Integer.toString(requestsList.size()));
                 } else {
                     deleteRequestFromList(dataSnapshot);
                 }
@@ -173,15 +177,64 @@ public class Approve extends AppCompatActivity {
     }
 
     private void deleteRequestFromList(DataSnapshot dataSnapshot){
-        Request request = dataSnapshot.getValue(Request.class);
-        String removedUserName = request.getUserName();
-        if (requests.contains(removedUserName)){
-            requests.remove(removedUserName);
-            adapter.notifyDataSetChanged();
+
+        String key = dataSnapshot.getKey();
+        for (Request request: requests){
+            if (key.equals(request.getUserId())){
+                requests.remove(request);
+                adapter.notifyDataSetChanged();
+                break;
+            }
         }
-        if (requestsList.containsKey(dataSnapshot.getKey())) {
-            requestsList.remove(dataSnapshot.getKey());
-            Log.d(TAG, "requestsList size: " + Integer.toString(requestsList.size()));
-        }
+    }
+
+    private void createAlertDialogForModerator(final Request request){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Рассмотрение заявки");
+        builder.setMessage("Одобрить заявку от " + request.getUserName() + "?." +
+                "\nВы модератор в этой группе, одобрив заявку, вы добавите пользователя в группу");
+        builder.setPositiveButton("Добавить", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                DatabaseReference groupRef = FirebaseDatabase.getInstance().getReference().child(GroupDefaults.groupsBranch).child(groupName);
+                Map<String, Object> childUpdates = new HashMap<>();
+                childUpdates.put("/" + GroupDefaults.membersChild + "/" + request.getUserId(), true);
+                childUpdates.put("/" + GroupDefaults.requestsChild + "/" + request.getUserId(), null);
+                groupRef.updateChildren(childUpdates);
+
+            }
+        });
+        builder.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void createAlertDialogForMember(final Request request){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Рассмотрение заявки");
+        builder.setMessage("Одобрить заявку от " + request.getUserName() + "?." +
+                "\nПользователь будет добавлен в группу когда наберет необходимое количество одобрений");
+        builder.setPositiveButton("Одобрить", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                requestsRef.child(request.getUserId()).child(GroupDefaults.approvedChild).child(userId).setValue(true);
+
+            }
+        });
+
+        builder.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }

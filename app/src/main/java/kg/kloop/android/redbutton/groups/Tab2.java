@@ -1,5 +1,6 @@
 package kg.kloop.android.redbutton.groups;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -125,7 +126,7 @@ public class Tab2 extends Fragment {
         adapter.notifyDataSetChanged();
     }
 
-    public void checkGroupAndUserStatus(String groupName){
+    public void checkGroupAndUserStatus(final String groupName){
         groupsReference.child(groupName).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -147,14 +148,22 @@ public class Tab2 extends Fragment {
                 if (onlyModeratorApprovingRequests){
                     //onlyModerator in this group is able to approve requests, check user status in this group
                     if (isModerator){
-                        Toast.makeText(v.getContext(), "Пользователь модератор, добро", Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, "Только модератор добавляет пользователей. Данный пользователь модератор, переход на Approve activity");
+
+                        Intent i = new Intent(getActivity(), Approve.class);
+                        i.putExtra("groupName", groupName);
+                        startActivity(i);
 
                     } else{
-                        Toast.makeText(v.getContext(), "В этой группе только модератор одобряет, вы не модератор", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(v.getContext(), "В этой группе только модератор одобряет новых пользователей, вы не модератор", Toast.LENGTH_LONG).show();
                     }
 
                 } else {
-                    Toast.makeText(v.getContext(), "Все одобряют, добро", Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, "Новых пользователей одобряют модераторы и пользователи. Переход на Approve activity");
+
+                    Intent i = new Intent(getActivity(), Approve.class);
+                    i.putExtra("groupName", groupName);
+                    startActivity(i);
                 }
             }
 
