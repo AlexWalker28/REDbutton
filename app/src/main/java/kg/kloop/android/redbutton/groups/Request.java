@@ -17,11 +17,11 @@ public class Request {
         this.userName = userName;
     }
 
-    public Request(){
+    public Request() {
 
     }
 
-    public Request(String userId, String userName){
+    public Request(String userId, String userName) {
         this(0, userId, userName);
     }
 

@@ -3,10 +3,6 @@ package kg.kloop.android.redbutton.groups;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by erlan on 26.04.2017.
- */
-
 public class GroupRoom {
     private String name;
     private int requiredAmountOfApprovals;

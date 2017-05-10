@@ -1,9 +1,5 @@
 package kg.kloop.android.redbutton.groups;
 
-/**
- * Created by erlan on 28.04.2017.
- */
-
 public class GroupMembership {
     private String groupName;
     private boolean isMember;
@@ -19,11 +15,11 @@ public class GroupMembership {
         isModerator = moderator;
     }
 
-    public GroupMembership(){
+    public GroupMembership() {
 
     }
 
-    public GroupMembership(String groupName, boolean isMember, boolean isPending, boolean isOnlyModeratorApprovingRequests){
+    public GroupMembership(String groupName, boolean isMember, boolean isPending, boolean isOnlyModeratorApprovingRequests) {
         this.groupName = groupName;
         this.isMember = isMember;
         this.isPending = isPending;
@@ -31,7 +27,7 @@ public class GroupMembership {
 
     }
 
-    public GroupMembership(String groupName, boolean isMember, boolean isPending){
+    public GroupMembership(String groupName, boolean isMember, boolean isPending) {
         this.groupName = groupName;
         this.isMember = isMember;
         this.isPending = isPending;

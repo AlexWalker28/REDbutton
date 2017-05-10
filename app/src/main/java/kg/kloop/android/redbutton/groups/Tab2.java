@@ -35,7 +35,7 @@ public class Tab2 extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        v =inflater.inflate(R.layout.fragment_tab2_my_groups,container,false);
+        v = inflater.inflate(R.layout.fragment_tab2_my_groups, container, false);
         init();
 
         userGroupsReference.child(GroupDefaults.usersGroupsChild).addChildEventListener(new ChildEventListener() {
@@ -97,17 +97,17 @@ public class Tab2 extends Fragment {
         return v;
     }
 
-    private void init(){
+    private void init() {
         userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         userGroupsReference = FirebaseDatabase.getInstance().getReference(GroupDefaults.usersBranch).child(userId);
         groupsReference = FirebaseDatabase.getInstance().getReference(GroupDefaults.groupsBranch);
         myGroupsList = new ArrayList<>();
         mygroupsListview = (ListView) v.findViewById(R.id.mygroupsListview);
-        adapter = new GroupListAdapter(v.getContext(), myGroupsList, Tab2.this );
+        adapter = new GroupListAdapter(v.getContext(), myGroupsList, Tab2.this);
         mygroupsListview.setAdapter(adapter);
     }
 
-    private void updateListOnChildAdded(DataSnapshot dataSnapshot, boolean isMember){
+    private void updateListOnChildAdded(DataSnapshot dataSnapshot, boolean isMember) {
         String groupname = dataSnapshot.getKey();
         GroupMembership groupMembership = new GroupMembership(groupname, isMember, !isMember);
         myGroupsList.add(groupMembership);
@@ -115,10 +115,10 @@ public class Tab2 extends Fragment {
 
     }
 
-    private void updateListOnChildRemoved(DataSnapshot dataSnapshot){
+    private void updateListOnChildRemoved(DataSnapshot dataSnapshot) {
         String groupName = dataSnapshot.getKey();
-        for (GroupMembership groupMembership: myGroupsList){
-            if (groupMembership.getGroupName().equals(groupName)){
+        for (GroupMembership groupMembership : myGroupsList) {
+            if (groupMembership.getGroupName().equals(groupName)) {
                 myGroupsList.remove(groupMembership);
                 break;
             }
@@ -126,35 +126,35 @@ public class Tab2 extends Fragment {
         adapter.notifyDataSetChanged();
     }
 
-    public void checkGroupAndUserStatus(final String groupName){
+    public void checkGroupAndUserStatus(final String groupName) {
         groupsReference.child(groupName).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 boolean onlyModeratorApprovingRequests = false;
                 boolean isModerator = false;
 
-                for (DataSnapshot postsnapshot: dataSnapshot.getChildren()){
-                    if (postsnapshot.getKey().equals(GroupDefaults.groupsIsOnlyModeratorApprovingRequestField)){
+                for (DataSnapshot postsnapshot : dataSnapshot.getChildren()) {
+                    if (postsnapshot.getKey().equals(GroupDefaults.groupsIsOnlyModeratorApprovingRequestField)) {
                         onlyModeratorApprovingRequests = (Boolean) postsnapshot.getValue();
                     }
-                    if (postsnapshot.getKey().equals(GroupDefaults.moderatorsChild)){
-                        if (postsnapshot.hasChild(userId)){
+                    if (postsnapshot.getKey().equals(GroupDefaults.moderatorsChild)) {
+                        if (postsnapshot.hasChild(userId)) {
                             isModerator = true;
                             Log.d(TAG, "user is moderator");
                         }
                     }
                 }
 
-                if (onlyModeratorApprovingRequests){
+                if (onlyModeratorApprovingRequests) {
                     //onlyModerator in this group is able to approve requests, check user status in this group
-                    if (isModerator){
+                    if (isModerator) {
                         Log.d(TAG, "Только модератор добавляет пользователей. Данный пользователь модератор, переход на Approve activity");
 
                         Intent i = new Intent(getActivity(), Approve.class);
                         i.putExtra("groupName", groupName);
                         startActivity(i);
 
-                    } else{
+                    } else {
                         Toast.makeText(v.getContext(), "В этой группе только модератор одобряет новых пользователей, вы не модератор", Toast.LENGTH_LONG).show();
                     }
 

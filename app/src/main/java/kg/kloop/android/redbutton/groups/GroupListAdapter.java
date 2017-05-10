@@ -21,7 +21,7 @@ public class GroupListAdapter extends BaseAdapter {
     private ArrayList<GroupMembership> groupList;
     private Fragment fragment;
 
-    public GroupListAdapter (Context context, ArrayList<GroupMembership> list, Fragment fragment){
+    public GroupListAdapter(Context context, ArrayList<GroupMembership> list, Fragment fragment) {
         this.context = context;
         this.groupList = list;
         this.fragment = fragment;
@@ -44,7 +44,7 @@ public class GroupListAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        if (convertView == null){
+        if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.group_list_item, parent, false);
         }
@@ -59,10 +59,10 @@ public class GroupListAdapter extends BaseAdapter {
         boolean isMember = thisGroup.isMember();
         boolean isPending = thisGroup.isPending();
 
-        if (isMember){
+        if (isMember) {
             image.setImageResource(R.drawable.member);
             membershipInfo.setText("вы состоите в этой группе");
-        } else if (isPending){
+        } else if (isPending) {
             image.setImageResource(R.drawable.pending);
             membershipInfo.setText("запрос отправлен");
         } else {
@@ -94,14 +94,13 @@ public class GroupListAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 //if clicked on Tab1
-                if (fragment instanceof  Tab1){
+                if (fragment instanceof Tab1) {
                     if (!finalIsMember && !finalIsPending) {
                         createSendRequestAlertDialog(context, fragment, thisGroup);
                     }
                 }
-
                 //if clicked on Tab2
-                if (fragment instanceof Tab2){
+                if (fragment instanceof Tab2) {
 
                 }
             }
@@ -110,9 +109,9 @@ public class GroupListAdapter extends BaseAdapter {
         return convertView;
     }
 
-    private void createSendRequestAlertDialog(Context context, final Fragment fragment, final GroupMembership groupMembership){
+    private void createSendRequestAlertDialog(Context context, final Fragment fragment, final GroupMembership groupMembership) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setMessage("Отправить запрос в группу " + groupMembership.getGroupName() + "?" );
+        builder.setMessage("Отправить запрос в группу " + groupMembership.getGroupName() + "?");
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -130,8 +129,3 @@ public class GroupListAdapter extends BaseAdapter {
         alertdialog.show();
     }
 }
-
-//    String groupName = group.getGroupName();
-//    Intent i = new Intent(context, Approve.class);
-//                            i.putExtra("groupName", groupName);
-//                                    context.startActivity(i);

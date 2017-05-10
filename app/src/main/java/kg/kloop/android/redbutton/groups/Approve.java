@@ -4,7 +4,6 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -29,46 +28,34 @@ public class Approve extends AppCompatActivity {
     private DatabaseReference requestsRef;
     private DatabaseReference groupModeratorsRef;
     private ListView listView;
-    //private ArrayList<String> requests;
-    //ArrayAdapter<String> adapter;
     RequestsListAdapter adapter;
     ArrayList<Request> requests;
     TextView info;
-    String userIdForChange;
-    String reqId;
     String groupName;
     String userId;
     boolean isModerator;
     private static final String TAG = "myLog";
-
-    private HashMap<String, Request> requestsList;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_approve);
         init();
-
     }
 
-    private void init(){
+    private void init() {
         userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         isModerator = false;
         groupName = getIntent().getStringExtra("groupName");
 
         info = (TextView) findViewById(R.id.infotext);
-        listView  = (ListView) findViewById(R.id.listView);
+        listView = (ListView) findViewById(R.id.listView);
         requests = new ArrayList<>();
-
-        requestsList = new HashMap<>();
 
         firebaseDatabase = FirebaseDatabase.getInstance();
         requestsRef = firebaseDatabase.getReference().child(GroupDefaults.groupsBranch).child(groupName).child(GroupDefaults.requestsChild);
         groupModeratorsRef = firebaseDatabase.getReference().child(GroupDefaults.groupsBranch).child(groupName).child(GroupDefaults.moderatorsChild);
 
-        //requests = new ArrayList<>();
-        //adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, requests);
         adapter = new RequestsListAdapter(this, requests);
         listView.setAdapter(adapter);
 
@@ -78,23 +65,11 @@ public class Approve extends AppCompatActivity {
 
                 Request request = (Request) listView.getAdapter().getItem(position);
 
-                if (isModerator){
+                if (isModerator) {
                     createAlertDialogForModerator(request);
                 } else {
                     createAlertDialogForMember(request);
                 }
-
-//                String userName = ((TextView)view).getText().toString();
-//
-//                for (HashMap.Entry<String, Request> entry: requestsList.entrySet()){
-//                    Request req = entry.getValue();
-//                    if (req.getUserName().equals(userName)){
-//                        userIdForChange = req.getUserId();
-//                        reqId = entry.getKey();
-//                        requestsRef.child(reqId).child(GroupDefaults.approvedChild).child(userId).setValue(true);
-//                        Toast.makeText(Approve.this, "Вы одобрили заявку", Toast.LENGTH_SHORT).show();
-//                    }
-//                }
             }
         });
 
@@ -106,13 +81,12 @@ public class Approve extends AppCompatActivity {
                 if (!isRequestAlreadyApproved(dataSnapshot)) {
                     requests.add(request);
                     adapter.notifyDataSetChanged();
-                    Log.d(TAG, "requestsList size: " + Integer.toString(requestsList.size()));
                 }
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                if (!isRequestAlreadyApproved(dataSnapshot)){
+                if (!isRequestAlreadyApproved(dataSnapshot)) {
 
                 } else {
                     deleteRequestFromList(dataSnapshot);
@@ -122,7 +96,7 @@ public class Approve extends AppCompatActivity {
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-               deleteRequestFromList(dataSnapshot);
+                deleteRequestFromList(dataSnapshot);
             }
 
             @Override
@@ -139,8 +113,8 @@ public class Approve extends AppCompatActivity {
         groupModeratorsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()){
-                    if (postSnapshot.getKey().equals(userId)){
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    if (postSnapshot.getKey().equals(userId)) {
                         isModerator = true;
                         info.append("\nВы модератор в этой группе\n");
                         break;
@@ -156,16 +130,16 @@ public class Approve extends AppCompatActivity {
 
     }
 
-    private boolean isRequestAlreadyApproved(DataSnapshot dataSnapshot){
+    private boolean isRequestAlreadyApproved(DataSnapshot dataSnapshot) {
         boolean isAlreadyApproved = false;
         String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        for (DataSnapshot child: dataSnapshot.getChildren()){
-            if (child.getKey().equals(GroupDefaults.approvedChild)){
+        for (DataSnapshot child : dataSnapshot.getChildren()) {
+            if (child.getKey().equals(GroupDefaults.approvedChild)) {
                 //Map of users who approved this request
                 Map<String, Boolean> users = (HashMap<String, Boolean>) child.getValue();
                 //Looking for current user's Id in users
-                for (String userId: users.keySet()){
-                    if (userId.equals(currentUserId)){
+                for (String userId : users.keySet()) {
+                    if (userId.equals(currentUserId)) {
                         isAlreadyApproved = true;
                         break;
                     }
@@ -176,11 +150,11 @@ public class Approve extends AppCompatActivity {
         return isAlreadyApproved;
     }
 
-    private void deleteRequestFromList(DataSnapshot dataSnapshot){
+    private void deleteRequestFromList(DataSnapshot dataSnapshot) {
 
         String key = dataSnapshot.getKey();
-        for (Request request: requests){
-            if (key.equals(request.getUserId())){
+        for (Request request : requests) {
+            if (key.equals(request.getUserId())) {
                 requests.remove(request);
                 adapter.notifyDataSetChanged();
                 break;
@@ -188,7 +162,7 @@ public class Approve extends AppCompatActivity {
         }
     }
 
-    private void createAlertDialogForModerator(final Request request){
+    private void createAlertDialogForModerator(final Request request) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Рассмотрение заявки");
         builder.setMessage("Одобрить заявку от " + request.getUserName() + "?." +
@@ -215,7 +189,7 @@ public class Approve extends AppCompatActivity {
         dialog.show();
     }
 
-    private void createAlertDialogForMember(final Request request){
+    private void createAlertDialogForMember(final Request request) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Рассмотрение заявки");
         builder.setMessage("Одобрить заявку от " + request.getUserName() + "?." +
