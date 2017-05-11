@@ -20,4 +20,5 @@
     <string name="second_phone_num">Second phone number</string>
     <string name="message">Message</string>
     <string name="save">Save</string>
+    <string name="manual">Manual</string>
 </resources>

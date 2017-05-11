@@ -3,7 +3,8 @@
     package="com.example.alexwalker.sendsmsapp">
 
     <uses-permission android:name="android.permission.SEND_SMS" />
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
@@ -41,7 +42,14 @@
 
         <activity
             android:name="kg.kloop.android.redbutton.MapsActivity"
-            android:label="@string/title_activity_maps"></activity>
+            android:label="@string/title_activity_maps" />
+        <activity android:name="kg.kloop.android.redbutton.UsersActivity" />
+
+        <service
+            android:name="kg.kloop.android.redbutton.LocationService"
+            android:exported="false" />
+
+        <activity android:name="kg.kloop.android.redbutton.ManualActivity"></activity>
     </application>
 
 </manifest>
