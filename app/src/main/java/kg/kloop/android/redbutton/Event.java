@@ -1,6 +1,5 @@
 package kg.kloop.android.redbutton;
 
-import com.google.android.gms.maps.model.LatLng;
 
 /**
  * Created by alexwalker on 15.04.17.

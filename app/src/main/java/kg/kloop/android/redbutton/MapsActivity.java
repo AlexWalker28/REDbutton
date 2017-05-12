@@ -1,7 +1,7 @@
 package kg.kloop.android.redbutton;
 
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 
 import com.example.alexwalker.sendsmsapp.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -66,8 +66,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Event event = dataSnapshot.getValue(Event.class);
                 eventArrayList.add(event);
                 for(Event singleEvent : eventArrayList){
-                    eventLatLng = new LatLng(singleEvent.getCoordinates().getLat(), singleEvent.getCoordinates().getLng());
-                    mMap.addMarker(new MarkerOptions().position(eventLatLng).title(event.getUser().getMessage()));
+                    if(singleEvent.getCoordinates() != null) {
+                        eventLatLng = new LatLng(singleEvent.getCoordinates().getLat(), singleEvent.getCoordinates().getLng());
+                        mMap.addMarker(new MarkerOptions().position(eventLatLng).title(event.getUser().getMessage()));
+                    }
                 }
                 if(eventLatLng != null){
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(eventLatLng, 17));

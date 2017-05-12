@@ -1,8 +1,6 @@
 package kg.kloop.android.redbutton;
 
 import android.Manifest;
-import android.app.IntentService;
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
@@ -13,21 +11,16 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.content.WakefulBroadcastReceiver;
+import android.telephony.SmsManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.example.alexwalker.sendsmsapp.R;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
-import io.fabric.sdk.android.services.common.SystemCurrentTimeProvider;
 
 
 public class LocationService extends Service {
@@ -36,7 +29,10 @@ public class LocationService extends Service {
     LocationManager locationManager;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
+    CustomLatLng coordinates;
     String childKey;
+    String firstPhoneNumber;
+    String secondPhoneNumber;
 
     @Nullable
     @Override
@@ -50,17 +46,17 @@ public class LocationService extends Service {
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference("Events");
         childKey = intent.getStringExtra(Constants.DATABASE_CHILD_ID);
+        firstPhoneNumber = intent.getStringExtra(Constants.FIRST_NUMBER);
+        secondPhoneNumber = intent.getStringExtra(Constants.SECOND_NUMBER);
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         setLocationListener();
         requestLocationUpdates();
         sendDataBack();
-        /*if(event.getLat() != 0 && event.getLng() != 0){
-            stopSelf();
-        }
-        WakefulBroadcastReceiver.completeWakefulIntent(intent);*/
+        stopSelf();
 
         return super.onStartCommand(intent, flags, startId);
     }
+
 
     private void requestLocationUpdates() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
@@ -82,11 +78,13 @@ public class LocationService extends Service {
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-                CustomLatLng customLatLng = new CustomLatLng(location.getLatitude(), location.getLongitude());
+                coordinates = new CustomLatLng(location.getLatitude(), location.getLongitude());
                 if(event.getCoordinates() != null) {
                     Log.v("service", "Location: " + event.getCoordinates().getLat() + " " + event.getCoordinates().getLng());
                 }
-                databaseReference.child(childKey).child("coordinates").setValue(customLatLng);
+                databaseReference.child(childKey).child("coordinates").setValue(coordinates);
+                sendSMS(firstPhoneNumber);
+                sendSMS(secondPhoneNumber);
                 sendNotification();
             }
 
@@ -107,6 +105,18 @@ public class LocationService extends Service {
         };
 
     }
+
+    private void sendSMS(String phoneNumber) {
+        SmsManager smsManager = SmsManager.getDefault();
+        String message = "My coordinates: ";
+        if (coordinates != null) { //send SMS with coordinates
+            smsManager.sendTextMessage(phoneNumber, null, message
+                    + "\nhttp://maps.google.com/maps?q="
+                    + coordinates.getLat()
+                    + "," + coordinates.getLng(), null, null);
+        }
+    }
+
 
     private void sendNotification() {
         if(event.getCoordinates() != null) {
