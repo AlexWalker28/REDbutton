@@ -46,11 +46,12 @@ public class LocationService extends Service {
         setLocationListener();
         requestLocationUpdates();
         sendDataBack();
-        /*
-        WakefulBroadcastReceiver.completeWakefulIntent(intent);*/
+        stopSelf();
+        MainActivity.EventStateReceiver.completeWakefulIntent(intent);
 
         return super.onStartCommand(intent, flags, startId);
     }
+
 
     private void requestLocationUpdates() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
@@ -78,9 +79,6 @@ public class LocationService extends Service {
                 }
                 databaseReference.child(childKey).child("coordinates").setValue(customLatLng);
                 sendNotification();
-                if(event.getCoordinates() != null){
-                    stopSelf();
-                }
             }
 
             @Override
