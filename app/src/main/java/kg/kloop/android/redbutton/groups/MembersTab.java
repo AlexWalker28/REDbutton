@@ -16,6 +16,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -40,6 +41,8 @@ public class MembersTab extends Fragment {
         groupref.child(GroupDefaults.membersChild).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                addNewUserToList(dataSnapshot);
+
 
             }
 
@@ -78,6 +81,27 @@ public class MembersTab extends Fragment {
         membersListView.setAdapter(adapter);
         groupref = FirebaseDatabase.getInstance().getReference().child(GroupDefaults.groupsBranch).child(groupName);
 
+    }
+
+    private void addNewUserToList(DataSnapshot dataSnapshot){
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("Users").child(dataSnapshot.getKey()).child("userName");
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot postSnapshot) {
+                if (postSnapshot.exists()) {
+                    members.add(new Member((String) postSnapshot.getValue(), false));
+                    adapter.notifyDataSetChanged();
+                } else {
+                    members.add(new Member("Не определен", false));
+                    adapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
 }
