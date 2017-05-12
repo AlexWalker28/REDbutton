@@ -14,7 +14,13 @@
         android:layout_height="wrap_content"
         android:textSize="14dp"
         android:text="" />
-    <View
+
+    <TextView
+        android:id="@+id/request_item_info"
         android:layout_width="match_parent"
-        android:layout_height="2dp"/>
+        android:layout_height="wrap_content"
+        android:textSize="8dp"
+        android:text=""/>
+
+
 </LinearLayout>

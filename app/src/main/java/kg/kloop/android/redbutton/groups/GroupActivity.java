@@ -16,6 +16,7 @@ public class GroupActivity extends AppCompatActivity {
     CharSequence titles[] = {"Участники", "Запросы"};
     int numOfTabs = 2;
     String userId;
+    String groupName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,7 +24,7 @@ public class GroupActivity extends AppCompatActivity {
         setContentView(R.layout.activity_group);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        String groupName = getIntent().getStringExtra("groupName");
+        groupName = getIntent().getStringExtra("groupName");
         toolbar.setTitle(groupName);
         setSupportActionBar(toolbar);
 

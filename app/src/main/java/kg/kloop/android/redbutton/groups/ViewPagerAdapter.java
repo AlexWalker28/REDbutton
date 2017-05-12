@@ -33,8 +33,8 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
                 AllGroupsTab allGroupsTab = new AllGroupsTab();
                 return allGroupsTab;
             } else {
-                AllGroupsTab allGroupsTab = new AllGroupsTab();
-                return allGroupsTab;
+                MembersTab membersTab = new MembersTab();
+                return membersTab;
             }
 
         } else {
