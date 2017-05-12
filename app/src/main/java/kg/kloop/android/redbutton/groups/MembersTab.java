@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ListView;
 
 import com.example.alexwalker.sendsmsapp.R;
@@ -31,6 +32,7 @@ public class MembersTab extends Fragment {
     DatabaseReference groupref;
     String groupName;
     View v;
+    private Button button;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -66,6 +68,14 @@ public class MembersTab extends Fragment {
             }
         });
 
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                groupref.child(GroupDefaults.membersChild).child(userId).setValue(null);
+                getActivity().finish();
+            }
+        });
+
         return v;
     }
 
@@ -79,6 +89,7 @@ public class MembersTab extends Fragment {
         adapter = new MembersListAdapter(v.getContext(), members);
         membersListView.setAdapter(adapter);
         groupref = FirebaseDatabase.getInstance().getReference().child(GroupDefaults.groupsBranch).child(groupName);
+        button = (Button) v.findViewById(R.id.buttonQuitGroup);
 
     }
 

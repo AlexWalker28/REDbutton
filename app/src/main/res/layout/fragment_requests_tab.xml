@@ -1,0 +1,35 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="kg.kloop.android.redbutton.groups.RequestsTab">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="110dp"
+        android:id="@+id/requests_tab_view" />
+
+    <TextView
+        android:id="@+id/requests_tab_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/requests_tab_view"
+        android:layout_alignParentEnd="true" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:id="@+id/requests_tab_view2"
+        android:layout_below="@id/requests_tab_info"
+        android:background="@color/tw__composer_red"/>
+
+
+    <ListView
+        android:id="@+id/requests_tab_listview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/requests_tab_view2" />
+</RelativeLayout>

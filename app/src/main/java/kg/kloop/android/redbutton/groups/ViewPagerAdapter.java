@@ -37,13 +37,12 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
                 return membersTab;
             }
 
-        } else {
+        } else {//position = 1
             if (activity instanceof SlidingGroupsActivity) {
                 MyGroupsTab myGroupsTab = new MyGroupsTab();
                 return myGroupsTab;
             } else {
-                MyGroupsTab myGroupsTab = new MyGroupsTab();
-                return myGroupsTab;
+                return new RequestsTab();
             }
         }
     }
