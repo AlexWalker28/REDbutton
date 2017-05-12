@@ -27,7 +27,6 @@ public class SettingsActivity extends AppCompatActivity {
     private EditText secondNumberEditText;
     private EditText messageEditText;
     private Button saveSettingsButton;
-    private Button usersButton;
     private String firstNumber;
     private String secondNumber;
     private String message;
@@ -87,16 +86,6 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        usersButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(SettingsActivity.this, UsersActivity.class);
-                intent.putExtra("currentUserID", userID);
-                intent.putExtra("currentUserName", userName);
-                startActivity(intent);
-            }
-        });
-
     }
 
     private void saveDataInPref(String firstNumber, String secondNumber, String message) {
@@ -146,7 +135,6 @@ public class SettingsActivity extends AppCompatActivity {
         secondNumberEditText = (EditText)findViewById(R.id.secondNumberEditText);
         messageEditText = (EditText)findViewById(R.id.messageEditText);
         saveSettingsButton = (Button)findViewById(R.id.saveSettingsButton);
-        usersButton = (Button)findViewById(R.id.usersButton);
         preferences = getSharedPreferences(Constants.SHARED_PREF_FILE, MODE_PRIVATE);
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference().child("Users");
