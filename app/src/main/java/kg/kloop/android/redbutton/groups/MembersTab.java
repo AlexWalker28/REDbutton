@@ -42,8 +42,6 @@ public class MembersTab extends Fragment {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 addNewUserToList(dataSnapshot);
-
-
             }
 
             @Override
@@ -53,6 +51,7 @@ public class MembersTab extends Fragment {
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
+                deleteMemberFromList(dataSnapshot);
 
             }
 
@@ -83,16 +82,16 @@ public class MembersTab extends Fragment {
 
     }
 
-    private void addNewUserToList(DataSnapshot dataSnapshot){
+    private void addNewUserToList(final DataSnapshot dataSnapshot){
         DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("Users").child(dataSnapshot.getKey()).child("userName");
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot postSnapshot) {
                 if (postSnapshot.exists()) {
-                    members.add(new Member((String) postSnapshot.getValue(), false));
+                    members.add(new Member((String) postSnapshot.getValue(), false, dataSnapshot.getKey()));
                     adapter.notifyDataSetChanged();
                 } else {
-                    members.add(new Member("Не определен", false));
+                    members.add(new Member("Не определен", false, dataSnapshot.getKey()));
                     adapter.notifyDataSetChanged();
                 }
             }
@@ -102,6 +101,16 @@ public class MembersTab extends Fragment {
 
             }
         });
+    }
+
+    private void deleteMemberFromList(DataSnapshot dataSnapshot){
+        for (Member member: members){
+            if (dataSnapshot.getKey().equals(member.getUserId())){
+                members.remove(member);
+                adapter.notifyDataSetChanged();
+                break;
+            }
+        }
     }
 
 }
