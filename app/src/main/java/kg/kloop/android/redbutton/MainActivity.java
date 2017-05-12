@@ -95,6 +95,8 @@ public class MainActivity extends AppCompatActivity {
                             initReceiver();
                             Intent serviceIntent = new Intent(MainActivity.this, LocationService.class);
                             serviceIntent.putExtra(Constants.DATABASE_CHILD_ID, childUniqueKey);
+                            serviceIntent.putExtra(Constants.FIRST_NUMBER, firstPhoneNumber);
+                            serviceIntent.putExtra(Constants.SECOND_NUMBER, secondPhoneNumber);
                             startService(serviceIntent);
                         }
 
@@ -166,10 +168,14 @@ public class MainActivity extends AppCompatActivity {
     }
     private void sendSMS(String phoneNumber, String message) {
         SmsManager smsManager = SmsManager.getDefault();
-        smsManager.sendTextMessage(phoneNumber, null, message
-                + "\nhttp://maps.google.com/maps?q="
-                + event.getCoordinates().getLat()
-                + "," + event.getCoordinates().getLng(), null, null);
+        if(event.getCoordinates() != null) { //send SMS with coordinates
+            smsManager.sendTextMessage(phoneNumber, null, message
+                    + "\nhttp://maps.google.com/maps?q="
+                    + event.getCoordinates().getLat()
+                    + "," + event.getCoordinates().getLng(), null, null);
+        } else { //send SMS without coordinates (SMS with coordinates will be sent from service)
+            smsManager.sendTextMessage(phoneNumber, null, message, null, null);
+        }
     }
 
 
