@@ -134,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
                     Log.v("User", "userData: " + userID + "\n" + userName + "\n" + userEmail);
                 } else {
 
-                    Intent intent = new Intent(MainActivity.this, ManualActivity.class);
+                    Intent intent = new Intent(getApplicationContext(), IntroActivity.class);
                     startActivity(intent);
                 }
 

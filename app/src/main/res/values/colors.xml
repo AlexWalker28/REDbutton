@@ -3,5 +3,9 @@
     <color name="colorPrimary">#212121</color>
     <color name="colorPrimaryDark">#1a1a1a</color>
     <color name="colorAccent">#d50000</color>
+
+    <color name="slide1">#212121</color>
+    <color name="slide2">#d50000</color>
+    <color name="slide3">#212121</color>
 </resources>
 

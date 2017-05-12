@@ -26,6 +26,9 @@ android {
         }
     }
 }
+repositories {
+    mavenCentral()
+}
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
@@ -39,6 +42,7 @@ dependencies {
     compile 'com.google.firebase:firebase-auth:10.2.1'
     compile 'com.firebaseui:firebase-ui-auth:1.2.0'
     testCompile 'junit:junit:4.12'
+    compile 'com.github.paolorotolo:appintro:4.1.0'
 }
 
 
