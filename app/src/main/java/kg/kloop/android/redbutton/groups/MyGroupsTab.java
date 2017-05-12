@@ -4,12 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.example.alexwalker.sendsmsapp.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -18,7 +16,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -127,51 +124,54 @@ public class MyGroupsTab extends Fragment {
     }
 
     public void checkGroupAndUserStatus(final String groupName) {
-        groupsReference.child(groupName).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                boolean onlyModeratorApprovingRequests = false;
-                boolean isModerator = false;
-
-                for (DataSnapshot postsnapshot : dataSnapshot.getChildren()) {
-                    if (postsnapshot.getKey().equals(GroupDefaults.groupsIsOnlyModeratorApprovingRequestField)) {
-                        onlyModeratorApprovingRequests = (Boolean) postsnapshot.getValue();
-                    }
-                    if (postsnapshot.getKey().equals(GroupDefaults.moderatorsChild)) {
-                        if (postsnapshot.hasChild(userId)) {
-                            isModerator = true;
-                            Log.d(TAG, "user is moderator");
-                        }
-                    }
-                }
-
-                if (onlyModeratorApprovingRequests) {
-                    //onlyModerator in this group is able to approve requests, check user status in this group
-                    if (isModerator) {
-                        Log.d(TAG, "Только модератор добавляет пользователей. Данный пользователь модератор, переход на Approve activity");
-
-                        Intent i = new Intent(getActivity(), Approve.class);
-                        i.putExtra("groupName", groupName);
-                        startActivity(i);
-
-                    } else {
-                        Toast.makeText(v.getContext(), "В этой группе только модератор одобряет новых пользователей, вы не модератор", Toast.LENGTH_LONG).show();
-                    }
-
-                } else {
-                    Log.d(TAG, "Новых пользователей одобряют модераторы и пользователи. Переход на Approve activity");
-
-                    Intent i = new Intent(getActivity(), Approve.class);
-                    i.putExtra("groupName", groupName);
-                    startActivity(i);
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.d(TAG, "do no have access to database");
-            }
-        });
+        Intent intent = new Intent(getActivity(), GroupActivity.class);
+        intent.putExtra("groupName", groupName);
+        startActivity(intent);
+//        groupsReference.child(groupName).addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                boolean onlyModeratorApprovingRequests = false;
+//                boolean isModerator = false;
+//
+//                for (DataSnapshot postsnapshot : dataSnapshot.getChildren()) {
+//                    if (postsnapshot.getKey().equals(GroupDefaults.groupsIsOnlyModeratorApprovingRequestField)) {
+//                        onlyModeratorApprovingRequests = (Boolean) postsnapshot.getValue();
+//                    }
+//                    if (postsnapshot.getKey().equals(GroupDefaults.moderatorsChild)) {
+//                        if (postsnapshot.hasChild(userId)) {
+//                            isModerator = true;
+//                            Log.d(TAG, "user is moderator");
+//                        }
+//                    }
+//                }
+//
+//                if (onlyModeratorApprovingRequests) {
+//                    //onlyModerator in this group is able to approve requests, check user status in this group
+//                    if (isModerator) {
+//                        Log.d(TAG, "Только модератор добавляет пользователей. Данный пользователь модератор, переход на Approve activity");
+//
+//                        Intent i = new Intent(getActivity(), Approve.class);
+//                        i.putExtra("groupName", groupName);
+//                        startActivity(i);
+//
+//                    } else {
+//                        Toast.makeText(v.getContext(), "В этой группе только модератор одобряет новых пользователей, вы не модератор", Toast.LENGTH_LONG).show();
+//                    }
+//
+//                } else {
+//                    Log.d(TAG, "Новых пользователей одобряют модераторы и пользователи. Переход на Approve activity");
+//
+//                    Intent i = new Intent(getActivity(), Approve.class);
+//                    i.putExtra("groupName", groupName);
+//                    startActivity(i);
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//                Log.d(TAG, "do no have access to database");
+//            }
+//        });
 
     }
 }

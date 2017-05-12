@@ -33,7 +33,8 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
                 AllGroupsTab allGroupsTab = new AllGroupsTab();
                 return allGroupsTab;
             } else {
-                return null;
+                AllGroupsTab allGroupsTab = new AllGroupsTab();
+                return allGroupsTab;
             }
 
         } else {
@@ -41,7 +42,8 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
                 MyGroupsTab myGroupsTab = new MyGroupsTab();
                 return myGroupsTab;
             } else {
-                return null;
+                MyGroupsTab myGroupsTab = new MyGroupsTab();
+                return myGroupsTab;
             }
         }
     }

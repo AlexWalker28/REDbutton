@@ -4,9 +4,17 @@
     android:layout_height="match_parent">
 
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"/>
+
     <TextView
         android:id="@+id/request_item_userName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textSize="14dp"
         android:text="" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"/>
 </LinearLayout>

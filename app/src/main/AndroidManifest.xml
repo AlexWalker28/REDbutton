@@ -56,7 +56,9 @@
             android:label="@string/title_activity_sliding_groups"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
-        <activity android:name="kg.kloop.android.redbutton.groups.GroupActivity"></activity>
+        <activity android:name="kg.kloop.android.redbutton.groups.GroupActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" ></activity>
     </application>
 
 </manifest>
