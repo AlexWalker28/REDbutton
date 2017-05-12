@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 
 import com.example.alexwalker.sendsmsapp.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -23,11 +22,12 @@ public class SlidingGroupsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sliding_groups);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        toolbar.setTitle("TTTTTT");
+//        setSupportActionBar(toolbar);
 
         userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        pagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), titles, numOfTabs);
+        pagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), titles, numOfTabs, this);
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         viewPager.setAdapter(pagerAdapter);
 

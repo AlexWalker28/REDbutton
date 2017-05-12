@@ -76,13 +76,13 @@ public class GroupListAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
 
-                //if clicked on Tab2
-                if (fragment instanceof Tab2) {
+                //if clicked on MyGroupsTab
+                if (fragment instanceof MyGroupsTab) {
                     GroupMembership group = groupList.get(position);
 
                     // если является членом группы
                     if (group.isMember()) {
-                        ((Tab2) fragment).checkGroupAndUserStatus(group.getGroupName());
+                        ((MyGroupsTab) fragment).checkGroupAndUserStatus(group.getGroupName());
                     } else {
                         Toast.makeText(context, "Ваша заявка еще на рассмотрении", Toast.LENGTH_SHORT).show();
                     }
@@ -93,14 +93,14 @@ public class GroupListAdapter extends BaseAdapter {
         image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //if clicked on Tab1
-                if (fragment instanceof Tab1) {
+                //if clicked on AllGroupsTab
+                if (fragment instanceof AllGroupsTab) {
                     if (!finalIsMember && !finalIsPending) {
                         createSendRequestAlertDialog(context, fragment, thisGroup);
                     }
                 }
-                //if clicked on Tab2
-                if (fragment instanceof Tab2) {
+                //if clicked on MyGroupsTab
+                if (fragment instanceof MyGroupsTab) {
 
                 }
             }
@@ -115,7 +115,7 @@ public class GroupListAdapter extends BaseAdapter {
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                ((Tab1) fragment).sendRequest(groupMembership.getGroupName());
+                ((AllGroupsTab) fragment).sendRequest(groupMembership.getGroupName());
             }
         });
         builder.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {

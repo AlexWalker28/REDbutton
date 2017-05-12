@@ -32,8 +32,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class Tab1 extends Fragment implements View.OnClickListener {
-    private static final String TAG = "Tab1 log";
+public class AllGroupsTab extends Fragment implements View.OnClickListener {
+    private static final String TAG = "AllGroupsTab log";
     private Button createGroup;
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference groupsReference;
@@ -51,7 +51,7 @@ public class Tab1 extends Fragment implements View.OnClickListener {
         init();
         groupMembershipList = new ArrayList<>();
 
-        adapter2 = new GroupListAdapter(v.getContext(), groupMembershipList, Tab1.this);
+        adapter2 = new GroupListAdapter(v.getContext(), groupMembershipList, AllGroupsTab.this);
         groupsList.setAdapter(adapter2);
 
         return v;

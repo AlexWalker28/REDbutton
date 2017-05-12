@@ -23,14 +23,14 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 
-public class Tab2 extends Fragment {
+public class MyGroupsTab extends Fragment {
     private ListView mygroupsListview;
     private GroupListAdapter adapter;
     private ArrayList<GroupMembership> myGroupsList;
     private DatabaseReference userGroupsReference;
     private DatabaseReference groupsReference;
     private String userId;
-    private static final String TAG = "Tab2 log";
+    private static final String TAG = "MyGroupsTab log";
     View v;
 
     @Override
@@ -103,7 +103,7 @@ public class Tab2 extends Fragment {
         groupsReference = FirebaseDatabase.getInstance().getReference(GroupDefaults.groupsBranch);
         myGroupsList = new ArrayList<>();
         mygroupsListview = (ListView) v.findViewById(R.id.mygroupsListview);
-        adapter = new GroupListAdapter(v.getContext(), myGroupsList, Tab2.this);
+        adapter = new GroupListAdapter(v.getContext(), myGroupsList, MyGroupsTab.this);
         mygroupsListview.setAdapter(adapter);
     }
 

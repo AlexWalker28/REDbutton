@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="kg.kloop.android.redbutton.groups.Tab1">
+    tools:context="kg.kloop.android.redbutton.groups.AllGroupsTab">
 
     <Button
         android:id="@+id/buttonPush"
