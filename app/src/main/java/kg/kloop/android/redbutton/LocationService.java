@@ -47,7 +47,6 @@ public class LocationService extends Service {
         requestLocationUpdates();
         sendDataBack();
         stopSelf();
-        MainActivity.EventStateReceiver.completeWakefulIntent(intent);
 
         return super.onStartCommand(intent, flags, startId);
     }
