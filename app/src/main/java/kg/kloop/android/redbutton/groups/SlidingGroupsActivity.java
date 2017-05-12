@@ -22,9 +22,6 @@ public class SlidingGroupsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sliding_groups);
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar2);
-//        toolbar.setTitle("TTTTTT");
-//        setSupportActionBar(toolbar);
 
         userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         pagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), titles, numOfTabs, this);
