@@ -37,6 +37,8 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Arrays;
 
+import kg.kloop.android.redbutton.groups.SlidingGroupsActivity;
+
 public class MainActivity extends AppCompatActivity {
 
     private Button sendButton;
@@ -45,11 +47,13 @@ public class MainActivity extends AppCompatActivity {
     private String message;
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference databaseReference;
+    private DatabaseReference groupsReference;
     private FirebaseAuth auth;
     private FirebaseAuth.AuthStateListener authStateListener;
     private FirebaseUser firebaseUser;
     private MenuItem signInMenuItem;
     private MenuItem signOutMenuItem;
+    private MenuItem groups;
     private LocationManager locationManager;
     private User user;
     private Event event;
@@ -65,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+		//test
         init();
         if (isLocationEnabled()) {
             if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -178,7 +182,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
     //=====================
     //Location
     //=====================
@@ -285,6 +288,7 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_items, menu);
         signInMenuItem = menu.findItem(R.id.sign_in_item);
         signOutMenuItem = menu.findItem(R.id.sign_out_item);
+        groups = menu.findItem(R.id.groups);
         setAuthMenuItemsVisibility();
         return true;
     }
@@ -330,6 +334,15 @@ public class MainActivity extends AppCompatActivity {
                 }
                 Log.v("Logout", "item pressed: " + item.getItemId() + "\n" + "should be:    " + R.id.sign_out_item);
                 break;
+
+            case R.id.groups:
+                //startActivity(new Intent(MainActivity.this, GroupsList.class));
+                if (firebaseUser != null) {
+                    startActivity(new Intent(MainActivity.this, SlidingGroupsActivity.class));
+                    break;
+                } else {
+                    Toast.makeText(this, "You need to log in", Toast.LENGTH_SHORT).show();
+                }
 
         }
         return super.onOptionsItemSelected(item);

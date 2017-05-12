@@ -48,6 +48,15 @@
         <service
             android:name="kg.kloop.android.redbutton.LocationService"
             android:exported="false"/>
+            android:label="@string/title_activity_maps" />
+        <activity android:name="kg.kloop.android.redbutton.groups.GroupsList" />
+        <activity android:name="kg.kloop.android.redbutton.groups.Approve"
+                />
+        <activity
+            android:name="kg.kloop.android.redbutton.groups.SlidingGroupsActivity"
+            android:label="@string/title_activity_sliding_groups"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden"></activity>
     </application>
 
 </manifest>

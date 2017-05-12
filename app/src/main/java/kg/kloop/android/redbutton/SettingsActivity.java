@@ -17,6 +17,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class SettingsActivity extends AppCompatActivity {
 
 
@@ -73,12 +76,14 @@ public class SettingsActivity extends AppCompatActivity {
                 } else Toast.makeText(getApplicationContext(), "Save failed. Try again", Toast.LENGTH_LONG).show();
 
                 if(firebaseUser != null){
-                    databaseReference.child(userID).setValue(getUser());
+                    Map<String, Object> childUpdates = new HashMap<>();
+                    childUpdates.put("/firstNumber", firstNumber);
+                    childUpdates.put("/secondNumber", secondNumber);
+                    childUpdates.put("/message", message);
+                    databaseReference.child(userID).updateChildren(childUpdates);
                 } else {
                     databaseReference.push().setValue(getUser());
                 }
-
-
             }
         });
 
