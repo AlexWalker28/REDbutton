@@ -67,6 +67,17 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+        startActivity(new Intent(MainActivity.this, IntroActivity.class));
+
+        Boolean isFirstRun = getSharedPreferences("PREFERENCE", MODE_PRIVATE)
+                .getBoolean("isFirstRun", true);
+        if (isFirstRun) {
+            startActivity(new Intent(MainActivity.this, IntroActivity.class));
+        }
+        getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putBoolean("isFirstRun", false).apply();
+
+
         init();
         if (isLocationEnabled()) {
             if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -133,9 +144,9 @@ public class MainActivity extends AppCompatActivity {
                     textView1.setText(userName + "\n" + userEmail);
                     Log.v("User", "userData: " + userID + "\n" + userName + "\n" + userEmail);
                 } else {
-
+/*
                     Intent intent = new Intent(getApplicationContext(), IntroActivity.class);
-                    startActivity(intent);
+                    startActivity(intent);*/
                 }
 
             }

@@ -22,4 +22,14 @@
     <string name="message">Сообщение</string>
     <string name="save">Сохранить</string>
     <string name="manual">Инструкция</string>
+    <string name="registration">Зарегистрироваться или войти</string>
+    <string name="helloText">Приветствуем вас в приложении</string>
+    <string name="helloDiscription">Вам необходимо зарегестрироваться чтобы всё работало правильно</string>
+    <string name="settingsDiscription">Теперь давайте добавим ваши номера и сообщение</string>
+    <string name="settingsText">Отлично!</string>
+    <string name="permissionsText">Супер!</string>
+    <string name="permissionsDiscription">Давайте включим разрешения</string>
+    <string name="settingsButton">Добавить!</string>
+    <string name="fourthSlideText">Великолепно!</string>
+    <string name="fourthSlideDiscription">Можно начинать.</string>
 </resources>

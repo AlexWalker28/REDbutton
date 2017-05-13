@@ -1,22 +1,30 @@
 package kg.kloop.android.redbutton;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.Toast;
 
+import com.example.alexwalker.sendsmsapp.R;
 import com.github.paolorotolo.appintro.ISlidePolicy;
 
 /**
  * Created by ThirtySeven on 13.05.2017.
  */
 
-public class SampleSlide extends Fragment{
+public class SampleSlide extends Fragment
+        //implements View.OnClickListener
+        {
 
     private static final String ARG_LAYOUT_RES_ID = "layoutResId";
     private int layoutResId;
+    Button goToSettingsButton;
+    Button regButton;
 
     public static SampleSlide newInstance(int layoutResId) {
         SampleSlide sampleSlide = new SampleSlide();
@@ -28,6 +36,7 @@ public class SampleSlide extends Fragment{
         return sampleSlide;
     }
 
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,7 +44,10 @@ public class SampleSlide extends Fragment{
         if (getArguments() != null && getArguments().containsKey(ARG_LAYOUT_RES_ID)) {
             layoutResId = getArguments().getInt(ARG_LAYOUT_RES_ID);
         }
+
     }
+
+
 
     @Nullable
     @Override
@@ -43,4 +55,16 @@ public class SampleSlide extends Fragment{
                              @Nullable Bundle savedInstanceState) {
         return inflater.inflate(layoutResId, container, false);
     }
+
+//    @Override
+//    public void onClick(View v) {
+//        switch (v.getId()){
+//            case R.id.regButton:
+//                Toast.makeText(getContext(), "rtrt", Toast.LENGTH_SHORT).show();
+//                break;
+//            case R.id.goToSettingsButton:
+//
+//                break;
+//        }
+//    }
 }
