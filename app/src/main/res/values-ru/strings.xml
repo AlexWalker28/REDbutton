@@ -24,11 +24,15 @@
     <string name="manual">Инструкция</string>
     <string name="registration">Зарегистрироваться или войти</string>
     <string name="helloText">Приветствуем вас в приложении</string>
-    <string name="helloDiscription">Вам необходимо зарегестрироваться чтобы всё работало правильно</string>
-    <string name="settingsDiscription">Теперь давайте добавим ваши номера и сообщение</string>
+    <string name="helloDiscription">Для правильной работы приложения, советуем зарегистрироваться
+    или войти, если у вас уже есть аккаунт.</string>
+    <string name="settingsDiscription">Теперь давайте добавим номера близких людей и
+    сообщение, которое они получат с вашими координатами.</string>
     <string name="settingsText">Отлично!</string>
     <string name="permissionsText">Супер!</string>
-    <string name="permissionsDiscription">Давайте включим разрешения</string>
+    <string name="permissionsDiscription">Для того, чтобы не пришлось во время какй-либо черезвычайной
+    ситуации тратить лишнее время, советуем включить разрешения сейчас. Вы увидите запрос, как только
+        перейдёте на следующий слайд.</string>
     <string name="settingsButton">Добавить!</string>
     <string name="fourthSlideText">Великолепно!</string>
     <string name="fourthSlideDiscription">Можно начинать.</string>
