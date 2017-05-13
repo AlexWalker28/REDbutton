@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-        startActivity(new Intent(MainActivity.this, IntroActivity.class));
+        /*startActivity(new Intent(MainActivity.this, IntroActivity.class));*/
 
         Boolean isFirstRun = getSharedPreferences("PREFERENCE", MODE_PRIVATE)
                 .getBoolean("isFirstRun", true);
