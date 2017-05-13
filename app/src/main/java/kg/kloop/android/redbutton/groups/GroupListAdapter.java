@@ -82,7 +82,7 @@ public class GroupListAdapter extends BaseAdapter {
 
                     // если является членом группы
                     if (group.isMember()) {
-                        ((MyGroupsTab) fragment).checkGroupAndUserStatus(group.getGroupName());
+                        ((MyGroupsTab) fragment).goToGroupActivity(group.getGroupName());
                     } else {
                         Toast.makeText(context, "Ваша заявка еще на рассмотрении", Toast.LENGTH_SHORT).show();
                     }

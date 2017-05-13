@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,7 @@ public class RequestsTab extends Fragment {
     private View v;
     private DatabaseReference requestsRef;
     private DatabaseReference groupModeratorsRef;
+    private DatabaseReference groupref;
     private ListView listView;
     RequestsListAdapter adapter;
     ArrayList<Request> requests;
@@ -45,56 +47,6 @@ public class RequestsTab extends Fragment {
 
         init();
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                Request request = (Request) listView.getAdapter().getItem(position);
-
-                if (isModerator) {
-                    createAlertDialogForModerator(request);
-                } else {
-                    createAlertDialogForMember(request);
-                }
-            }
-        });
-
-        requestsRef.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Request request = dataSnapshot.getValue(Request.class);
-
-                if (!isRequestAlreadyApproved(dataSnapshot)) {
-                    requests.add(request);
-                    adapter.notifyDataSetChanged();
-                }
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                if (!isRequestAlreadyApproved(dataSnapshot)) {
-
-                } else {
-                    deleteRequestFromList(dataSnapshot);
-                }
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-                deleteRequestFromList(dataSnapshot);
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
 
         return v;
     }
@@ -104,6 +56,8 @@ public class RequestsTab extends Fragment {
         groupName = ((GroupActivity) v.getContext()).groupName;
         requestsRef = FirebaseDatabase.getInstance().getReference().child(GroupDefaults.groupsBranch).child(groupName).child(GroupDefaults.requestsChild);
         groupModeratorsRef = FirebaseDatabase.getInstance().getReference().child(GroupDefaults.groupsBranch).child(groupName).child(GroupDefaults.moderatorsChild);
+        groupref = FirebaseDatabase.getInstance().getReference().child(GroupDefaults.groupsBranch).child(groupName);
+
         info = (TextView) v.findViewById(R.id.requests_tab_info);
         info.setText("Ожидают подтверждения:");
 
@@ -112,16 +66,37 @@ public class RequestsTab extends Fragment {
         adapter = new RequestsListAdapter(v.getContext(), requests);
         listView.setAdapter(adapter);
 
-
-        groupModeratorsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        groupref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    if (postSnapshot.getKey().equals(userId)) {
-                        isModerator = true;
-                        info.setText("\nВы модератор в этой группе\nОжидают подтверждения:");
-                        break;
+            public void onDataChange(DataSnapshot groupDataSnapshot) {
+                boolean onlyModeratorApprovingRequests = false;
+                boolean isModerator = false;
+
+                for (DataSnapshot postsnapshot : groupDataSnapshot.getChildren()) {
+                    if (postsnapshot.getKey().equals(GroupDefaults.groupsIsOnlyModeratorApprovingRequestField)) {
+                        onlyModeratorApprovingRequests = (Boolean) postsnapshot.getValue();
                     }
+                    if (postsnapshot.getKey().equals(GroupDefaults.moderatorsChild)) {
+                        if (postsnapshot.hasChild(userId)) {
+                            isModerator = true;
+                            info.setText("\nВы модератор в этой группе\nОжидают подтверждения:");
+                            Log.d(TAG, "user is moderator");
+                        }
+                    }
+                }
+
+                if (onlyModeratorApprovingRequests) {
+                    //onlyModerator in this group is able to approve requests, check user status in this group
+                    if (isModerator) {
+                        Log.d(TAG, "Только модератор добавляет пользователей. Данный пользователь модератор, переход на Approve activity");
+                        showRequests();
+                    } else {
+                        info.setText("В этой группе только модератор рассматривает новые запросы");
+                    }
+
+                } else {// moderator and users are able to approve requests
+                    Log.d(TAG, "Новых пользователей одобряют модераторы и пользователи. Переход на GroupActivity");
+                    showRequests();
                 }
             }
 
@@ -130,6 +105,7 @@ public class RequestsTab extends Fragment {
 
             }
         });
+
 
     }
 
@@ -212,6 +188,60 @@ public class RequestsTab extends Fragment {
         });
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    private void showRequests() {
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                Request request = (Request) listView.getAdapter().getItem(position);
+
+                if (isModerator) {
+                    createAlertDialogForModerator(request);
+                } else {
+                    createAlertDialogForMember(request);
+                }
+            }
+        });
+
+        requestsRef.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Request request = dataSnapshot.getValue(Request.class);
+
+                if (!isRequestAlreadyApproved(dataSnapshot)) {
+                    requests.add(request);
+                    adapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                if (!isRequestAlreadyApproved(dataSnapshot)) {
+
+                } else {
+                    deleteRequestFromList(dataSnapshot);
+                }
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                deleteRequestFromList(dataSnapshot);
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
     }
 
 }
