@@ -26,10 +26,8 @@ public class NotificationService extends Service {
     DatabaseReference eventDatabaseReference;
     DatabaseReference groupsDatabaseReference;
     ArrayList<String> groupNamesArrayList;
-    ArrayList<Map<String, Boolean>> groupsArrayList;
     User user;
     GroupRoom groupRoom;
-    Map<String, Boolean> membersHashMap;
     ArrayList<GroupRoom> groupRoomArrayList;
     String currentUser;
     SharedPreferences preferences;
@@ -48,11 +46,8 @@ public class NotificationService extends Service {
         eventDatabaseReference = firebaseDatabase.getReference().child("Events");
         groupsDatabaseReference = firebaseDatabase.getReference().child("Groups");
         groupNamesArrayList = new ArrayList<>();
-        groupsArrayList = new ArrayList<>();
         user = new User();
         groupRoom = new GroupRoom();
-        membersHashMap = new HashMap<>();
-        groupsArrayList = new ArrayList<>();
         groupRoomArrayList = new ArrayList<>();
         preferences = getSharedPreferences(Constants.SHARED_PREF_FILE, MODE_PRIVATE);
 
@@ -62,21 +57,6 @@ public class NotificationService extends Service {
                 groupNamesArrayList.add(dataSnapshot.getKey());
                 groupRoom = dataSnapshot.getValue(GroupRoom.class);
                 groupRoomArrayList.add(groupRoom);
-                membersHashMap = groupRoom.getMembers();
-                groupsArrayList.add(membersHashMap);
-
-
-                /*groupNamesArrayList.add(dataSnapshot.getKey());
-                for(String group : groupNamesArrayList){
-                    membersHashMap.put(group, null);
-                    groupRoom = dataSnapshot.getValue(GroupRoom.class);
-                    Map<String, Boolean> members = groupRoom.getMembers();
-                    for(String key : members.keySet()){
-                        groupsArrayList.add(key);
-                    }
-                }
-*/
-                Log.v("notification", "groups: " + groupNamesArrayList + "\n" + "members: " + groupsArrayList + "\n" + "childrenCount: " + membersHashMap);
 
             }
 
@@ -89,8 +69,6 @@ public class NotificationService extends Service {
                         groupRoomArrayList.set(i, groupRoom);
                     }
                 }
-                membersHashMap = groupRoom.getMembers();
-                groupsArrayList.add(membersHashMap);
             }
 
             @Override
@@ -131,13 +109,6 @@ public class NotificationService extends Service {
                     Log.v("target", "group: " + room.getName() + "\nmembers: " + room.getMembers());
 
                 }
-                /*for (Map member : groupsArrayList){
-                    if(member.containsKey(user.getUserID()) && member.containsKey(currentUser)){
-                        showNotification();
-                        Log.v("containsKey", "contains key: " + true);
-                    }
-                    Log.v("target", "member: " + member);
-                }*/
 
             }
 
