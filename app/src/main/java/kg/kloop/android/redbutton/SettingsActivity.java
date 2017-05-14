@@ -76,6 +76,9 @@ public class SettingsActivity extends AppCompatActivity {
 
                 if(firebaseUser != null){
                     Map<String, Object> childUpdates = new HashMap<>();
+                    childUpdates.put("/userID", userID);
+                    childUpdates.put("/userName", userName);
+                    childUpdates.put("/userEmail", userEmail);
                     childUpdates.put("/firstNumber", firstNumber);
                     childUpdates.put("/secondNumber", secondNumber);
                     childUpdates.put("/message", message);
