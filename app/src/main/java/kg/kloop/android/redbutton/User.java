@@ -11,7 +11,6 @@ class User {
     private String firstNumber;
     private String secondNumber;
     private String message;
-    private Approvement approvement;
 
     public User() {
     }
@@ -35,10 +34,6 @@ class User {
 
     public void setUserEmail(String userEmail) {
         this.userEmail = userEmail;
-    }
-
-    public void setApprovement(Approvement approvement) {
-        this.approvement = approvement;
     }
 
     public void setMessageData(String firstNumber, String secondNumber, String message) {
@@ -70,7 +65,4 @@ class User {
         return message;
     }
 
-    public Approvement getApprovement() {
-        return approvement;
-    }
 }
