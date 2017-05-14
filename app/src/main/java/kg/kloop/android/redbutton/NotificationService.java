@@ -102,17 +102,25 @@ public class NotificationService extends Service {
                     e.printStackTrace();
                 }
                 user = event.getUser();
-                Log.v("user", "eventUser: " + user.getUserID() + "\ncurrentUser: " + currentUser);
-                if(currentUser == user.getUserID()){
-                    showNotification("");
-                }
-                for(GroupRoom room : groupRoomArrayList){
-                    if(room.getMembers().containsKey(user.getUserID()) && room.getMembers().containsKey(currentUser)){
-                        showNotification(room.getName());
-                        Log.v("containsKey", "contains key: " + true);
+                try {
+                    Log.v("user", "eventUser: " + user.getUserID() + "\ncurrentUser: " + currentUser);
+                    if (currentUser == user.getUserID()) {
+                        showNotification("");
                     }
-                    Log.v("target", "group: " + room.getName() + "\nmembers: " + room.getMembers());
+                } catch (Exception e){
+                    e.printStackTrace();
+                }
+                try {
+                    for (GroupRoom room : groupRoomArrayList) {
+                        if (room.getMembers().containsKey(user.getUserID()) && room.getMembers().containsKey(currentUser)) {
+                            showNotification(room.getName());
+                            Log.v("containsKey", "contains key: " + true);
+                        }
+                        Log.v("target", "group: " + room.getName() + "\nmembers: " + room.getMembers());
 
+                    }
+                } catch (Exception e){
+                    e.printStackTrace();
                 }
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
                 time = dateFormat.format(event.getTimeInMillis());
