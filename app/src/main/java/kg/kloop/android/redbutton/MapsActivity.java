@@ -16,7 +16,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -25,6 +27,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private DatabaseReference databaseReference;
     private ArrayList<Event> eventArrayList;
     private LatLng eventLatLng;
+    private String time;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,10 +68,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Event event = dataSnapshot.getValue(Event.class);
                 eventArrayList.add(event);
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+                time = dateFormat.format(event.getTimeInMillis());
                 for(Event singleEvent : eventArrayList){
                     if(singleEvent.getCoordinates() != null) {
                         eventLatLng = new LatLng(singleEvent.getCoordinates().getLat(), singleEvent.getCoordinates().getLng());
-                        mMap.addMarker(new MarkerOptions().position(eventLatLng).title(event.getUser().getMessage()));
+                        mMap.addMarker(new MarkerOptions().position(eventLatLng).title(time));
                     }
                 }
                 if(eventLatLng != null){
