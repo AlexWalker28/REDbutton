@@ -15,8 +15,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import kg.kloop.android.redbutton.groups.GroupRoom;
@@ -27,6 +30,8 @@ public class NotificationService extends Service {
     DatabaseReference groupsDatabaseReference;
     ArrayList<String> groupNamesArrayList;
     User user;
+    Event event;
+    String time;
     GroupRoom groupRoom;
     ArrayList<GroupRoom> groupRoomArrayList;
     String currentUser;
@@ -90,7 +95,7 @@ public class NotificationService extends Service {
         eventDatabaseReference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Event event = dataSnapshot.getValue(Event.class);
+                event = dataSnapshot.getValue(Event.class);
                 try {
                     currentUser = preferences.getString(Constants.CURRENT_USER_ID, "");
                 } catch (Exception e){
@@ -109,7 +114,8 @@ public class NotificationService extends Service {
                     Log.v("target", "group: " + room.getName() + "\nmembers: " + room.getMembers());
 
                 }
-
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+                time = dateFormat.format(event.getTimeInMillis());
             }
 
             @Override
@@ -140,7 +146,7 @@ public class NotificationService extends Service {
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(getApplicationContext())
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(user.getUserName()+ " from " + name + " pressed Red Button")
-                .setContentText("Something happened");
+                .setContentText(time);
         int notificationID = 001;
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         notificationManager.notify(notificationID, notificationBuilder.build());

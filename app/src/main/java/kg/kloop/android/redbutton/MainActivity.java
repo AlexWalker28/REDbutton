@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
     private LocationManager locationManager;
     private User user;
     private Event event;
+    private long timeInMillis;
     private Button button;
     private ProgressBar progressBar;
     private TextView textView;
@@ -90,10 +91,11 @@ public class MainActivity extends AppCompatActivity {
                     if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                         requestGPSPermission();
                     }else{
+                        timeInMillis = System.currentTimeMillis();
                         user = new User(user.getUserID(), user.getUserName(), user.getUserEmail(),
                                 user.getFirstNumber(), user.getSecondNumber(), user.getMessage());
                         coordinates = event.getCoordinates();
-                        event = new Event(coordinates, user);
+                        event = new Event(coordinates, user, timeInMillis);
                         String childUniqueKey = databaseReference.push().getKey();
                         databaseReference.child(childUniqueKey).setValue(event);
                         if(event.getCoordinates() == null){

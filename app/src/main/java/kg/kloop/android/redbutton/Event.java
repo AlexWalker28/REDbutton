@@ -8,13 +8,15 @@ package kg.kloop.android.redbutton;
 public class Event {
     private User user;
     private CustomLatLng coordinates;
+    private long timeInMillis;
 
     public Event() {
     }
 
-    public Event(CustomLatLng coordinates, User user) {
+    public Event(CustomLatLng coordinates, User user, long timestamp) {
         this.coordinates = coordinates;
         this.user = user;
+        this.timeInMillis = timestamp;
     }
 
     public User getUser() {
@@ -31,5 +33,13 @@ public class Event {
 
     public void setCoordinates(CustomLatLng coordinates) {
         this.coordinates = coordinates;
+    }
+
+    public long getTimeInMillis() {
+        return timeInMillis;
+    }
+
+    public void setTimeInMillis(long timeInMillis) {
+        this.timeInMillis = timeInMillis;
     }
 }
