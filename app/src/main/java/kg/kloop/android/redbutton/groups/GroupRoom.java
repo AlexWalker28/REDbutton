@@ -63,6 +63,10 @@ public class GroupRoom {
         return this.name;
     }
 
+    public Map<String, Boolean> getMembers() {
+        return members;
+    }
+
     public void setName(String name){
         this.name = name;
     }

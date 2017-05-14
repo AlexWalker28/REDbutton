@@ -64,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 10;
     private EventStateReceiver eventStateReceiver;
     private CustomLatLng coordinates;
+    private SharedPreferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,6 +122,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        Intent notificationServiceIntent = new Intent(MainActivity.this, NotificationService.class);
+        startService(notificationServiceIntent);
+
     }
 
     private FirebaseAuth.AuthStateListener getAuthStateListener() {
@@ -135,6 +139,7 @@ public class MainActivity extends AppCompatActivity {
                     user.setUserID(userID);
                     user.setUserName(userName);
                     user.setUserEmail(userEmail);
+                    saveInPref(userID);
                     textView1.setText(userName + "\n" + userEmail);
                     Log.v("User", "userData: " + userID + "\n" + userName + "\n" + userEmail);
                 } else textView1.setText("You need to log in \nand configure your settings");
@@ -142,6 +147,12 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         return authStateListener;
+    }
+
+    private void saveInPref(String string){
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(Constants.CURRENT_USER_ID, string);
+        editor.apply();
     }
 
     //=======================
@@ -405,6 +416,7 @@ public class MainActivity extends AppCompatActivity {
         databaseReference = firebaseDatabase.getReference().child("Events");
         auth = FirebaseAuth.getInstance();
         locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        preferences = getSharedPreferences(Constants.SHARED_PREF_FILE, MODE_PRIVATE);
         button = (Button)findViewById(R.id.button2);
         progressBar = (ProgressBar)findViewById(R.id.progressBar);
         textView = (TextView)findViewById(R.id.textView);

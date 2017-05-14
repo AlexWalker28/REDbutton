@@ -124,7 +124,7 @@ public class LocationService extends Service {
                     .setSmallIcon(R.mipmap.ic_launcher)
                     .setContentTitle("Coordinates")
                     .setContentText("lat: " + event.getCoordinates().getLat() + "\n" + "lng: " + event.getCoordinates().getLng());
-            int notificationID = 001;
+            int notificationID = 002;
             NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
             notificationManager.notify(notificationID, notificationBuilder.build());
         }
