@@ -82,7 +82,15 @@ public class NotificationService extends Service {
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
+                groupNamesArrayList.add(dataSnapshot.getKey());
+                groupRoom = dataSnapshot.getValue(GroupRoom.class);
+                for(int i = 0; i < groupRoomArrayList.size(); i ++){
+                    if (groupRoomArrayList.get(i).getName() == groupRoom.getName()){
+                        groupRoomArrayList.set(i, groupRoom);
+                    }
+                }
+                membersHashMap = groupRoom.getMembers();
+                groupsArrayList.add(membersHashMap);
             }
 
             @Override
@@ -154,7 +162,7 @@ public class NotificationService extends Service {
             }
         });
 
-        return super.onStartCommand(intent, flags, startId);
+        return START_STICKY;
     }
 
     private void showNotification(String name) {
