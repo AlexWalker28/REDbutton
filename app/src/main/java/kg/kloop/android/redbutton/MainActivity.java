@@ -71,7 +71,18 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-		//test
+
+
+        /*startActivity(new Intent(MainActivity.this, IntroActivity.class));*/
+
+        Boolean isFirstRun = getSharedPreferences("PREFERENCE", MODE_PRIVATE)
+                .getBoolean("isFirstRun", true);
+        if (isFirstRun) {
+            startActivity(new Intent(MainActivity.this, IntroActivity.class));
+        }
+        getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putBoolean("isFirstRun", false).apply();
+
+
         init();
         if (isLocationEnabled()) {
             if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -215,7 +226,7 @@ public class MainActivity extends AppCompatActivity {
                         startActivity(myIntent);
                     }
                 })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface paramDialogInterface, int paramInt) {
                     }
@@ -276,9 +287,9 @@ public class MainActivity extends AppCompatActivity {
                     try {
                         sendSMS(firstPhoneNumber, message);
                         sendSMS(secondPhoneNumber, message);
-                        Toast.makeText(getApplicationContext(), "Sms sent", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), R.string.sms_sent, Toast.LENGTH_LONG).show();
                     } catch (Exception e) {
-                        Toast.makeText(getApplicationContext(), "Sms fail. Please try again", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), R.string.sms_fail, Toast.LENGTH_LONG).show();
                         Log.v("SMS", "sms failed: " + e);
                         e.printStackTrace();
                     }
@@ -342,8 +353,8 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.sign_out_item:
                 auth.signOut();
-                if(firebaseUser == null){
-                    Toast.makeText(MainActivity.this, "Your are logged out!", Toast.LENGTH_SHORT).show();
+                if (firebaseUser == null) {
+                    Toast.makeText(MainActivity.this, R.string.logout, Toast.LENGTH_SHORT).show();
                 }
                 Log.v("Logout", "item pressed: " + item.getItemId() + "\n" + "should be:    " + R.id.sign_out_item);
                 break;

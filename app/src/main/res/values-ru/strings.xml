@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Help Me Button</string>
+    <string name="title_activity_maps">Карта</string>
+    <string name="login_state_text">Чтобы в полной мере воспользоваться приложением, вам необходимо войти </string>
+    <string name="searching_gps_text">Поиск, используя геоданные...</string>
+    <string name="sms_sent">Сообщение отправлено</string>
+    <string name="sms_fail">Ошибка. Повторите попытку позже</string>
+    <string name="check_gps_false">Ваши настройки геолокации находятся в выключенном состоянии.\nВключите их, чтобы воспользоваться этим приложением</string>
+    <string name="enable_location">Включте геолокацию</string>
+    <string name="location_settings">Перейти к настройкам</string>
+    <string name="cancel">Отменить</string>
+    <string name="lat">Широта: </string>
+    <string name="lng">Долгота: </string>
+    <string name="login">Вы вошли в аккаунт!</string>
+    <string name="logout">Вы вышли из аккаунта!</string>
+    <string name="sign_in">Войти</string>
+    <string name="sign_out">Выйти</string>
+    <string name="settings">Настройки</string>
+    <string name="first_phone_num">Первый номер</string>
+    <string name="second_phone_num">Второй номер</string>
+    <string name="message">Сообщение</string>
+    <string name="save">Сохранить</string>
+    <string name="manual">Инструкция</string>
+    <string name="registration">Зарегистрироваться или войти</string>
+    <string name="helloText">Приветствуем вас в приложении</string>
+    <string name="helloDiscription">Для правильной работы приложения, советуем зарегистрироваться
+    или войти, если у вас уже есть аккаунт.</string>
+    <string name="settingsDiscription">Теперь давайте добавим номера близких людей и
+    сообщение, которое они получат с вашими координатами.</string>
+    <string name="settingsText">Отлично!</string>
+    <string name="permissionsText">Супер!</string>
+    <string name="permissionsDiscription">Для того, чтобы не пришлось во время какй-либо черезвычайной
+    ситуации тратить лишнее время, советуем включить разрешения сейчас. Вы увидите запрос, как только
+        перейдёте на следующий слайд.</string>
+    <string name="settingsButton">Добавить!</string>
+    <string name="fourthSlideText">Великолепно!</string>
+    <string name="fourthSlideDiscription">Можно начинать.</string>
+</resources>
