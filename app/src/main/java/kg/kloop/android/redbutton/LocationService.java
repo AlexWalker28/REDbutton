@@ -45,14 +45,15 @@ public class LocationService extends Service {
         event = new Event();
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference("Events");
-        childKey = intent.getStringExtra(Constants.DATABASE_CHILD_ID);
+        if(intent.hasExtra(Constants.DATABASE_CHILD_ID)){
+            childKey = intent.getStringExtra(Constants.DATABASE_CHILD_ID);
+        }
         firstPhoneNumber = intent.getStringExtra(Constants.FIRST_NUMBER);
         secondPhoneNumber = intent.getStringExtra(Constants.SECOND_NUMBER);
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         setLocationListener();
         requestLocationUpdates();
         sendDataBack();
-        stopSelf();
 
         return super.onStartCommand(intent, flags, startId);
     }
@@ -85,6 +86,7 @@ public class LocationService extends Service {
                 databaseReference.child(childKey).child("coordinates").setValue(coordinates);
                 sendSMS(firstPhoneNumber);
                 sendSMS(secondPhoneNumber);
+                stopSelf();
                 sendNotification();
             }
 
