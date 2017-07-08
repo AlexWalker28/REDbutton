@@ -2,7 +2,10 @@ package kg.kloop.android.redbutton;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -22,6 +25,8 @@ import java.util.Map;
 
 public class SettingsActivity extends AppCompatActivity {
 
+    static final int REQUEST_SELECT_FIRST_PHONE_NUMBER = 1;
+    static final int REQUEST_SELECT_SECOND_PHONE_NUMBER = 2;
 
     private EditText firstNumberEditText;
     private EditText secondNumberEditText;
@@ -40,6 +45,9 @@ public class SettingsActivity extends AppCompatActivity {
     private String userName;
     private String userEmail;
     private User user;
+    private String number;
+    private Button firstNumberButton;
+    private Button secondNumberButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +97,55 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
+        firstNumberButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectContact(REQUEST_SELECT_FIRST_PHONE_NUMBER);
+            }
+        });
+        secondNumberButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectContact(REQUEST_SELECT_SECOND_PHONE_NUMBER);
+            }
+        });
+
+
+
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            // Get the URI and query the content provider for the phone number
+            Uri contactUri = data.getData();
+            String[] projection = new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER};
+            Cursor cursor = getContentResolver().query(contactUri, projection,
+                    null, null, null);
+            // If the cursor returned is valid, get the phone number
+            if (cursor != null && cursor.moveToFirst()) {
+                int numberIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
+                String number = cursor.getString(numberIndex);
+                // Do something with the phone number
+                switch (requestCode){
+                    case REQUEST_SELECT_FIRST_PHONE_NUMBER:
+                        firstNumberEditText.setText(number);
+                        break;
+                    case REQUEST_SELECT_SECOND_PHONE_NUMBER:
+                        secondNumberEditText.setText(number);
+                        break;
+                }
+            }
+
+        }
+    }
+
+    public void selectContact(int requestCode) {
+        // Start an activity for the user to pick a phone number from contacts
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(intent, requestCode);
+        }
     }
 
     private void saveDataInPref(String firstNumber, String secondNumber, String message) {
@@ -125,6 +182,7 @@ public class SettingsActivity extends AppCompatActivity {
         Log.v("User", "userDataFromSettingActivity: " + userID + "\n" + userName + "\n" + userEmail);
         return user;
     }
+
     @Override
     protected void onStop() {
         super.onStop();
@@ -136,6 +194,8 @@ public class SettingsActivity extends AppCompatActivity {
     private void init() {
         firstNumberEditText = (EditText)findViewById(R.id.firstNumberEditText);
         secondNumberEditText = (EditText)findViewById(R.id.secondNumberEditText);
+        firstNumberButton = (Button)findViewById(R.id.firstNumberButton);
+        secondNumberButton = (Button)findViewById(R.id.secondNumberButton);
         messageEditText = (EditText)findViewById(R.id.messageEditText);
         saveSettingsButton = (Button)findViewById(R.id.saveSettingsButton);
         preferences = getSharedPreferences(Constants.SHARED_PREF_FILE, MODE_PRIVATE);

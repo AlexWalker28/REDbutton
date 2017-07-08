@@ -51,30 +51,60 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.469">
+        app:layout_constraintVertical_bias="0.455">
 
         <Space
             android:layout_width="match_parent"
             android:layout_height="8dp" />
 
-        <EditText
-            android:id="@+id/firstNumberEditText"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:ems="10"
-            android:hint="First phone number"
-            android:inputType="phone" />
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
 
-        <EditText
-            android:id="@+id/secondNumberEditText"
+            <EditText
+                android:id="@+id/firstNumberEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:hint="First phone number"
+                android:inputType="phone" />
+
+            <Button
+                android:id="@+id/firstNumberButton"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:text="Choose contact" />
+
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:ems="10"
-            android:hint="Second phone number"
-            android:inputType="phone"
-            app:layout_constraintTop_toBottomOf="@+id/firstNumberEditText" />
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/secondNumberEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:hint="Second phone number"
+                android:inputType="phone"
+                app:layout_constraintTop_toBottomOf="@+id/firstNumberEditText" />
+
+            <Button
+                android:id="@+id/secondNumberButton"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:text="Choose contact" />
+        </LinearLayout>
 
         <EditText
             android:id="@+id/messageEditText"
