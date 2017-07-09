@@ -155,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
                     user.setUserEmail(userEmail);
                     user.setPhoneNumber(userPhoneNumber);
                     saveInPref(userID);
-                    if(userName != null){
+                    if(userPhoneNumber == null){
                         textView1.setText(userName + "\n" + userEmail);
                     } else {
                         textView1.setText(userPhoneNumber);

@@ -44,8 +44,8 @@ public class SettingsActivity extends AppCompatActivity {
     private String userID;
     private String userName;
     private String userEmail;
+    private String userPhoneNumber;
     private User user;
-    private String number;
     private Button firstNumberButton;
     private Button secondNumberButton;
 
@@ -65,6 +65,7 @@ public class SettingsActivity extends AppCompatActivity {
                     userID = firebaseUser.getUid();
                     userName = firebaseUser.getDisplayName();
                     userEmail = firebaseUser.getEmail();
+                    userPhoneNumber = firebaseUser.getPhoneNumber();
                 }
             }
         };
@@ -90,6 +91,7 @@ public class SettingsActivity extends AppCompatActivity {
                     childUpdates.put("/firstNumber", firstNumber);
                     childUpdates.put("/secondNumber", secondNumber);
                     childUpdates.put("/message", message);
+                    childUpdates.put("/userPhoneNumber", userPhoneNumber);
                     databaseReference.child(userID).updateChildren(childUpdates);
                 } else {
                     databaseReference.push().setValue(getUser());
