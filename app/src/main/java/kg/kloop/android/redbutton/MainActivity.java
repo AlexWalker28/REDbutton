@@ -149,11 +149,17 @@ public class MainActivity extends AppCompatActivity {
                     String userID = firebaseUser.getUid();
                     String userName = firebaseUser.getDisplayName();
                     String userEmail = firebaseUser.getEmail();
+                    String userPhoneNumber = firebaseUser.getPhoneNumber();
                     user.setUserID(userID);
                     user.setUserName(userName);
                     user.setUserEmail(userEmail);
+                    user.setPhoneNumber(userPhoneNumber);
                     saveInPref(userID);
-                    textView1.setText(userName + "\n" + userEmail);
+                    if(userName != null){
+                        textView1.setText(userName + "\n" + userEmail);
+                    } else {
+                        textView1.setText(userPhoneNumber);
+                    }
                     Log.v("User", "userData: " + userID + "\n" + userName + "\n" + userEmail);
                 } else textView1.setText("You need to log in \nand configure your settings");
 
@@ -340,7 +346,8 @@ public class MainActivity extends AppCompatActivity {
                                     .setIsSmartLockEnabled(false)
                                     .setProviders(Arrays.asList(
                                             new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
-                                            new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()))
+                                            new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
+                                            new AuthUI.IdpConfig.Builder(AuthUI.PHONE_VERIFICATION_PROVIDER).build()))
                                     .build(),
                             RC_SIGN_IN); //RC_SIGN_IN - request code
                     //User is signed in

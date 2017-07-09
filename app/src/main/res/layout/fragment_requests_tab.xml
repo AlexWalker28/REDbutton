@@ -20,7 +20,7 @@
         android:layout_height="5dp"
         android:id="@+id/requests_tab_view2"
         android:layout_below="@id/requests_tab_info"
-        android:background="@color/tw__composer_red"/>
+       />
 
 
     <ListView
