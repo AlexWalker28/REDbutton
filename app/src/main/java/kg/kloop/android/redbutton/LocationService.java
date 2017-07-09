@@ -45,12 +45,14 @@ public class LocationService extends Service {
         event = new Event();
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference("Events");
-        if(intent.hasExtra(Constants.DATABASE_CHILD_ID)){
-            childKey = intent.getStringExtra(Constants.DATABASE_CHILD_ID);
-        }
-        firstPhoneNumber = intent.getStringExtra(Constants.FIRST_NUMBER);
-        secondPhoneNumber = intent.getStringExtra(Constants.SECOND_NUMBER);
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        try {
+            childKey = intent.getStringExtra(Constants.DATABASE_CHILD_ID);
+            firstPhoneNumber = intent.getStringExtra(Constants.FIRST_NUMBER);
+            secondPhoneNumber = intent.getStringExtra(Constants.SECOND_NUMBER);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
         setLocationListener();
         requestLocationUpdates();
         sendDataBack();
@@ -83,11 +85,15 @@ public class LocationService extends Service {
                 if(event.getCoordinates() != null) {
                     Log.v("service", "Location: " + event.getCoordinates().getLat() + " " + event.getCoordinates().getLng());
                 }
-                databaseReference.child(childKey).child("coordinates").setValue(coordinates);
-                sendSMS(firstPhoneNumber);
-                sendSMS(secondPhoneNumber);
-                stopSelf();
-                sendNotification();
+                if(childKey != null){
+                    databaseReference.child(childKey).child("coordinates").setValue(coordinates);
+                    sendSMS(firstPhoneNumber);
+                    sendSMS(secondPhoneNumber);
+                    sendNotification();
+                } else {
+                    stopSelf();
+                }
+                locationManager.removeUpdates(locationListener);
             }
 
             @Override
