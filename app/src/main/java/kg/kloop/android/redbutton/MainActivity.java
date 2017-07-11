@@ -8,11 +8,13 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationListener;
+
+import com.google.android.gms.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.content.WakefulBroadcastReceiver;
@@ -30,6 +32,11 @@ import android.widget.Toast;
 
 import com.example.alexwalker.sendsmsapp.R;
 import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -39,7 +46,8 @@ import java.util.Arrays;
 
 import kg.kloop.android.redbutton.groups.SlidingGroupsActivity;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private Button sendButton;
     private String firstPhoneNumber;
@@ -58,14 +66,20 @@ public class MainActivity extends AppCompatActivity {
     private User user;
     private Event event;
     private long timeInMillis;
-    private Button button;
+    private Button mapButton;
     private ProgressBar progressBar;
-    private TextView textView;
-    private TextView textView1;
+    private TextView latLngTextView;
+    private TextView userInfoTextView;
     private static final int RC_SIGN_IN = 10;
     private EventStateReceiver eventStateReceiver;
     private CustomLatLng coordinates;
     private SharedPreferences preferences;
+    private GoogleApiClient mGoogleApiClient;
+    private LocationCallback mLocationCallback;
+
+    protected Location mCurrentLocation;
+    protected String mAddressOutput;
+    private String childUniqueKey;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,9 +98,11 @@ public class MainActivity extends AppCompatActivity {
 
 
         init();
+        buildGoogleApiClient();
         if (isLocationEnabled()) {
             if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 5, locationListenerGPS);
+                //locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 5, this);
+                requestLocationUpdates();
             }
         } else showAlertToEnableGPS();
         auth = FirebaseAuth.getInstance();
@@ -107,15 +123,13 @@ public class MainActivity extends AppCompatActivity {
                                 user.getFirstNumber(), user.getSecondNumber(), user.getMessage());
                         coordinates = event.getCoordinates();
                         event = new Event(coordinates, user, timeInMillis);
-                        String childUniqueKey = databaseReference.push().getKey();
+                        childUniqueKey = databaseReference.push().getKey();
                         databaseReference.child(childUniqueKey).setValue(event);
                         if(event.getCoordinates() == null){
-                            initReceiver();
-                            Intent serviceIntent = new Intent(MainActivity.this, LocationService.class);
-                            serviceIntent.putExtra(Constants.DATABASE_CHILD_ID, childUniqueKey);
-                            serviceIntent.putExtra(Constants.FIRST_NUMBER, firstPhoneNumber);
-                            serviceIntent.putExtra(Constants.SECOND_NUMBER, secondPhoneNumber);
-                            startService(serviceIntent);
+                            if (mGoogleApiClient.isConnected() && mCurrentLocation != null) {
+                                initReceiver();
+                                startLocationService();
+                            }
                         }
 
                     }
@@ -127,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        button.setOnClickListener(new View.OnClickListener() {
+        mapButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, MapsActivity.class);
@@ -135,6 +149,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //=====================
+        //Notification service
+        //=====================
         Intent notificationServiceIntent = new Intent(MainActivity.this, NotificationService.class);
         startService(notificationServiceIntent);
 
@@ -156,12 +173,12 @@ public class MainActivity extends AppCompatActivity {
                     user.setPhoneNumber(userPhoneNumber);
                     saveInPref(userID);
                     if(userPhoneNumber == null){
-                        textView1.setText(userName + "\n" + userEmail);
+                        userInfoTextView.setText(userName + "\n" + userEmail);
                     } else {
-                        textView1.setText(userPhoneNumber);
+                        userInfoTextView.setText(userPhoneNumber);
                     }
                     Log.v("User", "userData: " + userID + "\n" + userName + "\n" + userEmail);
-                } else textView1.setText("You need to log in \nand configure your settings");
+                } else userInfoTextView.setText("You need to log in \nand configure your settings");
 
             }
         };
@@ -172,6 +189,119 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(Constants.CURRENT_USER_ID, string);
         editor.apply();
+    }
+    //=====================
+    //Location
+    //=====================
+    private boolean isLocationEnabled() {
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
+                locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+    }
+
+    private void showAlertToEnableGPS() {
+        final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        dialog.setTitle("Enable Location")
+                .setMessage("Your Locations Settings is set to 'Off'.\nPlease Enable Location to " +
+                        "use this app")
+                .setPositiveButton("Location Settings", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                        Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        startActivity(myIntent);
+                    }
+                })
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                    }
+                });
+        dialog.show();
+    }
+
+    protected synchronized void buildGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(LocationServices.API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
+    }
+
+
+    private void startLocationService() {
+        Intent serviceIntent = new Intent(MainActivity.this, LocationService.class);
+        serviceIntent.putExtra(Constants.DATABASE_CHILD_ID, childUniqueKey);
+        serviceIntent.putExtra(Constants.FIRST_NUMBER, firstPhoneNumber);
+        serviceIntent.putExtra(Constants.SECOND_NUMBER, secondPhoneNumber);
+        startService(serviceIntent);
+    }
+
+
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestGPSPermission();
+        }else {
+            LocationRequest locationRequest = new LocationRequest();
+            locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                    .setInterval(0);
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
+
+    @Override
+    public void onLocationChanged(Location location) {
+
+    }
+
+
+    /*@Override
+    public void onLocationChanged(Location location) {
+        if(location.getLatitude() != 0 && location.getLongitude() != 0){
+            CustomLatLng latLng = new CustomLatLng(location.getLatitude(), location.getLongitude());
+            event.setCoordinates(latLng);
+        }
+        if(event.getCoordinates().getLat() == 0 && event.getCoordinates().getLng() == 0){
+            progressBar.setVisibility(View.VISIBLE);
+        } else progressBar.setVisibility(View.GONE);
+        latLngTextView.setText("lat: " + event.getCoordinates().getLat() + "\n" + "lng: " + event.getCoordinates().getLng());
+    }*/
+
+
+    //=================================
+    //Broadcast receiver for service
+    //=================================
+    private void initReceiver() {
+        eventStateReceiver = new EventStateReceiver();
+        IntentFilter intentFilter = new IntentFilter(Constants.BROADCAST_ACTION);
+        LocalBroadcastManager.getInstance(this).registerReceiver(eventStateReceiver, intentFilter);
+    }
+
+
+    private class EventStateReceiver extends WakefulBroadcastReceiver{
+        private EventStateReceiver(){
+
+        }
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            try{
+                CustomLatLng customLatLng = new CustomLatLng(intent.getDoubleExtra(Constants.EVENT_LAT, 0),
+                        intent.getDoubleExtra(Constants.EVENT_LNG, 0));
+                event.setCoordinates(customLatLng);
+            } catch (Exception e){
+                e.printStackTrace();
+            }
+        }
     }
 
     //=======================
@@ -212,63 +342,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    //=====================
-    //Location
-    //=====================
-    private boolean isLocationEnabled() {
-        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
-                locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-    }
-
-    private void showAlertToEnableGPS() {
-        final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-        dialog.setTitle("Enable Location")
-                .setMessage("Your Locations Settings is set to 'Off'.\nPlease Enable Location to " +
-                        "use this app")
-                .setPositiveButton("Location Settings", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                        Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                        startActivity(myIntent);
-                    }
-                })
-                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                    }
-                });
-        dialog.show();
-    }
-
-    private LocationListener locationListenerGPS = new LocationListener() {
-        public void onLocationChanged(Location location) {
-            if(location.getLatitude() != 0 && location.getLongitude() != 0){
-                CustomLatLng latLng = new CustomLatLng(location.getLatitude(), location.getLongitude());
-                event.setCoordinates(latLng);
-            }
-            if(event.getCoordinates().getLat() == 0 && event.getCoordinates().getLng() == 0){
-                progressBar.setVisibility(View.VISIBLE);
-            } else progressBar.setVisibility(View.GONE);
-            textView.setText("lat: " + event.getCoordinates().getLat() + "\n" + "lng: " + event.getCoordinates().getLng());
-
-        }
-
-        @Override
-        public void onStatusChanged(String s, int i, Bundle bundle) {
-
-        }
-
-        @Override
-        public void onProviderEnabled(String s) {
-
-        }
-
-        @Override
-        public void onProviderDisabled(String s) {
-
-        }
-    };
-
 
 
     //================================
@@ -282,6 +355,11 @@ public class MainActivity extends AppCompatActivity {
     }
     private boolean isSMSPermissionGranted() {
         if(ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED){
+            return true;
+        }else return false;
+    }
+    private boolean isGPSPermissionGranted(){
+        if(ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
             return true;
         }else return false;
     }
@@ -303,7 +381,8 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case 2: //gps permission
                 if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 5, locationListenerGPS);
+                    //locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 5, this);
+
                 }
                 break;
         }
@@ -311,7 +390,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     //============================
-    //menu button in action bar
+    //menu mapButton in action bar
     //============================
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -389,35 +468,21 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    //=================================
-    //Broadcast receiver for service
-    //=================================
-    private void initReceiver() {
-        eventStateReceiver = new EventStateReceiver();
-        IntentFilter intentFilter = new IntentFilter(Constants.BROADCAST_ACTION);
-        LocalBroadcastManager.getInstance(this).registerReceiver(eventStateReceiver, intentFilter);
-    }
 
-    private class EventStateReceiver extends WakefulBroadcastReceiver{
-        private EventStateReceiver(){
 
-        }
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            try{
-                CustomLatLng customLatLng = new CustomLatLng(intent.getDoubleExtra(Constants.EVENT_LAT, 0),
-                        intent.getDoubleExtra(Constants.EVENT_LNG, 0));
-                event.setCoordinates(customLatLng);
-            } catch (Exception e){
-                e.printStackTrace();
-            }
-        }
+    @Override
+    protected void onStart() {
+        mGoogleApiClient.connect();
+        super.onStart();
     }
 
     @Override
     protected void onStop() {
         if (authStateListener != null) {
             auth.removeAuthStateListener(authStateListener);
+        }
+        if (mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();
         }
         super.onStop();
     }
@@ -437,9 +502,9 @@ public class MainActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
         preferences = getSharedPreferences(Constants.SHARED_PREF_FILE, MODE_PRIVATE);
-        button = (Button)findViewById(R.id.button2);
+        mapButton = (Button)findViewById(R.id.button2);
         progressBar = (ProgressBar)findViewById(R.id.progressBar);
-        textView = (TextView)findViewById(R.id.textView);
-        textView1 = (TextView)findViewById(R.id.textView2);
+        latLngTextView = (TextView)findViewById(R.id.textView);
+        userInfoTextView = (TextView)findViewById(R.id.textView2);
     }
 }
