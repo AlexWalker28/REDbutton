@@ -175,9 +175,9 @@ public class MainActivity extends AppCompatActivity implements
                     user.setUserEmail(userEmail);
                     user.setPhoneNumber(userPhoneNumber);
                     saveInPref(userID);
-                    if (userPhoneNumber == null) {
+                    if (userName != null && userEmail != null) {
                         userInfoTextView.setText(userName + "\n" + userEmail);
-                    } else {
+                    } else if (userPhoneNumber != null) {
                         userInfoTextView.setText(userPhoneNumber);
                     }
                     Log.v("User", "userData: " + userID + "\n" + userName + "\n" + userEmail);
@@ -297,7 +297,7 @@ public class MainActivity extends AppCompatActivity implements
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             locationClient.requestLocationUpdates(locationRequest, mLocationCallback, null);
         } else {
-            Toast.makeText(getApplicationContext(), "Need permission", Toast.LENGTH_SHORT).show();
+            requestGPSPermission();
             return;
         }
     }
@@ -420,6 +420,7 @@ public class MainActivity extends AppCompatActivity implements
             case 2: //gps permission
                 if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                     //locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 5, this);
+                    requestLocationUpdates();
 
                 }
                 break;
