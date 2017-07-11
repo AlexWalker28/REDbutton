@@ -86,9 +86,6 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-        /*startActivity(new Intent(MainActivity.this, IntroActivity.class));*/
-
         Boolean isFirstRun = getSharedPreferences("PREFERENCE", MODE_PRIVATE)
                 .getBoolean("isFirstRun", true);
         if (isFirstRun) {
@@ -196,14 +193,6 @@ public class MainActivity extends AppCompatActivity implements
     private boolean isLocationEnabled() {
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
                 locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(isGPSPermissionGranted()){
-            requestLocationUpdates();
-        }
     }
 
     private void showAlertToEnableGPS() {
