@@ -9,7 +9,9 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationListener;
+
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -36,6 +38,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -117,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements
                 if (isLocationEnabled()) {
                     if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                         requestGPSPermission();
-                    }else{
+                    } else {
                         timeInMillis = System.currentTimeMillis();
                         user = new User(user.getUserID(), user.getUserName(), user.getUserEmail(),
                                 user.getFirstNumber(), user.getSecondNumber(), user.getMessage());
@@ -125,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements
                         event = new Event(coordinates, user, timeInMillis);
                         childUniqueKey = databaseReference.push().getKey();
                         databaseReference.child(childUniqueKey).setValue(event);
-                        if(event.getCoordinates() == null){
+                        if (event.getCoordinates() == null) {
                             if (mGoogleApiClient.isConnected() && mCurrentLocation != null) {
                                 initReceiver();
                                 startLocationService();
@@ -135,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements
                     }
                 } else showAlertToEnableGPS();
 
-               // MessageData messageData = new MessageData(firstPhoneNumber, secondPhoneNumber, message);
+                // MessageData messageData = new MessageData(firstPhoneNumber, secondPhoneNumber, message);
 
             }
         });
@@ -162,7 +165,7 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 firebaseUser = firebaseAuth.getCurrentUser();
-                if (firebaseUser != null){
+                if (firebaseUser != null) {
                     String userID = firebaseUser.getUid();
                     String userName = firebaseUser.getDisplayName();
                     String userEmail = firebaseUser.getEmail();
@@ -172,7 +175,7 @@ public class MainActivity extends AppCompatActivity implements
                     user.setUserEmail(userEmail);
                     user.setPhoneNumber(userPhoneNumber);
                     saveInPref(userID);
-                    if(userPhoneNumber == null){
+                    if (userPhoneNumber == null) {
                         userInfoTextView.setText(userName + "\n" + userEmail);
                     } else {
                         userInfoTextView.setText(userPhoneNumber);
@@ -185,11 +188,12 @@ public class MainActivity extends AppCompatActivity implements
         return authStateListener;
     }
 
-    private void saveInPref(String string){
+    private void saveInPref(String string) {
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(Constants.CURRENT_USER_ID, string);
         editor.apply();
     }
+
     //=====================
     //Location
     //=====================
@@ -236,15 +240,12 @@ public class MainActivity extends AppCompatActivity implements
     }
 
 
-
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestGPSPermission();
-        }else {
-            LocationRequest locationRequest = new LocationRequest();
-            locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                    .setInterval(0);
+        } else {
+            requestLocationUpdates();
         }
     }
 
@@ -261,7 +262,44 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onLocationChanged(Location location) {
+        if (location.getLatitude() != 0 && location.getLongitude() != 0) {
+            CustomLatLng latLng = new CustomLatLng(location.getLatitude(), location.getLongitude());
+            event.setCoordinates(latLng);
+            latLngTextView.setText("lat: " + event.getCoordinates().getLat() + "\nlat: " + event.getCoordinates().getLng());
+        }
+        if (event.getCoordinates().getLat() == 0 && event.getCoordinates().getLng() == 0) {
+            progressBar.setVisibility(View.VISIBLE);
+        } else progressBar.setVisibility(View.GONE);
+    }
 
+    private void requestLocationUpdates() {
+        LocationRequest locationRequest = new LocationRequest();
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                .setInterval(0);
+       // mCurrentLocation = LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, locationRequest, );
+        FusedLocationProviderClient locationClient = new FusedLocationProviderClient(getApplicationContext());
+        mLocationCallback = new LocationCallback(){
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                for (Location location : locationResult.getLocations()) {
+                    // Update UI with location data
+                    if(location.getLatitude() != 0 && location.getLongitude() != 0){
+                        CustomLatLng latLng = new CustomLatLng(location.getLatitude(), location.getLongitude());
+                        event.setCoordinates(latLng);
+                    }
+                    if(event.getCoordinates().getLat() == 0 && event.getCoordinates().getLng() == 0){
+                        progressBar.setVisibility(View.VISIBLE);
+                    } else progressBar.setVisibility(View.GONE);
+                    latLngTextView.setText("lat: " + event.getCoordinates().getLat() + "\n" + "lng: " + event.getCoordinates().getLng());
+                }
+            }
+        };
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            locationClient.requestLocationUpdates(locationRequest, mLocationCallback, null);
+        } else {
+            Toast.makeText(getApplicationContext(), "Need permission", Toast.LENGTH_SHORT).show();
+            return;
+        }
     }
 
 
@@ -477,6 +515,12 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
+    protected void onResume() {
+        mGoogleApiClient.connect();
+        super.onResume();
+    }
+
+    @Override
     protected void onStop() {
         if (authStateListener != null) {
             auth.removeAuthStateListener(authStateListener);
@@ -504,7 +548,7 @@ public class MainActivity extends AppCompatActivity implements
         preferences = getSharedPreferences(Constants.SHARED_PREF_FILE, MODE_PRIVATE);
         mapButton = (Button)findViewById(R.id.button2);
         progressBar = (ProgressBar)findViewById(R.id.progressBar);
-        latLngTextView = (TextView)findViewById(R.id.textView);
-        userInfoTextView = (TextView)findViewById(R.id.textView2);
+        latLngTextView = (TextView)findViewById(R.id.latLngTextView);
+        userInfoTextView = (TextView)findViewById(R.id.userInfoTextView);
     }
 }

@@ -41,7 +41,7 @@
 
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/userInfoTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Your data is loading..."
@@ -86,7 +86,7 @@
                 app:srcCompat="@drawable/map" />
 
             <TextView
-                android:id="@+id/textView"
+                android:id="@+id/latLngTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
