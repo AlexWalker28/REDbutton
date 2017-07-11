@@ -58,13 +58,11 @@ public class MainActivity extends AppCompatActivity implements
     private String message;
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference databaseReference;
-    private DatabaseReference groupsReference;
     private FirebaseAuth auth;
     private FirebaseAuth.AuthStateListener authStateListener;
     private FirebaseUser firebaseUser;
     private MenuItem signInMenuItem;
     private MenuItem signOutMenuItem;
-    private MenuItem groups;
     private LocationManager locationManager;
     private User user;
     private Event event;
@@ -81,7 +79,6 @@ public class MainActivity extends AppCompatActivity implements
     private LocationCallback mLocationCallback;
 
     protected Location mCurrentLocation;
-    protected String mAddressOutput;
     private String childUniqueKey;
 
     @Override
@@ -104,7 +101,6 @@ public class MainActivity extends AppCompatActivity implements
         buildGoogleApiClient();
         if (isLocationEnabled()) {
             if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                //locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 5, this);
                 requestLocationUpdates();
             }
         } else showAlertToEnableGPS();
@@ -136,9 +132,9 @@ public class MainActivity extends AppCompatActivity implements
                         }
 
                     }
-                } else showAlertToEnableGPS();
-
-                // MessageData messageData = new MessageData(firstPhoneNumber, secondPhoneNumber, message);
+                } else {
+                    showAlertToEnableGPS();
+                }
 
             }
         });
@@ -200,6 +196,14 @@ public class MainActivity extends AppCompatActivity implements
     private boolean isLocationEnabled() {
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
                 locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(isGPSPermissionGranted()){
+            requestLocationUpdates();
+        }
     }
 
     private void showAlertToEnableGPS() {
@@ -276,7 +280,6 @@ public class MainActivity extends AppCompatActivity implements
         LocationRequest locationRequest = new LocationRequest();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
                 .setInterval(0);
-       // mCurrentLocation = LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, locationRequest, );
         FusedLocationProviderClient locationClient = new FusedLocationProviderClient(getApplicationContext());
         mLocationCallback = new LocationCallback(){
             @Override
@@ -301,19 +304,6 @@ public class MainActivity extends AppCompatActivity implements
             return;
         }
     }
-
-
-    /*@Override
-    public void onLocationChanged(Location location) {
-        if(location.getLatitude() != 0 && location.getLongitude() != 0){
-            CustomLatLng latLng = new CustomLatLng(location.getLatitude(), location.getLongitude());
-            event.setCoordinates(latLng);
-        }
-        if(event.getCoordinates().getLat() == 0 && event.getCoordinates().getLng() == 0){
-            progressBar.setVisibility(View.VISIBLE);
-        } else progressBar.setVisibility(View.GONE);
-        latLngTextView.setText("lat: " + event.getCoordinates().getLat() + "\n" + "lng: " + event.getCoordinates().getLng());
-    }*/
 
 
     //=================================
@@ -419,7 +409,6 @@ public class MainActivity extends AppCompatActivity implements
                 break;
             case 2: //gps permission
                 if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                    //locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 5, this);
                     requestLocationUpdates();
 
                 }
@@ -436,7 +425,6 @@ public class MainActivity extends AppCompatActivity implements
         getMenuInflater().inflate(R.menu.menu_items, menu);
         signInMenuItem = menu.findItem(R.id.sign_in_item);
         signOutMenuItem = menu.findItem(R.id.sign_out_item);
-        groups = menu.findItem(R.id.groups);
         setAuthMenuItemsVisibility();
         return true;
     }
@@ -518,6 +506,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onResume() {
         mGoogleApiClient.connect();
+        requestLocationUpdates();
         super.onResume();
     }
 
@@ -534,7 +523,6 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     protected void onDestroy() {
-        //if(eventStateReceiver != null) unregisterReceiver(eventStateReceiver);
         super.onDestroy();
     }
 
