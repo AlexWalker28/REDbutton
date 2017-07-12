@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity implements
                         childUniqueKey = databaseReference.push().getKey();
                         databaseReference.child(childUniqueKey).setValue(event);
                         if (event.getCoordinates() == null) {
-                            if (mGoogleApiClient.isConnected() && mCurrentLocation != null) {
+                            if (mGoogleApiClient.isConnected()) {
                                 initReceiver();
                                 startLocationService();
                             }
@@ -131,6 +131,9 @@ public class MainActivity extends AppCompatActivity implements
                     }
                 } else {
                     showAlertToEnableGPS();
+                }
+                if(firebaseUser != null){
+                    saveInPref(firebaseUser.getUid());
                 }
 
             }
@@ -184,6 +187,9 @@ public class MainActivity extends AppCompatActivity implements
     private void saveInPref(String string) {
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(Constants.CURRENT_USER_ID, string);
+        editor.putString(Constants.DATABASE_CHILD_ID, childUniqueKey);
+        editor.putString(Constants.FIRST_NUMBER, firstPhoneNumber);
+        editor.putString(Constants.SECOND_NUMBER, secondPhoneNumber);
         editor.apply();
     }
 
@@ -230,6 +236,7 @@ public class MainActivity extends AppCompatActivity implements
         serviceIntent.putExtra(Constants.FIRST_NUMBER, firstPhoneNumber);
         serviceIntent.putExtra(Constants.SECOND_NUMBER, secondPhoneNumber);
         startService(serviceIntent);
+        Log.v("LocationService", "Location service should start");
     }
 
 

@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -42,17 +43,19 @@ public class LocationService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.v("LocationService", "Location service is running");
         event = new Event();
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference("Events");
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        try {
+        /*try {
             childKey = intent.getStringExtra(Constants.DATABASE_CHILD_ID);
             firstPhoneNumber = intent.getStringExtra(Constants.FIRST_NUMBER);
             secondPhoneNumber = intent.getStringExtra(Constants.SECOND_NUMBER);
         } catch (Exception e){
             e.printStackTrace();
-        }
+        }*/
+        getDataFromPref();
         setLocationListener();
         requestLocationUpdates();
         sendDataBack();
@@ -83,16 +86,13 @@ public class LocationService extends Service {
             public void onLocationChanged(Location location) {
                 coordinates = new CustomLatLng(location.getLatitude(), location.getLongitude());
                 if(event.getCoordinates() != null) {
-                    Log.v("service", "Location: " + event.getCoordinates().getLat() + " " + event.getCoordinates().getLng());
+                    Log.v("LocationService", "Location: " + event.getCoordinates().getLat() + " " + event.getCoordinates().getLng());
                 }
-                if(childKey != null){
-                    databaseReference.child(childKey).child("coordinates").setValue(coordinates);
-                    sendSMS(firstPhoneNumber);
-                    sendSMS(secondPhoneNumber);
-                    sendNotification();
-                } else {
-                    stopSelf();
-                }
+                databaseReference.child(childKey).child("coordinates").setValue(coordinates);
+                sendSMS(firstPhoneNumber);
+                sendSMS(secondPhoneNumber);
+                stopSelf();
+                Log.v("LocationService", "Location service should stop (onLocationChanged)");
                 locationManager.removeUpdates(locationListener);
             }
 
@@ -125,17 +125,11 @@ public class LocationService extends Service {
         }
     }
 
-
-    private void sendNotification() {
-        if(event.getCoordinates() != null) {
-            NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-                    .setSmallIcon(R.mipmap.ic_launcher)
-                    .setContentTitle("Coordinates")
-                    .setContentText("lat: " + event.getCoordinates().getLat() + "\n" + "lng: " + event.getCoordinates().getLng());
-            int notificationID = 002;
-            NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-            notificationManager.notify(notificationID, notificationBuilder.build());
-        }
+    private void getDataFromPref(){
+        SharedPreferences preferences = getSharedPreferences(Constants.SHARED_PREF_FILE, MODE_PRIVATE);
+        childKey = preferences.getString(Constants.DATABASE_CHILD_ID, null);
+        firstPhoneNumber = preferences.getString(Constants.FIRST_NUMBER, null);
+        secondPhoneNumber = preferences.getString(Constants.SECOND_NUMBER, null);
     }
 
 }
