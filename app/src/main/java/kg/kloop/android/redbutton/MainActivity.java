@@ -132,9 +132,9 @@ public class MainActivity extends AppCompatActivity implements
                 } else {
                     showAlertToEnableGPS();
                 }
-                /*if(firebaseUser != null){
+                if(firebaseUser != null){
                     saveInPref(firebaseUser.getUid());
-                }*/
+                }
 
             }
         });
@@ -188,8 +188,6 @@ public class MainActivity extends AppCompatActivity implements
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(Constants.CURRENT_USER_ID, string);
         editor.putString(Constants.DATABASE_CHILD_ID, childUniqueKey);
-        editor.putString(Constants.FIRST_NUMBER, firstPhoneNumber);
-        editor.putString(Constants.SECOND_NUMBER, secondPhoneNumber);
         editor.apply();
     }
 
