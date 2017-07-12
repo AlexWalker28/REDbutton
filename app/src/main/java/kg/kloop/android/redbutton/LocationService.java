@@ -25,6 +25,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 
 public class LocationService extends Service {
+    private static final String TAG = "LocationService";
     Event event;
     LocationListener locationListener;
     LocationManager locationManager;
@@ -43,7 +44,7 @@ public class LocationService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.v("LocationService", "Location service is running");
+        Log.v(TAG, "Location service is running");
         event = new Event();
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference("Events");
@@ -86,13 +87,13 @@ public class LocationService extends Service {
             public void onLocationChanged(Location location) {
                 coordinates = new CustomLatLng(location.getLatitude(), location.getLongitude());
                 if(event.getCoordinates() != null) {
-                    Log.v("LocationService", "Location: " + event.getCoordinates().getLat() + " " + event.getCoordinates().getLng());
+                    Log.v(TAG, "Location: " + event.getCoordinates().getLat() + " " + event.getCoordinates().getLng());
                 }
                 databaseReference.child(childKey).child("coordinates").setValue(coordinates);
                 sendSMS(firstPhoneNumber);
                 sendSMS(secondPhoneNumber);
                 stopSelf();
-                Log.v("LocationService", "Location service should stop (onLocationChanged)");
+                Log.v(TAG, "Location service should stop (onLocationChanged)");
                 locationManager.removeUpdates(locationListener);
             }
 
@@ -130,6 +131,8 @@ public class LocationService extends Service {
         childKey = preferences.getString(Constants.DATABASE_CHILD_ID, null);
         firstPhoneNumber = preferences.getString(Constants.FIRST_NUMBER, null);
         secondPhoneNumber = preferences.getString(Constants.SECOND_NUMBER, null);
+        Log.v(TAG, "childKey: " + childKey + "\nfirst number: " + firstPhoneNumber
+                                + "\nsecond number: " + secondPhoneNumber);
     }
 
 }

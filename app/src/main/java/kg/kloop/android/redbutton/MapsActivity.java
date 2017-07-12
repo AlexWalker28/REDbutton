@@ -72,8 +72,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 time = dateFormat.format(event.getTimeInMillis());
                 for(Event singleEvent : eventArrayList){
                     if(singleEvent.getCoordinates() != null) {
-                        eventLatLng = new LatLng(singleEvent.getCoordinates().getLat(), singleEvent.getCoordinates().getLng());
-                        mMap.addMarker(new MarkerOptions().position(eventLatLng).title(time));
+                        if(singleEvent.getCoordinates().getLat() != 0 && singleEvent.getCoordinates().getLng() != 0) {
+                            eventLatLng = new LatLng(singleEvent.getCoordinates().getLat(), singleEvent.getCoordinates().getLng());
+                            mMap.addMarker(new MarkerOptions().position(eventLatLng).title(time));
+                        }
                     }
                 }
                 if(eventLatLng != null){

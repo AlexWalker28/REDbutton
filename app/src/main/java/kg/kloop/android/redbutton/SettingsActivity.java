@@ -27,6 +27,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     static final int REQUEST_SELECT_FIRST_PHONE_NUMBER = 1;
     static final int REQUEST_SELECT_SECOND_PHONE_NUMBER = 2;
+    private static final String TAG = "SettingsActivity";
 
     private EditText firstNumberEditText;
     private EditText secondNumberEditText;
@@ -152,10 +153,13 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void saveDataInPref(String firstNumber, String secondNumber, String message) {
         SharedPreferences.Editor editor = preferences.edit();
+        editor.clear();
         editor.putString(Constants.FIRST_NUMBER, firstNumber);
         editor.putString(Constants.SECOND_NUMBER, secondNumber);
         editor.putString(Constants.MESSAGE, message);
         editor.apply();
+        Log.v(TAG, "saved first number: " + firstNumber
+                + "\nsaved second number: " + secondNumber);
     }
 
 
@@ -175,6 +179,8 @@ public class SettingsActivity extends AppCompatActivity {
         firstNumberEditText.setText(firstNumber);
         secondNumberEditText.setText(secondNumber);
         messageEditText.setText(message);
+        Log.v(TAG, "loaded first number: " + firstNumber
+                + "\nloaded second number: " + secondNumber);
 
     }
 

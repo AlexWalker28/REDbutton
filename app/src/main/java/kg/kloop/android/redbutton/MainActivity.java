@@ -132,9 +132,9 @@ public class MainActivity extends AppCompatActivity implements
                 } else {
                     showAlertToEnableGPS();
                 }
-                if(firebaseUser != null){
+                /*if(firebaseUser != null){
                     saveInPref(firebaseUser.getUid());
-                }
+                }*/
 
             }
         });
