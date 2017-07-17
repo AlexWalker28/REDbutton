@@ -80,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements
 
     protected Location mCurrentLocation;
     private String childUniqueKey;
+    private TextView permissionsInfoTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,6 +140,7 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
+        setPermissionsInfo();
 
         mapButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -177,7 +179,7 @@ public class MainActivity extends AppCompatActivity implements
                         userInfoTextView.setText(userPhoneNumber);
                     }
                     Log.v("User", "userData: " + userID + "\n" + userName + "\n" + userEmail);
-                } else userInfoTextView.setText("You need to log in \nand configure your settings");
+                } //userInfoTextView.setText("You need to log in \nand configure your settings");
 
             }
         };
@@ -409,6 +411,14 @@ public class MainActivity extends AppCompatActivity implements
                 break;
         }
     }
+    private void setPermissionsInfo() {
+        if (isGPSPermissionGranted()){
+            permissionsInfoTextView.setText(R.string.noGPSPermissionText);
+        } else permissionsInfoTextView.setText("");
+        if (isSMSPermissionGranted()) {
+            permissionsInfoTextView.setText(R.string.noSMSPermissionText);
+        } else permissionsInfoTextView.setText("");
+    }
 
 
     //============================
@@ -503,6 +513,7 @@ public class MainActivity extends AppCompatActivity implements
     protected void onResume() {
         mGoogleApiClient.connect();
         requestLocationUpdates();
+        setPermissionsInfo();
         super.onResume();
     }
 
@@ -535,5 +546,6 @@ public class MainActivity extends AppCompatActivity implements
         progressBar = (ProgressBar)findViewById(R.id.progressBar);
         latLngTextView = (TextView)findViewById(R.id.latLngTextView);
         userInfoTextView = (TextView)findViewById(R.id.userInfoTextView);
+        permissionsInfoTextView = (TextView)findViewById(R.id.permissionsInfoTextView);
     }
 }

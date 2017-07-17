@@ -35,4 +35,5 @@
     <string name="settingsButton">Добавить!</string>
     <string name="fourthSlideText">Великолепно!</string>
     <string name="fourthSlideDiscription">Можно начинать.</string>
+    <string name="noGPSPermissionText">Необходимо разрешение на определение координат с помощью GPS (это можно сделать в help)</string>
 </resources>

@@ -35,5 +35,7 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="noGPSPermissionText">Необходимо разрешение на определение координат с помощью GPS (это можно сделать через help)</string>
+    <string name="noSMSPermissionText">Необходимо разрешить отправку SMS (это можно сделать через help)</string>
 
 </resources>
