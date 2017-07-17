@@ -24,15 +24,14 @@
     <string name="manual">Инструкция</string>
     <string name="registration">Зарегистрироваться или войти</string>
     <string name="helloText">Приветствуем вас в приложении</string>
-    <string name="helloDiscription">Для правильной работы приложения, советуем зарегистрироваться
+    <string name="helloDiscription">Для правильной работы рекомендуем зарегистрироваться
     или войти, если у вас уже есть аккаунт.</string>
-    <string name="settingsDiscription">Теперь давайте добавим номера близких людей и
-    сообщение, которое они получат с вашими координатами.</string>
+    <string name="settingsDescription">Теперь давайте добавим номера близких людей и
+    сообщение, которое они получат</string>
     <string name="settingsText">Отлично!</string>
     <string name="permissionsText">Супер!</string>
-    <string name="permissionsDiscription">Для того, чтобы не пришлось во время какй-либо черезвычайной
-    ситуации тратить лишнее время, советуем включить разрешения сейчас. Вы увидите запрос, как только
-        перейдёте на следующий слайд.</string>
+    <string name="permissionsDiscriptionSMS">Для корректной работы приложения необходимо разрешение для отправки СМС</string>
+    <string name="permissionsDiscriptionGPS">Для корректной работы приложения необходимо разрешение на определение координат с помощью GPS</string>
     <string name="settingsButton">Добавить!</string>
     <string name="fourthSlideText">Великолепно!</string>
     <string name="fourthSlideDiscription">Можно начинать.</string>

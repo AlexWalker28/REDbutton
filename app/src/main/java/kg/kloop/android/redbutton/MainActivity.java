@@ -474,6 +474,8 @@ public class MainActivity extends AppCompatActivity implements
                 } else {
                     Toast.makeText(this, "You need to log in", Toast.LENGTH_SHORT).show();
                 }
+            case R.id.help:
+                startActivity(new Intent(MainActivity.this, IntroActivity.class));
 
         }
         return super.onOptionsItemSelected(item);

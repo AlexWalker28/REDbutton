@@ -41,7 +41,7 @@
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="@string/settingsDiscription"
+        android:text="@string/settingsDescription"
         android:textColor="#ffffff"
         android:textSize="15dp"
         android:textStyle="normal"

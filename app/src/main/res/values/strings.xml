@@ -24,7 +24,7 @@
     <string name="registration">registration</string>
     <string name="helloText">Приветствуем вас в приложении</string>
     <string name="helloDiscription">Вам необходимо зарегестрироваться чтобы всё работало правильно</string>
-    <string name="settingsDiscription">Теперь давайте добавим ваши номера и сообщение</string>
+    <string name="settingsDescription">Теперь давайте добавим ваши номера и сообщение</string>
     <string name="settingsText">Отлично!</string>
     <string name="permissionsText">Супер!</string>
     <string name="permissionsDiscription">Давайте включим разрешения</string>

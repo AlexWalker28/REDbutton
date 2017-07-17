@@ -20,6 +20,10 @@
         android:id="@+id/groups"
         android:orderInCategory="4"
         android:title="Groups"/>
+    <item
+        android:id="@+id/help"
+        android:orderInCategory="5"
+        android:title="Help"/>
 
 
 </menu>
