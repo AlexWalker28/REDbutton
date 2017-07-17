@@ -179,7 +179,7 @@ public class MainActivity extends AppCompatActivity implements
                         userInfoTextView.setText(userPhoneNumber);
                     }
                     Log.v("User", "userData: " + userID + "\n" + userName + "\n" + userEmail);
-                } //userInfoTextView.setText("You need to log in \nand configure your settings");
+                } else  userInfoTextView.setText("You need to log in \nand configure your settings");
 
             }
         };
