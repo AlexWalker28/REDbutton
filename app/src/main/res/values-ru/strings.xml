@@ -36,4 +36,6 @@
     <string name="fourthSlideText">Великолепно!</string>
     <string name="fourthSlideDiscription">Можно начинать.</string>
     <string name="noGPSPermissionText">Необходимо разрешение на определение координат с помощью GPS (это можно сделать в help)</string>
+    <string name="dataSaved">Данные сохранены</string>
+    <string name="enterPhoneNumbers">Желательно ввести два номера</string>
 </resources>

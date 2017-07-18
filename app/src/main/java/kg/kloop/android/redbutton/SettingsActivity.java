@@ -81,8 +81,14 @@ public class SettingsActivity extends AppCompatActivity {
 
                 saveDataInPref(firstNumber, secondNumber, message);
                 if(isPrefSaved()){
-                    Toast.makeText(getApplicationContext(), "Data saved", Toast.LENGTH_LONG).show();
-                } else Toast.makeText(getApplicationContext(), "Save failed. Try again", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), R.string.dataSaved, Toast.LENGTH_LONG).show();
+                } else if(preferences.getString(Constants.FIRST_NUMBER, "").length() == 0 ||
+                          preferences.getString(Constants.SECOND_NUMBER, "").length() == 0 ){
+                    Toast.makeText(getApplicationContext(), R.string.enterPhoneNumbers, Toast.LENGTH_LONG).show();
+                }
+                if (preferences.getString(Constants.MESSAGE, "").length() == 0){
+                    Toast.makeText(getApplicationContext(), R.string.enterMessage, Toast.LENGTH_LONG).show();
+                }
 
                 if(firebaseUser != null){
                     Map<String, Object> childUpdates = new HashMap<>();
