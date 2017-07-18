@@ -40,5 +40,7 @@
     <string name="dataSaved">Данные сохранены</string>
     <string name="enterPhoneNumbers">Желательно ввести два номера</string>
     <string name="enterMessage">Введите сообщение</string>
+    <string name="permissionsDiscriptionGPS">Для корректной работы приложения необходимо разрешение на определение координат с помощью GPS</string>
+    <string name="permissionsDiscriptionSMS">Для корректной работы приложения необходимо разрешение для отправки СМС</string>
 
 </resources>
