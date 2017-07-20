@@ -1,7 +1,9 @@
 package kg.kloop.android.redbutton;
 
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.IBinder;
@@ -25,6 +27,7 @@ import java.util.Map;
 import kg.kloop.android.redbutton.groups.GroupRoom;
 
 public class NotificationService extends Service {
+    private static final int NOTIFICATION_ID = 001;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference eventDatabaseReference;
     DatabaseReference groupsDatabaseReference;
@@ -151,12 +154,15 @@ public class NotificationService extends Service {
     }
 
     private void showNotification(String name) {
+        Intent intent = new Intent(this, MapsActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, NOTIFICATION_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(getApplicationContext())
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(user.getUserName()+ " from " + name + " pressed Red Button")
-                .setContentText(time);
-        int notificationID = 001;
+                .setContentText(time)
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true);
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        notificationManager.notify(notificationID, notificationBuilder.build());
+        notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build());
     }
 }
