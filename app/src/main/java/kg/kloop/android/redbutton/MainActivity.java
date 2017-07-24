@@ -81,13 +81,14 @@ public class MainActivity extends AppCompatActivity implements
     protected Location mCurrentLocation;
     private String childUniqueKey;
     private TextView permissionsInfoTextView;
+    private Boolean isFirstRun;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Boolean isFirstRun = getSharedPreferences("PREFERENCE", MODE_PRIVATE)
+        isFirstRun = getSharedPreferences("PREFERENCE", MODE_PRIVATE)
                 .getBoolean("isFirstRun", true);
         if (isFirstRun) {
             startActivity(new Intent(MainActivity.this, IntroActivity.class));
@@ -243,7 +244,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestGPSPermission();
+            if(!isFirstRun) requestGPSPermission();
         } else {
             requestLocationUpdates();
         }
@@ -295,10 +296,9 @@ public class MainActivity extends AppCompatActivity implements
         };
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             locationClient.requestLocationUpdates(locationRequest, mLocationCallback, null);
-        } else {
+        } /*else {
             requestGPSPermission();
-            return;
-        }
+        }*/
     }
 
 
