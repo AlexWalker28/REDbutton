@@ -62,6 +62,12 @@ public class IntroActivity extends com.heinrichreimersoftware.materialintro.app.
                     .permission(android.Manifest.permission.ACCESS_FINE_LOCATION)
                     .build());
         }
+        addSlide(new SimpleSlide.Builder()
+                    .title("")
+                    .description(R.string.introGroups)
+                    .background(R.color.slide1)
+                    .backgroundDark(R.color.slide2)
+                    .build());
         setButtonBackVisible(false);
         setButtonNextVisible(false);
     }

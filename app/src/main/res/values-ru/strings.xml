@@ -43,4 +43,5 @@
     <string name="noSMSPermissionText">Необходимо разрешить отправку SMS (это можно сделать через help)</string>
     <string name="permissionsDiscription">Давайте включим разрешения</string>
     <string name="title_activity_sliding_groups">SlidingGroupsActivity</string>
+    <string name="introGroups">Вы также можете создавать и присоединятся в группы других пользователей, чтобы получать уведомления, если кто-то из членов группы нажмет на кнопку</string>
 </resources>
