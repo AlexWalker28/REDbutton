@@ -17,7 +17,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  * Created by alexwalker on 01.08.17.
@@ -44,6 +46,14 @@ class EventsListViewAdapter extends ArrayAdapter<Event> {
 
         TextView userNameTextView = (TextView) listItemView.findViewById(R.id.userNameTextView);
         userNameTextView.setText(currentEvent.getUser().getUserName());
+
+        TextView timeTextView = (TextView)listItemView.findViewById(R.id.timeTextView);
+        String time;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        time = dateFormat.format(currentEvent.getTimeInMillis());
+        timeTextView.setText(time);
+
+
 
         return listItemView;
     }
