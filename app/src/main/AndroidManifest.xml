@@ -27,8 +27,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="kg.kloop.android.redbutton.IntroActivity"
-                  android:theme="@style/Theme.Intro" />
+        <activity
+            android:name="kg.kloop.android.redbutton.IntroActivity"
+            android:theme="@style/Theme.Intro" />
         <activity android:name="kg.kloop.android.redbutton.SettingsActivity" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -65,7 +66,11 @@
         <service
             android:name="kg.kloop.android.redbutton.NotificationService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
+
+        <activity
+            android:name="kg.kloop.android.redbutton.SlidingMapsActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>
