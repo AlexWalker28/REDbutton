@@ -1,14 +1,20 @@
 package kg.kloop.android.redbutton;
 
 
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TabHost;
 
 import com.example.alexwalker.sendsmsapp.R;
 import com.google.firebase.database.ChildEventListener;
@@ -31,6 +37,7 @@ public class EventsTab extends Fragment {
     FirebaseDatabase firebaseDatabase;
     ArrayList<Event> eventsArrayList;
     EventsListViewAdapter adapter;
+    ViewPager viewPager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -66,6 +73,12 @@ public class EventsTab extends Fragment {
         });
         adapter = new EventsListViewAdapter(getContext(), R.layout.events_listview_item, eventsArrayList);
         eventsListView.setAdapter(adapter);
+        eventsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                viewPager.setCurrentItem(0, true);
+            }
+        });
 
         return v;
     }
@@ -75,6 +88,7 @@ public class EventsTab extends Fragment {
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference("Events");
         eventsArrayList = new ArrayList<Event>();
+        viewPager = (ViewPager) getActivity().findViewById(R.id.mapsViewPager);
     }
 
 }
