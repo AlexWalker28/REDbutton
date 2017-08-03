@@ -5,12 +5,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import kg.kloop.android.redbutton.groups.AllGroupsTab;
-import kg.kloop.android.redbutton.groups.MembersTab;
-import kg.kloop.android.redbutton.groups.MyGroupsTab;
-import kg.kloop.android.redbutton.groups.RequestsTab;
-import kg.kloop.android.redbutton.groups.SlidingGroupsActivity;
-
 /**
  * Created by alexwalker on 01.08.17.
  */
@@ -36,8 +30,8 @@ public class MapViewPageAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         if (position == 0) { // if the position is 0 we are returning the First tab
             if (activity instanceof SlidingMapsActivity) {
-                MapsActivity mapsActivity = new MapsActivity();
-                return mapsActivity;
+                MapsTab mapsTab = new MapsTab();
+                return mapsTab;
             /*} else {
                 MembersTab membersTab = new MembersTab();
                 return membersTab;
@@ -50,7 +44,7 @@ public class MapViewPageAdapter extends FragmentStatePagerAdapter {
                 return eventsTab;
             //}
         }
-        return new MapsActivity();
+        return new MapsTab();
     }
 
 

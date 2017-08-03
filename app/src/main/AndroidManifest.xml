@@ -44,7 +44,7 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name="kg.kloop.android.redbutton.MapsActivity"
+            android:name="kg.kloop.android.redbutton.MapsTab"
             android:label="@string/title_activity_maps" />
 
         <service

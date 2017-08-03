@@ -25,7 +25,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class MapsActivity extends Fragment implements OnMapReadyCallback{
+public class MapsTab extends Fragment implements OnMapReadyCallback{
 
     private GoogleMap mMap;
     private FirebaseDatabase firebaseDatabase;
@@ -39,7 +39,7 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback{
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        v = inflater.inflate(R.layout.activity_maps, container, false);
+        v = inflater.inflate(R.layout.fragment_tab1_maps, container, false);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         mapView = (MapView) v.findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
