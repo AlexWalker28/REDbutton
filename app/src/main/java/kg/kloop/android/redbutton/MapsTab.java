@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.alexwalker.sendsmsapp.R;
@@ -42,6 +43,8 @@ public class MapsTab extends Fragment implements OnMapReadyCallback{
     View v;
     SharedPreferences preferences;
     ViewPager viewPager;
+    ProgressBar progressBar;
+    LatLng almaty;
 
 
     @Override
@@ -61,6 +64,8 @@ public class MapsTab extends Fragment implements OnMapReadyCallback{
         eventArrayList = new ArrayList<>();
         preferences = getActivity().getSharedPreferences(Constants.SHARED_PREF_FILE, Context.MODE_PRIVATE);
         viewPager = (ViewPager) getActivity().findViewById(R.id.mapsViewPager);
+        progressBar = (ProgressBar)v.findViewById(R.id.mapsProgressBar);
+        almaty = new LatLng(43.250384, 76.911368);
 
         mapView.getMapAsync(new OnMapReadyCallback() {
             @Override
@@ -90,10 +95,9 @@ public class MapsTab extends Fragment implements OnMapReadyCallback{
                         if(eventLatLng != null){
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(eventLatLng, 17));
                         } else {
-                            LatLng almaty = new LatLng(43.250384, 76.911368);
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(almaty, 13));
                         }
-
+                        progressBar.setVisibility(View.INVISIBLE);
                     }
 
                     @Override
@@ -128,16 +132,23 @@ public class MapsTab extends Fragment implements OnMapReadyCallback{
             @Override
             public void onPageSelected(int position) {
                 int index = preferences.getInt(Constants.EVENT_INDEX, 0);
-                Event pressedEvent = eventArrayList.get(index);
-                if(position == 0) {
-                    if(pressedEvent.getCoordinates().getLat() != 0 && pressedEvent.getCoordinates().getLng() != 0) {
-                        eventLatLng = new LatLng(pressedEvent.getCoordinates().getLat(), pressedEvent.getCoordinates().getLng());
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(eventLatLng, 17));
-                        Log.v("MapsTab", "loaded index: " + index);
-                    } else {
-                        Toast.makeText(getContext(), R.string.noCoordinates, Toast.LENGTH_LONG).show();
+                try {
+                    Event pressedEvent = eventArrayList.get(index);
+                    if(index == 0){
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(almaty, 17));
                     }
+                    if (position == 0) {
+                        if (pressedEvent.getCoordinates().getLat() != 0 && pressedEvent.getCoordinates().getLng() != 0) {
+                            eventLatLng = new LatLng(pressedEvent.getCoordinates().getLat(), pressedEvent.getCoordinates().getLng());
+                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(eventLatLng, 17));
+                            Log.v("MapsTab", "loaded index: " + index);
+                        } else {
+                            Toast.makeText(getContext(), R.string.noCoordinates, Toast.LENGTH_LONG).show();
+                        }
 
+                    }
+                } catch (Exception e){
+                    e.printStackTrace();
                 }
             }
 
