@@ -14,4 +14,5 @@ public class Constants {
     public static final String EVENT_LNG = "eventLng";
     public static final String DATABASE_CHILD_ID = "databaseChildId";
     public static final String CURRENT_USER_ID = "currentUserId";
+    public static final String EVENT_INDEX = "eventIndex";
 }

@@ -1,11 +1,16 @@
 package kg.kloop.android.redbutton;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.alexwalker.sendsmsapp.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -35,12 +40,13 @@ public class MapsTab extends Fragment implements OnMapReadyCallback{
     private String time;
     MapView mapView;
     View v;
+    SharedPreferences preferences;
+    ViewPager viewPager;
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.fragment_tab1_maps, container, false);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         mapView = (MapView) v.findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
         mapView.onResume();
@@ -49,6 +55,13 @@ public class MapsTab extends Fragment implements OnMapReadyCallback{
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        databaseReference = firebaseDatabase.getReference().child("Events");
+        eventArrayList = new ArrayList<>();
+        preferences = getActivity().getSharedPreferences(Constants.SHARED_PREF_FILE, Context.MODE_PRIVATE);
+        viewPager = (ViewPager) getActivity().findViewById(R.id.mapsViewPager);
+
         mapView.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap googleMap) {
@@ -64,7 +77,7 @@ public class MapsTab extends Fragment implements OnMapReadyCallback{
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                         Event event = dataSnapshot.getValue(Event.class);
                         eventArrayList.add(event);
-                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd\nHH:mm:ss", Locale.getDefault());
                         time = dateFormat.format(event.getTimeInMillis());
                         for(Event singleEvent : eventArrayList){
                             if(singleEvent.getCoordinates() != null) {
@@ -106,12 +119,41 @@ public class MapsTab extends Fragment implements OnMapReadyCallback{
             }
         });
 
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        databaseReference = firebaseDatabase.getReference().child("Events");
-        eventArrayList = new ArrayList<>();
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                int index = preferences.getInt(Constants.EVENT_INDEX, 0);
+                Event pressedEvent = eventArrayList.get(index);
+                if(position == 0) {
+                    if(pressedEvent.getCoordinates().getLat() != 0 && pressedEvent.getCoordinates().getLng() != 0) {
+                        eventLatLng = new LatLng(pressedEvent.getCoordinates().getLat(), pressedEvent.getCoordinates().getLng());
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(eventLatLng, 17));
+                        Log.v("MapsTab", "loaded index: " + index);
+                    } else {
+                        Toast.makeText(getContext(), R.string.noCoordinates, Toast.LENGTH_LONG).show();
+                    }
+
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
 
         return v;
+    }
+
+    private void resetPref() {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putInt(Constants.EVENT_INDEX, 0);
+        editor.apply();
     }
 
     @Override
@@ -119,7 +161,11 @@ public class MapsTab extends Fragment implements OnMapReadyCallback{
 
     }
 
-
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        resetPref();
+    }
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
