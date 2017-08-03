@@ -82,7 +82,7 @@ public class MapsTab extends Fragment implements OnMapReadyCallback{
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                         Event event = dataSnapshot.getValue(Event.class);
                         eventArrayList.add(event);
-                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd\nHH:mm:ss", Locale.getDefault());
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
                         time = dateFormat.format(event.getTimeInMillis());
                         for(Event singleEvent : eventArrayList){
                             if(singleEvent.getCoordinates() != null) {
