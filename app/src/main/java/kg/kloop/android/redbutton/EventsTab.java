@@ -56,34 +56,7 @@ public class EventsTab extends Fragment {
         v = inflater.inflate(R.layout.fragment_tab2_events, container, false);
         init();
 
-        groupsDatabaseReference.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                groupNamesArrayList.add(dataSnapshot.getKey());
-                groupRoom = dataSnapshot.getValue(GroupRoom.class);
-                groupRoomArrayList.add(groupRoom);
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+        getGroupsDataFromFirebase();
 
         databaseReference.addChildEventListener(new ChildEventListener() {
             @Override
@@ -97,8 +70,7 @@ public class EventsTab extends Fragment {
                     if (room.getMembers().containsKey(userID) && room.getMembers().containsKey(currentUser)) {
                         eventsArrayList.add(event);
                         adapter.notifyDataSetChanged();
-                        Log.v("usersToShow", "users: " + event.getUser().getUserName() + "\n" +
-                                            "");
+                        Log.v("usersToShow", "users: " + event.getUser().getUserName());
                     }
                 }
 
@@ -140,6 +112,37 @@ public class EventsTab extends Fragment {
         });
 
         return v;
+    }
+
+    private void getGroupsDataFromFirebase() {
+        groupsDatabaseReference.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                groupNamesArrayList.add(dataSnapshot.getKey());
+                groupRoom = dataSnapshot.getValue(GroupRoom.class);
+                groupRoomArrayList.add(groupRoom);
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void init() {

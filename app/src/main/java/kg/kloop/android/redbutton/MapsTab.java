@@ -31,6 +31,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import kg.kloop.android.redbutton.groups.GroupRoom;
+
 public class MapsTab extends Fragment implements OnMapReadyCallback{
 
     private GoogleMap mMap;
@@ -39,12 +41,17 @@ public class MapsTab extends Fragment implements OnMapReadyCallback{
     private ArrayList<Event> eventArrayList;
     private LatLng eventLatLng;
     private String time;
-    MapView mapView;
-    View v;
-    SharedPreferences preferences;
-    ViewPager viewPager;
-    ProgressBar progressBar;
-    LatLng almaty;
+    private MapView mapView;
+    private View v;
+    private SharedPreferences preferences;
+    private ViewPager viewPager;
+    private ProgressBar progressBar;
+    private LatLng almaty;
+    private DatabaseReference groupsDatabaseReference;
+    private ArrayList<String> groupNamesArrayList;
+    private GroupRoom groupRoom;
+    private ArrayList<GroupRoom> groupRoomArrayList;
+    String currentUser;
 
 
     @Override
@@ -59,13 +66,7 @@ public class MapsTab extends Fragment implements OnMapReadyCallback{
             e.printStackTrace();
         }
 
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        databaseReference = firebaseDatabase.getReference().child("Events");
-        eventArrayList = new ArrayList<>();
-        preferences = getActivity().getSharedPreferences(Constants.SHARED_PREF_FILE, Context.MODE_PRIVATE);
-        viewPager = (ViewPager) getActivity().findViewById(R.id.mapsViewPager);
-        progressBar = (ProgressBar)v.findViewById(R.id.mapsProgressBar);
-        almaty = new LatLng(43.250384, 76.911368);
+        init();
 
         mapView.getMapAsync(new OnMapReadyCallback() {
             @Override
@@ -77,11 +78,20 @@ public class MapsTab extends Fragment implements OnMapReadyCallback{
                 mMap.getUiSettings().setZoomGesturesEnabled(true);
                 mMap.getUiSettings().setMyLocationButtonEnabled(true);
 
+                getGroupsDataFromFirebase();
+
                 databaseReference.addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+
                         Event event = dataSnapshot.getValue(Event.class);
-                        eventArrayList.add(event);
+                        String userID = event.getUser().getUserID();
+                        for (GroupRoom room : groupRoomArrayList) {
+                            if (room.getMembers().containsKey(userID) && room.getMembers().containsKey(currentUser)) {
+                                eventArrayList.add(event);
+                            }
+                        }
+
                         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
                         time = dateFormat.format(event.getTimeInMillis());
                         for(Event singleEvent : eventArrayList){
@@ -161,10 +171,56 @@ public class MapsTab extends Fragment implements OnMapReadyCallback{
         return v;
     }
 
+    private void getGroupsDataFromFirebase() {
+        groupsDatabaseReference.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                groupNamesArrayList.add(dataSnapshot.getKey());
+                groupRoom = dataSnapshot.getValue(GroupRoom.class);
+                groupRoomArrayList.add(groupRoom);
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     private void resetPref() {
         SharedPreferences.Editor editor = preferences.edit();
         editor.putInt(Constants.EVENT_INDEX, 0);
         editor.apply();
+    }
+
+    private void init() {
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        databaseReference = firebaseDatabase.getReference().child("Events");
+        groupsDatabaseReference = firebaseDatabase.getReference().child("Groups");
+        eventArrayList = new ArrayList<>();
+        groupNamesArrayList = new ArrayList<>();
+        groupRoom = new GroupRoom();
+        groupRoomArrayList = new ArrayList<>();
+        preferences = getActivity().getSharedPreferences(Constants.SHARED_PREF_FILE, Context.MODE_PRIVATE);
+        viewPager = (ViewPager) getActivity().findViewById(R.id.mapsViewPager);
+        progressBar = (ProgressBar)v.findViewById(R.id.mapsProgressBar);
+        almaty = new LatLng(43.250384, 76.911368);
+        currentUser = preferences.getString(Constants.CURRENT_USER_ID, "");
     }
 
     @Override
