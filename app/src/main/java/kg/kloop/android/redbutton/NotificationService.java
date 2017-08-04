@@ -150,7 +150,7 @@ public class NotificationService extends Service {
     }
 
     private void showNotification(String name) {
-        Intent intent = new Intent(this, MapsTab.class);
+        Intent intent = new Intent(this, SlidingMapsActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, NOTIFICATION_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(getApplicationContext())
                 .setSmallIcon(R.mipmap.ic_launcher)
