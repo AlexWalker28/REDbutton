@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -55,10 +56,10 @@ class EventsListViewAdapter extends ArrayAdapter<Event> {
         userNameTextView.setText(currentEvent.getUser().getUserName());
 
         TextView timeTextView = (TextView)listItemView.findViewById(R.id.timeTextView);
-        String time;
+        /*String time;
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-        time = dateFormat.format(currentEvent.getTimeInMillis());
-        timeTextView.setText(time);
+        time = dateFormat.format(currentEvent.getTimeInMillis());*/
+        timeTextView.setText(DateUtils.getRelativeTimeSpanString(currentEvent.getTimeInMillis(), System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS));
 
         messageTextView = (TextView)listItemView.findViewById(R.id.messageTextView);
 
