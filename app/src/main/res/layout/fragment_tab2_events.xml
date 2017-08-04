@@ -9,16 +9,22 @@
     android:id="@+id/eventsRelativeLayout"
     >
 
-    <ListView
-        android:id="@+id/eventsListView"
+    <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/swiperefresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="60dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp">
+        android:layout_marginTop="60dp">
 
-    </ListView>
+        <ListView
+            android:id="@+id/eventsListView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp">
+
+        </ListView>
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 
 

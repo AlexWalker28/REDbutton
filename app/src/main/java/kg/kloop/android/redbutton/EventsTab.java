@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,6 +51,7 @@ public class EventsTab extends Fragment {
     GroupRoom groupRoom;
     ArrayList<GroupRoom> groupRoomArrayList;
     String currentUser;
+    SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -58,14 +60,46 @@ public class EventsTab extends Fragment {
 
         getGroupsDataFromFirebase();
 
+        getEventsDataFromFirebase();
+
+
+        adapter = new EventsListViewAdapter(getContext(), R.layout.events_listview_item, eventsArrayList);
+        eventsListView.setAdapter(adapter);
+        eventsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putInt(Constants.EVENT_INDEX, Math.abs(eventsListView.getCount() - position - 1));
+                editor.apply();
+                Log.v("EventsTab", "saved index: " + preferences.getInt(Constants.EVENT_INDEX, 0));
+                viewPager.setCurrentItem(0, true);
+            }
+        });
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                resetGroupsData();
+                getGroupsDataFromFirebase();
+                resetEventsData();
+                getEventsDataFromFirebase();
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
+
+        return v;
+    }
+
+
+    private void getEventsDataFromFirebase() {
         databaseReference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Event event = dataSnapshot.getValue(Event.class);
                 String userID = event.getUser().getUserID();
                 Log.v("EventsTab", "current user: " + currentUser + "\n" +
-                                    "event user: " + event.getUser().getUserName() + "\n" +
-                                    "event userID: " + event.getUser().getUserID());
+                        "event user: " + event.getUser().getUserName() + "\n" +
+                        "event userID: " + event.getUser().getUserID());
                 for (GroupRoom room : groupRoomArrayList) {
                     if (room.getMembers().containsKey(userID) && room.getMembers().containsKey(currentUser)) {
                         eventsArrayList.add(event);
@@ -96,22 +130,10 @@ public class EventsTab extends Fragment {
 
             }
         });
-
-
-        adapter = new EventsListViewAdapter(getContext(), R.layout.events_listview_item, eventsArrayList);
-        eventsListView.setAdapter(adapter);
-        eventsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                SharedPreferences.Editor editor = preferences.edit();
-                editor.putInt(Constants.EVENT_INDEX, Math.abs(eventsListView.getCount() - position - 1));
-                editor.apply();
-                Log.v("EventsTab", "saved index: " + preferences.getInt(Constants.EVENT_INDEX, 0));
-                viewPager.setCurrentItem(0, true);
-            }
-        });
-
-        return v;
+    }
+    private void resetEventsData() {
+        eventsArrayList.clear();
+        adapter.notifyDataSetChanged();
     }
 
     private void getGroupsDataFromFirebase() {
@@ -144,6 +166,10 @@ public class EventsTab extends Fragment {
             }
         });
     }
+    private void resetGroupsData() {
+        groupNamesArrayList.clear();
+        groupRoomArrayList.clear();
+    }
 
     private void init() {
         eventsListView = (ListView)v.findViewById(R.id.eventsListView);
@@ -157,6 +183,8 @@ public class EventsTab extends Fragment {
         groupRoom = new GroupRoom();
         groupRoomArrayList = new ArrayList<>();
         currentUser = preferences.getString(Constants.CURRENT_USER_ID, "");
+        swipeRefreshLayout = (SwipeRefreshLayout)v.findViewById(R.id.swiperefresh);
+
     }
 
 }
