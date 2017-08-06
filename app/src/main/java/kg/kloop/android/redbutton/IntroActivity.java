@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.view.View;
 
-import com.example.alexwalker.sendsmsapp.Manifest;
 import com.example.alexwalker.sendsmsapp.R;
 import com.firebase.ui.auth.AuthUI;
 import com.heinrichreimersoftware.materialintro.slide.FragmentSlide;

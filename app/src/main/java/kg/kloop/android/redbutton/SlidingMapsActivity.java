@@ -1,17 +1,12 @@
 package kg.kloop.android.redbutton;
 
+import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
 
 import com.example.alexwalker.sendsmsapp.R;
 import com.google.firebase.auth.FirebaseAuth;
-
-import kg.kloop.android.redbutton.groups.ViewPagerAdapter;
 
 public class SlidingMapsActivity extends AppCompatActivity {
 
