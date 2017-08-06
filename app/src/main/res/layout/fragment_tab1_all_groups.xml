@@ -11,8 +11,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Создать группу"
+        android:layout_alignEnd="@+id/groupsListView"
         android:layout_alignParentBottom="true"
-        android:layout_alignEnd="@+id/groupsListView" />
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
+        style="@style/Base.Widget.AppCompat.Button.Borderless"
+        android:background="@color/mi_text_color_primary_light"
+        android:textColor="@color/mi_text_color_primary_dark"/>
 
     <ListView
         android:id="@+id/groupsListView"
@@ -23,5 +28,6 @@
         android:layout_marginRight="8dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_above="@+id/buttonPush" />
+        android:layout_above="@+id/buttonPush"
+        />
 </RelativeLayout>
