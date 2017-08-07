@@ -165,6 +165,9 @@ public class MainActivity extends AppCompatActivity implements
                 if (firebaseUser != null) {
                     String userID = firebaseUser.getUid();
                     String userName = firebaseUser.getDisplayName();
+                    if(userName == null){
+                        userName = firebaseUser.getPhoneNumber();
+                    }
                     String userEmail = firebaseUser.getEmail();
                     String userPhoneNumber = firebaseUser.getPhoneNumber();
                     user.setUserID(userID);
