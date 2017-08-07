@@ -52,6 +52,7 @@ public class MapsTab extends Fragment implements OnMapReadyCallback{
     private GroupRoom groupRoom;
     private ArrayList<GroupRoom> groupRoomArrayList;
     String currentUser;
+    private static final String TAG = "MapsTab";
 
 
     @Override
@@ -94,14 +95,9 @@ public class MapsTab extends Fragment implements OnMapReadyCallback{
 
                         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
                         time = dateFormat.format(event.getTimeInMillis());
-                        for(Event singleEvent : eventArrayList){
-                            if(singleEvent.getCoordinates() != null) {
-                                if(singleEvent.getCoordinates().getLat() != 0 && singleEvent.getCoordinates().getLng() != 0) {
-                                    eventLatLng = new LatLng(singleEvent.getCoordinates().getLat(), singleEvent.getCoordinates().getLng());
-                                    mMap.addMarker(new MarkerOptions().position(eventLatLng).title(time));
-                                }
-                            }
-                        }
+
+                        updateMarkers();
+
                         if(eventLatLng != null){
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(eventLatLng, 17));
                         } else {
@@ -112,7 +108,13 @@ public class MapsTab extends Fragment implements OnMapReadyCallback{
 
                     @Override
                     public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
+                        Event changedEvent = dataSnapshot.getValue(Event.class);
+                        for(Event event : eventArrayList){
+                            if(event.getTimeInMillis() == changedEvent.getTimeInMillis()){
+                                eventArrayList.set(eventArrayList.indexOf(event), changedEvent);
+                            }
+                        }
+                        updateMarkers();
                     }
 
                     @Override
@@ -148,12 +150,14 @@ public class MapsTab extends Fragment implements OnMapReadyCallback{
                         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(almaty, 17));
                     }
                     if (position == 0) {
-                        if (pressedEvent.getCoordinates().getLat() != 0 && pressedEvent.getCoordinates().getLng() != 0) {
+                        if(pressedEvent.getCoordinates() == null || pressedEvent.getCoordinates().getLat() == 0 && pressedEvent.getCoordinates().getLng() == 0){
+                            Toast.makeText(getContext(), R.string.noCoordinates, Toast.LENGTH_LONG).show();
+                        } else if (pressedEvent.getCoordinates().getLat() != 0 && pressedEvent.getCoordinates().getLng() != 0) {
                             eventLatLng = new LatLng(pressedEvent.getCoordinates().getLat(), pressedEvent.getCoordinates().getLng());
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(eventLatLng, 17));
-                            Log.v("MapsTab", "loaded index: " + index);
-                        } else {
-                            Toast.makeText(getContext(), R.string.noCoordinates, Toast.LENGTH_LONG).show();
+                            Log.v(TAG, "loaded index: " + index + "\n"
+                                                + "lng: " + pressedEvent.getCoordinates().getLng() + "\n"
+                                                + "lat: " + pressedEvent.getCoordinates().getLat());
                         }
 
                     }
@@ -169,6 +173,17 @@ public class MapsTab extends Fragment implements OnMapReadyCallback{
         });
 
         return v;
+    }
+
+    private void updateMarkers() {
+        for(Event singleEvent : eventArrayList){
+            if(singleEvent.getCoordinates() != null) {
+                if(singleEvent.getCoordinates().getLat() != 0 && singleEvent.getCoordinates().getLng() != 0) {
+                    eventLatLng = new LatLng(singleEvent.getCoordinates().getLat(), singleEvent.getCoordinates().getLng());
+                    mMap.addMarker(new MarkerOptions().position(eventLatLng).title(time));
+                }
+            }
+        }
     }
 
     private void getGroupsDataFromFirebase() {
