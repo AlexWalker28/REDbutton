@@ -7,9 +7,11 @@
 
     <LinearLayout
         android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_weight="4"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp">
 
         <TextView
             android:id="@+id/group_item_groupname"
@@ -26,10 +28,12 @@
             android:text="" />
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/group_item_image"
-
+    <Button
+        android:id="@+id/group_item_join_button"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:text="Button" />
+        android:layout_height="wrap_content"
+        android:text="@string/joinToGroup"
+        style="@style/Base.Widget.AppCompat.Button.Borderless"
+        android:textColor="@color/colorPrimary"
+        android:layout_gravity="center"/>
 </LinearLayout>

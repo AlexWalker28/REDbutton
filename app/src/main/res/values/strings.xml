@@ -44,5 +44,6 @@
     <string name="permissionsDiscriptionSMS">Для корректной работы приложения необходимо разрешение для отправки СМС</string>
     <string name="introGroups">Вы также можете создавать и присоединятся в группы других пользователей, чтобы получать уведомления, если кто-то из членов группы нажмет на кнопку</string>
     <string name="noCoordinates">Координаты неизвестны</string>
+    <string name="joinToGroup">Присоединиться</string>
 
 </resources>

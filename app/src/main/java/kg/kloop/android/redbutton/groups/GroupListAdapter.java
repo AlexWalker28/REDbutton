@@ -8,7 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,7 +51,7 @@ public class GroupListAdapter extends BaseAdapter {
 
         TextView groupName = (TextView) convertView.findViewById(R.id.group_item_groupname);
         final TextView membershipInfo = (TextView) convertView.findViewById(R.id.group_item_membership);
-        final ImageView image = (ImageView) convertView.findViewById(R.id.group_item_image);
+        final Button joinButton = (Button) convertView.findViewById(R.id.group_item_join_button);
 
         final GroupMembership thisGroup = groupList.get(position);
 
@@ -60,13 +60,16 @@ public class GroupListAdapter extends BaseAdapter {
         boolean isPending = thisGroup.isPending();
 
         if (isMember) {
-            image.setImageResource(R.drawable.member);
+            //joinButton.setImageResource(R.drawable.member);
             membershipInfo.setText("вы состоите в этой группе");
+            joinButton.setVisibility(View.INVISIBLE);
         } else if (isPending) {
-            image.setImageResource(R.drawable.pending);
+            //joinButton.setImageResource(R.drawable.pending);
+            joinButton.setVisibility(View.INVISIBLE);
             membershipInfo.setText("запрос отправлен");
         } else {
-            image.setImageResource(R.drawable.send_request);
+            //joinButton.setImageResource(R.drawable.send_request);
+            joinButton.setVisibility(View.VISIBLE);
         }
 
         final boolean finalIsPending = isPending;
@@ -90,7 +93,7 @@ public class GroupListAdapter extends BaseAdapter {
             }
         });
 
-        image.setOnClickListener(new View.OnClickListener() {
+        joinButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //if clicked on AllGroupsTab
