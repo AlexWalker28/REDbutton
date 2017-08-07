@@ -145,8 +145,13 @@ public class MainActivity extends AppCompatActivity implements
         mapButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, SlidingMapsActivity.class);
-                startActivity(intent);
+                if(firebaseUser != null) {
+                    Intent intent = new Intent(MainActivity.this, SlidingMapsActivity.class);
+                    startActivity(intent);
+                } else {
+                    startActivity(new Intent(MainActivity.this, IntroActivity.class));
+                    Toast.makeText(getApplicationContext(), R.string.youNeedToLogIn, Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -486,10 +491,13 @@ public class MainActivity extends AppCompatActivity implements
                     startActivity(new Intent(MainActivity.this, SlidingGroupsActivity.class));
                     break;
                 } else {
-                    Toast.makeText(this, "You need to log in", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(MainActivity.this, IntroActivity.class));
+                    Toast.makeText(this, R.string.youNeedToLogIn, Toast.LENGTH_SHORT).show();
+                    break;
                 }
             case R.id.help:
                 startActivity(new Intent(MainActivity.this, IntroActivity.class));
+                break;
 
         }
         return super.onOptionsItemSelected(item);

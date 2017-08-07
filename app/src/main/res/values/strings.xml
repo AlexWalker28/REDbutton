@@ -45,5 +45,6 @@
     <string name="introGroups">Вы также можете создавать и присоединятся в группы других пользователей, чтобы получать уведомления, если кто-то из членов группы нажмет на кнопку</string>
     <string name="noCoordinates">Координаты неизвестны</string>
     <string name="joinToGroup">Присоединиться</string>
+    <string name="youNeedToLogIn">Войдите или зарегистрируйтесь</string>
 
 </resources>
