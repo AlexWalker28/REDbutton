@@ -1,6 +1,7 @@
 package kg.kloop.android.redbutton;
 
 import android.Manifest;
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -152,8 +153,10 @@ public class MainActivity extends AppCompatActivity implements
         //=====================
         //Notification service
         //=====================
-        Intent notificationServiceIntent = new Intent(MainActivity.this, NotificationService.class);
-        startService(notificationServiceIntent);
+        if(!isMyServiceRunning(NotificationService.class)) {
+            Intent notificationServiceIntent = new Intent(MainActivity.this, NotificationService.class);
+            startService(notificationServiceIntent);
+        }
 
     }
 
@@ -501,8 +504,15 @@ public class MainActivity extends AppCompatActivity implements
             signOutMenuItem.setVisible(true);
         }
     }
-
-
+    public boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     @Override
     protected void onStart() {
