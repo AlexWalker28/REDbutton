@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,7 +52,7 @@ public class GroupListAdapter extends BaseAdapter {
 
         TextView groupName = (TextView) convertView.findViewById(R.id.group_item_groupname);
         final TextView membershipInfo = (TextView) convertView.findViewById(R.id.group_item_membership);
-        final Button joinButton = (Button) convertView.findViewById(R.id.group_item_join_button);
+        final ImageButton joinButton = (ImageButton) convertView.findViewById(R.id.join_group_image_button);
 
         final GroupMembership thisGroup = groupList.get(position);
 
@@ -68,7 +69,7 @@ public class GroupListAdapter extends BaseAdapter {
             joinButton.setVisibility(View.INVISIBLE);
             membershipInfo.setText("запрос отправлен");
         } else {
-            //joinButton.setImageResource(R.drawable.send_request);
+            joinButton.setImageResource(R.drawable.join_group);
             joinButton.setVisibility(View.VISIBLE);
         }
 
