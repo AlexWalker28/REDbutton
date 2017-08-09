@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -51,6 +52,7 @@ import kg.kloop.android.redbutton.groups.SlidingGroupsActivity;
 public class MainActivity extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
+    private static final String TAG = "MainActivity";
     private Button sendButton;
     private String firstPhoneNumber;
     private String secondPhoneNumber;
@@ -98,7 +100,14 @@ public class MainActivity extends AppCompatActivity implements
         init();
         buildGoogleApiClient();
         if (isLocationEnabled()) {
-            if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            if(android.os.Build.VERSION.SDK_INT > 22) {
+                if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                        && ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                    Log.v(TAG, "request location updates started");
+                    requestLocationUpdates();
+                }
+            } else{
+                Log.v(TAG, "request location updates for lollipop started");
                 requestLocationUpdates();
             }
         } else showAlertToEnableGPS();
@@ -303,11 +312,11 @@ public class MainActivity extends AppCompatActivity implements
                 }
             }
         };
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            locationClient.requestLocationUpdates(locationRequest, mLocationCallback, null);
-        } /*else {
-            requestGPSPermission();
-        }*/
+        if(android.os.Build.VERSION.SDK_INT > 22) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                locationClient.requestLocationUpdates(locationRequest, mLocationCallback, null);
+            }
+        } else locationClient.requestLocationUpdates(locationRequest, mLocationCallback, null);
     }
 
 
