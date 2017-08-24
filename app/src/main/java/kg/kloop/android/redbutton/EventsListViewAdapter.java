@@ -28,9 +28,6 @@ import java.util.ArrayList;
 class EventsListViewAdapter extends ArrayAdapter<Event> {
 
     private Event currentEvent;
-    private FirebaseDatabase firebaseDatabase ;
-    private DatabaseReference databaseReference;
-    private TextView messageTextView;
 
     public EventsListViewAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull ArrayList<Event> events) {
         super(context, resource, events);
@@ -46,35 +43,19 @@ class EventsListViewAdapter extends ArrayAdapter<Event> {
         }
 
         currentEvent = getItem(super.getCount() - position - 1);
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        databaseReference = firebaseDatabase.getReference("Users").child(currentEvent.getUser().getUserID()).child("message");
+
 
         TextView userNameTextView = (TextView) listItemView.findViewById(R.id.userNameTextView);
         userNameTextView.setText(currentEvent.getUser().getUserName());
+
+        TextView messageTextView = (TextView)listItemView.findViewById(R.id.messageTextView);
+        messageTextView.setText(currentEvent.getUser().getMessage());
 
         TextView timeTextView = (TextView)listItemView.findViewById(R.id.timeTextView);
         /*String time;
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
         time = dateFormat.format(currentEvent.getTimeInMillis());*/
         timeTextView.setText(DateUtils.getRelativeTimeSpanString(currentEvent.getTimeInMillis(), System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS));
-
-        messageTextView = (TextView)listItemView.findViewById(R.id.messageTextView);
-
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String message = dataSnapshot.getValue(String.class);
-                messageTextView.setText(message);
-                Log.v("Message", "message: " + message);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-
 
         return listItemView;
     }

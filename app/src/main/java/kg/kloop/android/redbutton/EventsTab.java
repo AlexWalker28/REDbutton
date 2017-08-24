@@ -21,6 +21,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -40,6 +41,7 @@ public class EventsTab extends Fragment {
     ViewPager viewPager;
     SharedPreferences preferences;
     DatabaseReference groupsDatabaseReference;
+    DatabaseReference messageDatabaseReference;
     ArrayList<String> groupNamesArrayList;
     GroupRoom groupRoom;
     ArrayList<GroupRoom> groupRoomArrayList;
@@ -89,17 +91,9 @@ public class EventsTab extends Fragment {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Event event = dataSnapshot.getValue(Event.class);
-                String userID = event.getUser().getUserID();
-                Log.v("EventsTab", "current user: " + currentUser + "\n" +
-                        "event user: " + event.getUser().getUserName() + "\n" +
-                        "event userID: " + event.getUser().getUserID());
-                for (GroupRoom room : groupRoomArrayList) {
-                    if (room.getMembers().containsKey(userID) && room.getMembers().containsKey(currentUser)) {
-                        eventsArrayList.add(event);
-                        adapter.notifyDataSetChanged();
-                        Log.v("usersToShow", "users: " + event.getUser().getUserName());
-                    }
-                }
+                messageDatabaseReference = firebaseDatabase.getReference("Users").child(event.getUser().getUserID()).child("message");
+                //since Events branch doesn't have user's messages in it, we need to add them
+                getEventWithMessage(event);
 
             }
 
@@ -124,6 +118,31 @@ public class EventsTab extends Fragment {
             }
         });
     }
+
+        private Event getEventWithMessage(final Event event){
+            messageDatabaseReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    String message = dataSnapshot.getValue(String.class);
+                    event.getUser().setMessage(message);
+
+                    String userID = event.getUser().getUserID();
+                    //add only events from users from the same groups as user
+                    for (GroupRoom room : groupRoomArrayList) {
+                        if (room.getMembers().containsKey(userID) && room.getMembers().containsKey(currentUser)) {
+                            eventsArrayList.add(event);
+                            adapter.notifyDataSetChanged();
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+            return event;
+        }
     private void resetEventsData() {
         eventsArrayList.clear();
         adapter.notifyDataSetChanged();
@@ -163,6 +182,8 @@ public class EventsTab extends Fragment {
         groupNamesArrayList.clear();
         groupRoomArrayList.clear();
     }
+
+
 
     private void init() {
         eventsListView = (ListView)v.findViewById(R.id.eventsListView);
