@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements
                     } else {
                         timeInMillis = System.currentTimeMillis();
                         user = new User(user.getUserID(), user.getUserName(), user.getUserEmail(),
-                                user.getFirstNumber(), user.getSecondNumber(), user.getMessage());
+                                user.getFirstNumber(), user.getSecondNumber(), message);
                         coordinates = event.getCoordinates();
                         event = new Event(coordinates, user, timeInMillis);
                         childUniqueKey = databaseReference.push().getKey();
