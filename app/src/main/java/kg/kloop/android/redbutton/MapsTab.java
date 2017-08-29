@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.alexwalker.sendsmsapp.R;
@@ -20,6 +21,7 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -29,6 +31,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Locale;
 
 import kg.kloop.android.redbutton.groups.GroupRoom;
@@ -51,7 +54,8 @@ public class MapsTab extends Fragment implements OnMapReadyCallback{
     private ArrayList<String> groupNamesArrayList;
     private GroupRoom groupRoom;
     private ArrayList<GroupRoom> groupRoomArrayList;
-    String currentUser;
+    private  String currentUser;
+    private HashMap<Marker, Event> markerEventHashMap;
     private static final String TAG = "MapsTab";
 
 
@@ -132,7 +136,36 @@ public class MapsTab extends Fragment implements OnMapReadyCallback{
 
                     }
                 });
+
+                mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+                    @Override
+                    public View getInfoWindow(Marker marker) {
+                        return null;
+                    }
+
+                    @Override
+                    public View getInfoContents(Marker marker) {
+                        View v = getLayoutInflater().inflate(R.layout.marker_title, null);
+
+                        TextView headerTextView = (TextView)v.findViewById(R.id.info_header);
+                        TextView bodyTextView = (TextView)v.findViewById(R.id.info_body);
+                        TextView timeTextView = (TextView)v.findViewById(R.id.info_time);
+
+                        Event event = markerEventHashMap.get(marker);
+
+                        headerTextView.setText(event.getUser().getUserName());
+                        if(event.getUser().getMessage() != null) {
+                            bodyTextView.setText(event.getUser().getMessage());
+                        }
+                        timeTextView.setText(time);
+
+
+                        return v;
+                    }
+                });
             }
+
+
         });
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -180,11 +213,14 @@ public class MapsTab extends Fragment implements OnMapReadyCallback{
             if(singleEvent.getCoordinates() != null) {
                 if(singleEvent.getCoordinates().getLat() != 0 && singleEvent.getCoordinates().getLng() != 0) {
                     eventLatLng = new LatLng(singleEvent.getCoordinates().getLat(), singleEvent.getCoordinates().getLng());
-                    mMap.addMarker(new MarkerOptions().position(eventLatLng).title(time));
+                    Marker marker = mMap.addMarker(new MarkerOptions().position(eventLatLng));
+                    markerEventHashMap.put(marker, singleEvent);
                 }
             }
         }
+
     }
+
 
     private void getGroupsDataFromFirebase() {
         groupsDatabaseReference.addChildEventListener(new ChildEventListener() {
@@ -236,6 +272,7 @@ public class MapsTab extends Fragment implements OnMapReadyCallback{
         progressBar = (ProgressBar)v.findViewById(R.id.mapsProgressBar);
         almaty = new LatLng(43.250384, 76.911368);
         currentUser = preferences.getString(Constants.CURRENT_USER_ID, "");
+        markerEventHashMap = new HashMap<>();
     }
 
     @Override
