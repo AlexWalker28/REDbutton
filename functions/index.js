@@ -82,9 +82,14 @@ exports.countApprovements= functions.database.ref('Groups/{group}/requests/{requ
                 console.log("need to increase the number of approvements");
                 return (current || 0) + 1;
             }
-            else if (!event.data.exists() && event.data.previous.exists()) {
-                console.log("need to reduce the number of approvements");
-                return (current || 0) - 1;
+            else {
+                if (current == null) {
+                console.log("current == null");
+                return;
+                } else if (!event.data.exists() && event.data.previous.exists()) {
+                    console.log("need to reduce the number of approvements");
+                    return (current || 0) - 1;
+                }
             }
           }).then(() => {
             console.log('Counter updated.');

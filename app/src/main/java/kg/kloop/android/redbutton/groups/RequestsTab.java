@@ -70,7 +70,7 @@ public class RequestsTab extends Fragment {
             @Override
             public void onDataChange(DataSnapshot groupDataSnapshot) {
                 boolean onlyModeratorApprovingRequests = false;
-                boolean isModerator = false;
+                isModerator = false;
 
                 for (DataSnapshot postsnapshot : groupDataSnapshot.getChildren()) {
                     if (postsnapshot.getKey().equals(GroupDefaults.groupsIsOnlyModeratorApprovingRequestField)) {
@@ -88,14 +88,14 @@ public class RequestsTab extends Fragment {
                 if (onlyModeratorApprovingRequests) {
                     //onlyModerator in this group is able to approve requests, check user status in this group
                     if (isModerator) {
-                        Log.d(TAG, "Только модератор добавляет пользователей. Данный пользователь модератор, переход на Approve activity");
+                        Log.d(TAG, "Только модератор добавляет пользователей. Данный пользователь модератор, создание диалог окна");
                         showRequests();
                     } else {
-                        info.setText("В этой группе только модератор рассматривает новые запросы");
+                        info.setText("В этой группе только модератор рассматривает новые запросы.");
                     }
 
                 } else {// moderator and users are able to approve requests
-                    Log.d(TAG, "Новых пользователей одобряют модераторы и пользователи. Переход на GroupActivity");
+                    Log.d(TAG, "Новых пользователей одобряют модераторы и пользователи. Создание диалог окна");
                     showRequests();
                 }
             }
