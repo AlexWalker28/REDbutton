@@ -54,7 +54,7 @@ public class MapsTab extends Fragment{
     private ArrayList<String> groupNamesArrayList;
     private GroupRoom groupRoom;
     private ArrayList<GroupRoom> groupRoomArrayList;
-    private  String currentUser;
+    private String currentUser;
     private HashMap<Marker, Event> markerEventHashMap;
     private static final String TAG = "MapsTab";
 
@@ -93,7 +93,10 @@ public class MapsTab extends Fragment{
                         String userID = event.getUser().getUserID();
                         for (GroupRoom room : groupRoomArrayList) {
                             if (room.getMembers().containsKey(userID) && room.getMembers().containsKey(currentUser)) {
-                                eventArrayList.add(event);
+                                //without this condition user will get the same event from every common (with user who pressed button) group
+                                if(!eventArrayList.contains(event)) {
+                                    eventArrayList.add(event);
+                                }
                             }
                         }
 

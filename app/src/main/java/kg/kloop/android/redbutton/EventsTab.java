@@ -95,7 +95,10 @@ public class EventsTab extends Fragment {
                 //add only events from users from the same groups as user
                 for (GroupRoom room : groupRoomArrayList) {
                     if (room.getMembers().containsKey(userID) && room.getMembers().containsKey(currentUser)) {
-                        eventsArrayList.add(event);
+                        //without this condition user will get the same event from every common (with user who pressed button) group
+                        if(!eventsArrayList.contains(event)) {
+                            eventsArrayList.add(event);
+                        }
                         adapter.notifyDataSetChanged();
                     }
                 }
