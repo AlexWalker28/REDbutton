@@ -41,7 +41,6 @@ public class EventsTab extends Fragment {
     ViewPager viewPager;
     SharedPreferences preferences;
     DatabaseReference groupsDatabaseReference;
-    DatabaseReference messageDatabaseReference;
     ArrayList<String> groupNamesArrayList;
     GroupRoom groupRoom;
     ArrayList<GroupRoom> groupRoomArrayList;
@@ -91,9 +90,15 @@ public class EventsTab extends Fragment {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Event event = dataSnapshot.getValue(Event.class);
-                messageDatabaseReference = firebaseDatabase.getReference("Users").child(event.getUser().getUserID()).child("message");
-                //since Events branch doesn't have user's messages in it, we need to add them
-                getEventWithMessage(event);
+
+                String userID = event.getUser().getUserID();
+                //add only events from users from the same groups as user
+                for (GroupRoom room : groupRoomArrayList) {
+                    if (room.getMembers().containsKey(userID) && room.getMembers().containsKey(currentUser)) {
+                        eventsArrayList.add(event);
+                        adapter.notifyDataSetChanged();
+                    }
+                }
 
             }
 
@@ -119,30 +124,6 @@ public class EventsTab extends Fragment {
         });
     }
 
-        private Event getEventWithMessage(final Event event){
-            messageDatabaseReference.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    String message = dataSnapshot.getValue(String.class);
-                    event.getUser().setMessage(message);
-
-                    String userID = event.getUser().getUserID();
-                    //add only events from users from the same groups as user
-                    for (GroupRoom room : groupRoomArrayList) {
-                        if (room.getMembers().containsKey(userID) && room.getMembers().containsKey(currentUser)) {
-                            eventsArrayList.add(event);
-                            adapter.notifyDataSetChanged();
-                        }
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-            return event;
-        }
     private void resetEventsData() {
         eventsArrayList.clear();
         adapter.notifyDataSetChanged();
