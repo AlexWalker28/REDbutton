@@ -534,6 +534,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onStart() {
         mGoogleApiClient.connect();
+        auth.addAuthStateListener(getAuthStateListener());
         super.onStart();
     }
 
