@@ -100,8 +100,6 @@ public class MapsTab extends Fragment{
                             }
                         }
 
-                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-                        time = dateFormat.format(event.getTimeInMillis());
 
                         updateMarkers();
 
@@ -160,6 +158,9 @@ public class MapsTab extends Fragment{
                         if(event.getUser().getMessage() != null) {
                             bodyTextView.setText(event.getUser().getMessage());
                         }
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+                        time = dateFormat.format(event.getTimeInMillis());
+
                         timeTextView.setText(time);
 
 
