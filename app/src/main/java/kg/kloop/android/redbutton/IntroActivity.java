@@ -46,7 +46,7 @@ public class IntroActivity extends com.heinrichreimersoftware.materialintro.app.
         if(ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED){
             addSlide(new SimpleSlide.Builder() // sms permission
                     .title(R.string.permissionsText)
-                    .description(R.string.permissionsDiscriptionSMS)
+                    .description(R.string.permissionsDescriptionSMS)
                     .background(R.color.slide1)
                     .backgroundDark(R.color.slide2)
                     .permission(android.Manifest.permission.SEND_SMS)
@@ -55,7 +55,7 @@ public class IntroActivity extends com.heinrichreimersoftware.materialintro.app.
         if (ActivityCompat.checkSelfPermission(IntroActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             addSlide(new SimpleSlide.Builder() // gps permission
                     .title("")
-                    .description(R.string.permissionsDiscriptionGPS)
+                    .description(R.string.permissionsDescriptionGPS)
                     .background(R.color.slide1)
                     .backgroundDark(R.color.slide2)
                     .permission(android.Manifest.permission.ACCESS_FINE_LOCATION)

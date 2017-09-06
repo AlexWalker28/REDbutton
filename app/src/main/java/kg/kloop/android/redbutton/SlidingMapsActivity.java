@@ -1,5 +1,6 @@
 package kg.kloop.android.redbutton;
 
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -12,7 +13,7 @@ public class SlidingMapsActivity extends AppCompatActivity {
 
     ViewPager viewPager;
     MapViewPageAdapter pagerAdapter;
-    CharSequence titles[] = {"Map", "Events"};
+    CharSequence titles[] = {"Карта", "События"};
     int numOfTabs = 2;
     String userId;
 

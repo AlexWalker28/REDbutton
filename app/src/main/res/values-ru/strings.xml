@@ -5,7 +5,7 @@
     <string name="login_state_text">Чтобы в полной мере воспользоваться приложением, вам необходимо войти </string>
     <string name="searching_gps_text">Поиск, используя геоданные...</string>
     <string name="sms_sent">Сообщение отправлено</string>
-    <string name="sms_fail">Ошибка. Повторите попытку позже</string>
+    <string name="sms_fail">Ошибка. Повторите попытку</string>
     <string name="check_gps_false">Ваши настройки геолокации находятся в выключенном состоянии.\nВключите их, чтобы воспользоваться этим приложением</string>
     <string name="enable_location">Включте геолокацию</string>
     <string name="location_settings">Перейти к настройкам</string>
@@ -30,8 +30,8 @@
     сообщение, которое они получат</string>
     <string name="settingsText">Отлично!</string>
     <string name="permissionsText">Супер!</string>
-    <string name="permissionsDiscriptionSMS">Для корректной работы приложения необходимо разрешение для отправки СМС</string>
-    <string name="permissionsDiscriptionGPS">Для корректной работы приложения необходимо разрешение на определение координат с помощью GPS</string>
+    <string name="permissionsDescriptionSMS">Для корректной работы приложения необходимо разрешение для отправки СМС</string>
+    <string name="permissionsDescriptionGPS">Для корректной работы приложения необходимо разрешение на определение координат с помощью GPS</string>
     <string name="settingsButton">Добавить!</string>
     <string name="fourthSlideText">Великолепно!</string>
     <string name="fourthSlideDiscription">Можно начинать.</string>
@@ -40,11 +40,16 @@
     <string name="enterPhoneNumbers">Желательно ввести два номера</string>
     <string name="enterMessage">Введите сообщение</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="noSMSPermissionText">Необходимо разрешить отправку SMS (это можно сделать через help)</string>
+    <string name="noSMSPermissionText">Необходимо разрешить отправку SMS (это можно сделать через меню помощи)</string>
     <string name="permissionsDiscription">Давайте включим разрешения</string>
     <string name="title_activity_sliding_groups">SlidingGroupsActivity</string>
     <string name="introGroups">Вы также можете создавать и присоединятся в группы других пользователей, чтобы получать уведомления, если кто-то из членов группы нажмет на кнопку</string>
     <string name="noCoordinates">Координаты неизвестны</string>
     <string name="joinToGroup">Присоединиться</string>
-    <string name="youNeedToLogIn">Войдите или зарегистрируйтесь</string>
+    <string name="you_need_to_log_in">Необходимо войти или зарегистрироваться и ввести ваше экстренное сообщение в настройках</string>
+    <string name="groups">Группы</string>
+    <string name="help">Помощь</string>
+    <string name="map">Карта</string>
+    <string name="alert">На помощь</string>
+    <string name="events">События</string>
 </resources>

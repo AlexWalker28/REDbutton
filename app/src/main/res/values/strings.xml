@@ -22,7 +22,7 @@
     <string name="save">Save</string>
     <string name="manual">Manual</string>
     <string name="registration">registration</string>
-    <string name="helloText">Приветствуем вас в приложении</string>
+    <string name="helloText">Welcome to the Help Me Button app</string>
     <string name="helloDiscription">Вам необходимо зарегестрироваться чтобы всё работало правильно</string>
     <string name="settingsDescription">Теперь давайте добавим ваши номера и сообщение</string>
     <string name="settingsText">Отлично!</string>
@@ -33,18 +33,21 @@
     <string name="fourthSlideDiscription">Можно начинать.</string>
     <string name="title_activity_sliding_groups">SlidingGroupsActivity</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="noGPSPermissionText">Необходимо разрешение на определение координат с помощью GPS (это можно сделать через help)</string>
-    <string name="noSMSPermissionText">Необходимо разрешить отправку SMS (это можно сделать через help)</string>
-    <string name="dataSaved">Данные сохранены</string>
-    <string name="enterPhoneNumbers">Желательно ввести два номера</string>
+    <string name="noGPSPermissionText">You need to grant GPS permission in help menu </string>
+    <string name="noSMSPermissionText">You need to grant SMS permission in help menu</string>
+    <string name="dataSaved">Data saved</string>
+    <string name="enterPhoneNumbers">We recommend to enter two phone numbers</string>
     <string name="enterMessage">Введите сообщение</string>
-    <string name="permissionsDiscriptionGPS">Для корректной работы приложения необходимо разрешение на определение координат с помощью GPS</string>
-    <string name="permissionsDiscriptionSMS">Для корректной работы приложения необходимо разрешение для отправки СМС</string>
-    <string name="introGroups">Вы также можете создавать и присоединятся в группы других пользователей, чтобы получать уведомления, если кто-то из членов группы нажмет на кнопку</string>
-    <string name="noCoordinates">Координаты неизвестны</string>
-    <string name="joinToGroup">Присоединиться</string>
-    <string name="youNeedToLogIn">Войдите или зарегистрируйтесь</string>
+    <string name="permissionsDescriptionGPS">GPS permission is required for app to work properly</string>
+    <string name="permissionsDescriptionSMS">SMS permission is required for app to work properly</string>
+    <string name="introGroups">You can create and join groups so you will get notified when somebody from your group press button</string>
+    <string name="noCoordinates">Coordinates unknown</string>
+    <string name="joinToGroup">Join</string>
+    <string name="you_need_to_log_in">You need to log in and configure your settings</string>
+    <string name="groups">Groups</string>
+    <string name="help">Help</string>
+    <string name="map">Map</string>
+    <string name="alert">Alert</string>
+    <string name="events">Events</string>
 
 </resources>

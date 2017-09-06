@@ -10,7 +10,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -159,7 +158,7 @@ public class MainActivity extends AppCompatActivity implements
                     startActivity(intent);
                 } else {
                     startActivity(new Intent(MainActivity.this, IntroActivity.class));
-                    Toast.makeText(getApplicationContext(), R.string.youNeedToLogIn, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), R.string.you_need_to_log_in, Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -198,7 +197,7 @@ public class MainActivity extends AppCompatActivity implements
                         userInfoTextView.setText(userPhoneNumber);
                     }
                     Log.v("User", "userData: " + userID + "\n" + userName + "\n" + userEmail);
-                } else  userInfoTextView.setText("You need to log in \nand configure your settings");
+                } else  userInfoTextView.setText(R.string.you_need_to_log_in);
 
             }
         };
@@ -364,9 +363,9 @@ public class MainActivity extends AppCompatActivity implements
             try {
                 sendSMS(firstPhoneNumber, message);
                 sendSMS(secondPhoneNumber, message);
-                Toast.makeText(getApplicationContext(), "Sms sent", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), R.string.sms_sent, Toast.LENGTH_LONG).show();
             } catch (Exception e) {
-                Toast.makeText(getApplicationContext(), "Fail. Please try again", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), R.string.sms_fail, Toast.LENGTH_LONG).show();
                 Log.v("SMS", "sms failed: " + e);
                 e.printStackTrace();
             }
@@ -501,7 +500,7 @@ public class MainActivity extends AppCompatActivity implements
                     break;
                 } else {
                     startActivity(new Intent(MainActivity.this, IntroActivity.class));
-                    Toast.makeText(this, R.string.youNeedToLogIn, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.you_need_to_log_in, Toast.LENGTH_SHORT).show();
                     break;
                 }
             case R.id.help:

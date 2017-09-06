@@ -149,12 +149,12 @@ public class NotificationService extends Service {
         return START_STICKY;
     }
 
-    private void showNotification(String name) {
+    private void showNotification(String groupName) {
         Intent intent = new Intent(this, SlidingMapsActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, NOTIFICATION_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(getApplicationContext())
                 .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle(user.getUserName()+ " from " + name + " pressed Red Button")
+                .setContentTitle(user.getUserName()+ " from " + groupName + " pressed Help Me Button")
                 .setContentText(time)
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true);
