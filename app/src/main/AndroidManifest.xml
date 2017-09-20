@@ -20,7 +20,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="kg.kloop.android.redbutton.MainActivity"
+        <activity
+            android:name="kg.kloop.android.redbutton.MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -30,10 +31,11 @@
         </activity>
         <activity
             android:name="kg.kloop.android.redbutton.IntroActivity"
-            android:theme="@style/Theme.Intro"
-            android:screenOrientation="portrait"/>
-        <activity android:name="kg.kloop.android.redbutton.SettingsActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Intro" />
+        <activity
+            android:name="kg.kloop.android.redbutton.SettingsActivity"
+            android:screenOrientation="portrait" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -50,19 +52,20 @@
             android:name="kg.kloop.android.redbutton.LocationService"
             android:exported="false" />
         android:label="@string/title_activity_maps" />
-        <activity android:name="kg.kloop.android.redbutton.groups.Approve"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name="kg.kloop.android.redbutton.groups.Approve"
+            android:screenOrientation="portrait" />
         <activity
             android:name="kg.kloop.android.redbutton.groups.SlidingGroupsActivity"
             android:label="@string/title_activity_sliding_groups"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden"
-            android:screenOrientation="portrait"/>
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name="kg.kloop.android.redbutton.groups.GroupActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden"
-            android:screenOrientation="portrait"/>
+            android:windowSoftInputMode="stateHidden" />
 
         <service
             android:name="kg.kloop.android.redbutton.NotificationService"
@@ -71,8 +74,9 @@
 
         <activity
             android:name="kg.kloop.android.redbutton.SlidingMapsActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name="kg.kloop.android.redbutton.InformationActivity"></activity>
     </application>
 
 </manifest>

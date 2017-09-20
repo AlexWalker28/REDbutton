@@ -39,7 +39,6 @@
     <string name="dataSaved">Данные сохранены</string>
     <string name="enterPhoneNumbers">Желательно ввести два номера</string>
     <string name="enterMessage">Введите сообщение</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="noSMSPermissionText">Необходимо разрешить отправку SMS (это можно сделать через меню помощи)</string>
     <string name="permissionsDiscription">Давайте включим разрешения</string>
     <string name="title_activity_sliding_groups">SlidingGroupsActivity</string>
@@ -52,4 +51,5 @@
     <string name="map">Карта</string>
     <string name="alert">На помощь</string>
     <string name="events">События</string>
+    <string name="information">Информация</string>
 </resources>

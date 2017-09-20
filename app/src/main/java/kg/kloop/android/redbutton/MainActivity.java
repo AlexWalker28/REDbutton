@@ -503,6 +503,9 @@ public class MainActivity extends AppCompatActivity implements
                     Toast.makeText(this, R.string.you_need_to_log_in, Toast.LENGTH_SHORT).show();
                     break;
                 }
+            case R.id.information:
+                startActivity(new Intent(MainActivity.this, InformationActivity.class));
+                break;
             case R.id.help:
                 startActivity(new Intent(MainActivity.this, IntroActivity.class));
                 break;
