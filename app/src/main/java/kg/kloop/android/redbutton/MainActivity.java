@@ -47,6 +47,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.Arrays;
 
 import kg.kloop.android.redbutton.groups.SlidingGroupsActivity;
+import kg.kloop.android.redbutton.information.InformationActivity;
 
 public class MainActivity extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {

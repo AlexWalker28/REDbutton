@@ -1,4 +1,4 @@
-package kg.kloop.android.redbutton;
+package kg.kloop.android.redbutton.information;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
