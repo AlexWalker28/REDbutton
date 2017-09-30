@@ -141,15 +141,11 @@
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/bottom_navigation_view"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="0dp"
-        android:layout_marginLeft="0dp"
-        android:layout_marginRight="0dp"
         android:background="@color/colorPrimary"
-        app:itemBackground="@color/colorAccent"
-        app:itemIconTint="@color/colorPrimary"
-        app:itemTextColor="@android:color/white"
+        app:itemIconTint="@drawable/item_color_state"
+        app:itemTextColor="@drawable/item_color_state"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintLeft_toLeftOf="parent"

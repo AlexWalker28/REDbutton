@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.content.WakefulBroadcastReceiver;
@@ -54,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private static final String TAG = "MainActivity";
     private Button sendButton;
+    private BottomNavigationView bottomNavigationView;
     private String firstPhoneNumber;
     private String secondPhoneNumber;
     private String message;
@@ -161,6 +163,26 @@ public class MainActivity extends AppCompatActivity implements
                     startActivity(new Intent(MainActivity.this, IntroActivity.class));
                     Toast.makeText(getApplicationContext(), R.string.you_need_to_log_in, Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+
+        bottomNavigationView.inflateMenu(R.menu.bottom_navigation_menu);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()){
+                    case R.id.home_item:
+                        break;
+                    case R.id.map_item:
+                        break;
+                    case R.id.opportunities_item:
+                        break;
+                    case R.id.read_item:
+                        break;
+                    case R.id.profile_item:
+                        break;
+                }
+                return true;
             }
         });
 
@@ -569,6 +591,7 @@ public class MainActivity extends AppCompatActivity implements
         user = new User();
         event = new Event();
         sendButton = (Button) findViewById(R.id.redButton);
+        bottomNavigationView = (BottomNavigationView)findViewById(R.id.bottom_navigation_view);
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference().child("Events");
         auth = FirebaseAuth.getInstance();
