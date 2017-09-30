@@ -153,19 +153,6 @@ public class MainActivity extends AppCompatActivity implements
 
         setPermissionsInfo();
 
-        mapButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(firebaseUser != null) {
-                    Intent intent = new Intent(MainActivity.this, SlidingMapsActivity.class);
-                    startActivity(intent);
-                } else {
-                    startActivity(new Intent(MainActivity.this, IntroActivity.class));
-                    Toast.makeText(getApplicationContext(), R.string.you_need_to_log_in, Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
         bottomNavigationView.inflateMenu(R.menu.bottom_navigation_menu);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -174,6 +161,13 @@ public class MainActivity extends AppCompatActivity implements
                     case R.id.home_item:
                         break;
                     case R.id.map_item:
+                        if (firebaseUser != null) {
+                            Intent intent = new Intent(MainActivity.this, SlidingMapsActivity.class);
+                            startActivity(intent);
+                        } else {
+                            startActivity(new Intent(MainActivity.this, IntroActivity.class));
+                            Toast.makeText(getApplicationContext(), R.string.you_need_to_log_in, Toast.LENGTH_SHORT).show();
+                        }
                         break;
                     case R.id.opportunities_item:
                         break;
@@ -597,7 +591,6 @@ public class MainActivity extends AppCompatActivity implements
         auth = FirebaseAuth.getInstance();
         locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
         preferences = getSharedPreferences(Constants.SHARED_PREF_FILE, MODE_PRIVATE);
-        mapButton = (Button)findViewById(R.id.button2);
         progressBar = (ProgressBar)findViewById(R.id.progressBar);
         latLngTextView = (TextView)findViewById(R.id.latLngTextView);
         userInfoTextView = (TextView)findViewById(R.id.userInfoTextView);
