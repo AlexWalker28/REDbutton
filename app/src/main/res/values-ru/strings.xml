@@ -52,4 +52,7 @@
     <string name="alert">На помощь</string>
     <string name="events">События</string>
     <string name="information">Информация</string>
+    <string name="opportunities">Возможности</string>
+    <string name="read">Читать</string>
+    <string name="profile">Профиль</string>
 </resources>

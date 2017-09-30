@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/map_item"
+        android:icon="@drawable/ic_map"
+        app:showAsAction="always"
+        android:title="@string/map"
+        android:orderInCategory="1"/>
+    <item
+        android:id="@+id/opportunities_item"
+        app:showAsAction="ifRoom"
+        android:title="@string/opportunities"
+        android:icon="@drawable/ic_opportunities"
+        android:orderInCategory="2"/>
+    <item
+        android:id="@+id/read_item"
+        app:showAsAction="ifRoom"
+        android:title="@string/read"
+        android:icon="@drawable/ic_read"
+        android:orderInCategory="3"/>
+    <item
+        android:id="@+id/profile_item"
+        app:showAsAction="always"
+        android:title="@string/profile"
+        android:icon="@drawable/ic_profile"
+        android:orderInCategory="4"/>
+
+</menu>
