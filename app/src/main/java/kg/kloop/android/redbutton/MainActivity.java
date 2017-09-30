@@ -48,6 +48,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.Arrays;
 
 import kg.kloop.android.redbutton.groups.SlidingGroupsActivity;
+import kg.kloop.android.redbutton.helpers.BottomNavigationViewHelper;
 import kg.kloop.android.redbutton.information.InformationActivity;
 
 public class MainActivity extends AppCompatActivity implements
@@ -154,6 +155,7 @@ public class MainActivity extends AppCompatActivity implements
         setPermissionsInfo();
 
         bottomNavigationView.inflateMenu(R.menu.bottom_navigation_menu);
+        BottomNavigationViewHelper.disableShiftMode(bottomNavigationView);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
