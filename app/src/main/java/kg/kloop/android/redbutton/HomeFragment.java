@@ -1,8 +1,8 @@
 package kg.kloop.android.redbutton;
 
+
 import android.Manifest;
 import android.app.ActivityManager;
-import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
@@ -19,15 +19,17 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
+import android.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.content.WakefulBroadcastReceiver;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.telephony.SmsManager;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -54,10 +56,12 @@ import kg.kloop.android.redbutton.groups.SlidingGroupsActivity;
 import kg.kloop.android.redbutton.helpers.BottomNavigationViewHelper;
 import kg.kloop.android.redbutton.information.InformationActivity;
 
-public class MainActivity extends AppCompatActivity implements
+
+public class HomeFragment extends Fragment implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private static final String TAG = "MainActivity";
+    private View view;
     private Button sendButton;
     private BottomNavigationView bottomNavigationView;
     private String firstPhoneNumber;
@@ -90,36 +94,17 @@ public class MainActivity extends AppCompatActivity implements
     private TextView permissionsInfoTextView;
     private Boolean isFirstRun;
 
+
+    public HomeFragment() {
+    }
+
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        isFirstRun = getSharedPreferences("PREFERENCE", MODE_PRIVATE)
-                .getBoolean("isFirstRun", true);
-        if (isFirstRun) {
-            startActivity(new Intent(MainActivity.this, IntroActivity.class));
-        }
-        getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putBoolean("isFirstRun", false).apply();
-
-
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.fragment_home, container, false);
+        getContext();
         init();
         buildGoogleApiClient();
-        if (isLocationEnabled()) {
-            if(android.os.Build.VERSION.SDK_INT > 22) {
-                if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                        && ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                    Log.v(TAG, "request location updates started");
-                    requestLocationUpdates();
-                }
-            } else{
-                Log.v(TAG, "request location updates for lollipop started");
-                requestLocationUpdates();
-            }
-        } else showAlertToEnableGPS();
-        auth = FirebaseAuth.getInstance();
-        auth.addAuthStateListener(getAuthStateListener());
-
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -127,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements
                 sendAlertMessage();
 
                 if (isLocationEnabled()) {
-                    if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                         requestGPSPermission();
                     } else {
                         timeInMillis = System.currentTimeMillis();
@@ -154,64 +139,9 @@ public class MainActivity extends AppCompatActivity implements
 
             }
         });
-
         setPermissionsInfo();
-
-        bottomNavigationView.inflateMenu(R.menu.bottom_navigation_menu);
-        BottomNavigationViewHelper.disableShiftMode(bottomNavigationView);
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                Fragment fragment;
-                FragmentManager manager = getFragmentManager();
-                FragmentTransaction transaction;
-                switch (item.getItemId()){
-                    case R.id.home_item:
-                        fragment = new HomeFragment();
-                        manager = getFragmentManager();
-                        transaction = manager.beginTransaction();
-                        transaction.add(R.id.main_frame_layout, fragment);
-                        transaction.addToBackStack(null);
-                        transaction.commit();
-                        break;
-                    case R.id.map_item:
-                        if (firebaseUser != null) {
-                            Intent intent = new Intent(MainActivity.this, SlidingMapsActivity.class);
-                            startActivity(intent);
-                        } else {
-                            startActivity(new Intent(MainActivity.this, IntroActivity.class));
-                            Toast.makeText(getApplicationContext(), R.string.you_need_to_log_in, Toast.LENGTH_SHORT).show();
-                        }
-                        break;
-                    case R.id.opportunities_item:
-                        startActivity(new Intent(MainActivity.this, InformationActivity.class));
-                        break;
-                    case R.id.read_item:
-                        break;
-                    case R.id.profile_item:
-                        /*Intent intent = new Intent(MainActivity.this, SettingsFragment.class);
-                        startActivity(intent);*/
-                        fragment = new SettingsFragment();
-                        transaction = manager.beginTransaction();
-                        transaction.add(R.id.main_frame_layout, fragment);
-                        transaction.addToBackStack(null);
-                        transaction.commit();
-                        break;
-                }
-                return true;
-            }
-        });
-
-        //=====================
-        //Notification service
-        //=====================
-        if(!isMyServiceRunning(NotificationService.class)) {
-            Intent notificationServiceIntent = new Intent(MainActivity.this, NotificationService.class);
-            startService(notificationServiceIntent);
-        }
-
+        return view;
     }
-
     private FirebaseAuth.AuthStateListener getAuthStateListener() {
         authStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -259,7 +189,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void showAlertToEnableGPS() {
-        final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        final AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
         dialog.setTitle("Enable Location")
                 .setMessage("Your Locations Settings is set to 'Off'.\nPlease Enable Location to " +
                         "use this app")
@@ -279,7 +209,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     protected synchronized void buildGoogleApiClient() {
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
+        mGoogleApiClient = new GoogleApiClient.Builder(getContext())
                 .addApi(LocationServices.API)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -288,18 +218,18 @@ public class MainActivity extends AppCompatActivity implements
 
 
     private void startLocationService() {
-        Intent serviceIntent = new Intent(MainActivity.this, LocationService.class);
+        Intent serviceIntent = new Intent(getActivity(), LocationService.class);
         serviceIntent.putExtra(Constants.DATABASE_CHILD_ID, childUniqueKey);
         serviceIntent.putExtra(Constants.FIRST_NUMBER, firstPhoneNumber);
         serviceIntent.putExtra(Constants.SECOND_NUMBER, secondPhoneNumber);
-        startService(serviceIntent);
+        getContext().startService(serviceIntent);
         Log.v("LocationService", "Location service should start");
     }
 
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             if(!isFirstRun) requestGPSPermission();
         } else {
             requestLocationUpdates();
@@ -333,7 +263,7 @@ public class MainActivity extends AppCompatActivity implements
         LocationRequest locationRequest = new LocationRequest();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
                 .setInterval(0);
-        FusedLocationProviderClient locationClient = new FusedLocationProviderClient(getApplicationContext());
+        FusedLocationProviderClient locationClient = new FusedLocationProviderClient(getContext());
         mLocationCallback = new LocationCallback(){
             @Override
             public void onLocationResult(LocationResult locationResult) {
@@ -351,7 +281,7 @@ public class MainActivity extends AppCompatActivity implements
             }
         };
         if(android.os.Build.VERSION.SDK_INT > 22) {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 locationClient.requestLocationUpdates(locationRequest, mLocationCallback, null);
             }
         } else locationClient.requestLocationUpdates(locationRequest, mLocationCallback, null);
@@ -364,11 +294,11 @@ public class MainActivity extends AppCompatActivity implements
     private void initReceiver() {
         eventStateReceiver = new EventStateReceiver();
         IntentFilter intentFilter = new IntentFilter(Constants.BROADCAST_ACTION);
-        LocalBroadcastManager.getInstance(this).registerReceiver(eventStateReceiver, intentFilter);
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(eventStateReceiver, intentFilter);
     }
 
 
-    private class EventStateReceiver extends WakefulBroadcastReceiver{
+    private class EventStateReceiver extends WakefulBroadcastReceiver {
         private EventStateReceiver(){
 
         }
@@ -388,7 +318,7 @@ public class MainActivity extends AppCompatActivity implements
     //SMS
     //=======================
     private void getMessageDataFromSharedPref() {
-        SharedPreferences preferences = getSharedPreferences(Constants.SHARED_PREF_FILE, MODE_PRIVATE);
+        SharedPreferences preferences = getContext().getSharedPreferences(Constants.SHARED_PREF_FILE, Context.MODE_PRIVATE);
         firstPhoneNumber = preferences.getString(Constants.FIRST_NUMBER, "");
         secondPhoneNumber = preferences.getString(Constants.SECOND_NUMBER, "");
         message = preferences.getString(Constants.MESSAGE, "");
@@ -402,9 +332,9 @@ public class MainActivity extends AppCompatActivity implements
             try {
                 sendSMS(firstPhoneNumber, message);
                 sendSMS(secondPhoneNumber, message);
-                Toast.makeText(getApplicationContext(), R.string.sms_sent, Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), R.string.sms_sent, Toast.LENGTH_LONG).show();
             } catch (Exception e) {
-                Toast.makeText(getApplicationContext(), R.string.sms_fail, Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), R.string.sms_fail, Toast.LENGTH_LONG).show();
                 Log.v("SMS", "sms failed: " + e);
                 e.printStackTrace();
             }
@@ -428,18 +358,18 @@ public class MainActivity extends AppCompatActivity implements
     //permissions
     //================================
     private void requestSMSPermission() {
-        ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.SEND_SMS}, 1);
+        ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.SEND_SMS}, 1);
     }
     private void requestGPSPermission(){
-        ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 2);
+        ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 2);
     }
     private boolean isSMSPermissionGranted() {
-        if(ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED){
+        if(ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED){
             return true;
         }else return false;
     }
     private boolean isGPSPermissionGranted(){
-        if(ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+        if(ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
             return true;
         }else return false;
     }
@@ -451,16 +381,16 @@ public class MainActivity extends AppCompatActivity implements
                     try {
                         sendSMS(firstPhoneNumber, message);
                         sendSMS(secondPhoneNumber, message);
-                        Toast.makeText(getApplicationContext(), R.string.sms_sent, Toast.LENGTH_LONG).show();
+                        Toast.makeText(getContext(), R.string.sms_sent, Toast.LENGTH_LONG).show();
                     } catch (Exception e) {
-                        Toast.makeText(getApplicationContext(), R.string.sms_fail, Toast.LENGTH_LONG).show();
+                        Toast.makeText(getContext(), R.string.sms_fail, Toast.LENGTH_LONG).show();
                         Log.v("SMS", "sms failed: " + e);
                         e.printStackTrace();
                     }
                 }
                 break;
             case 2: //gps permission
-                if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                     requestLocationUpdates();
 
                 }
@@ -476,104 +406,15 @@ public class MainActivity extends AppCompatActivity implements
         } else permissionsInfoTextView.setText("");
     }
 
-
-    //============================
-    //menu mapButton in action bar
-    //============================
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_items, menu);
-        signInMenuItem = menu.findItem(R.id.sign_in_item);
-        signOutMenuItem = menu.findItem(R.id.sign_out_item);
-        setAuthMenuItemsVisibility();
-        return true;
-    }
-
-    @Override
-    public boolean onMenuOpened(int featureId, Menu menu) {
-        setAuthMenuItemsVisibility();
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.sign_in_item:
-                if (firebaseUser == null) {
-                    //   onSignOutCleanUp();
-                    //Starts sign-in flow
-                    startActivityForResult(
-                            AuthUI.getInstance()
-                                    .createSignInIntentBuilder()
-                                    .setIsSmartLockEnabled(false)
-                                    .setProviders(Arrays.asList(
-                                            new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
-                                            new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
-                                            new AuthUI.IdpConfig.Builder(AuthUI.PHONE_VERIFICATION_PROVIDER).build()))
-                                    .build(),
-                            RC_SIGN_IN); //RC_SIGN_IN - request code
-                    //User is signed in
-                } else {
-                    //    onSignInInit(mFirebaseUser);
-                    Toast.makeText(MainActivity.this, "Your are logged in!", Toast.LENGTH_SHORT).show();
-
-                }
-                auth.addAuthStateListener(getAuthStateListener());
-                break;
-            case R.id.sign_out_item:
-                auth.signOut();
-                if (firebaseUser == null) {
-                    Toast.makeText(MainActivity.this, R.string.logout, Toast.LENGTH_SHORT).show();
-                }
-                Log.v("Logout", "item pressed: " + item.getItemId() + "\n" + "should be:    " + R.id.sign_out_item);
-                break;
-
-            case R.id.groups:
-                //startActivity(new Intent(MainActivity.this, GroupsList.class));
-                if (firebaseUser != null) {
-                    startActivity(new Intent(MainActivity.this, SlidingGroupsActivity.class));
-                    break;
-                } else {
-                    startActivity(new Intent(MainActivity.this, IntroActivity.class));
-                    Toast.makeText(this, R.string.you_need_to_log_in, Toast.LENGTH_SHORT).show();
-                    break;
-                }
-            case R.id.help:
-                startActivity(new Intent(MainActivity.this, IntroActivity.class));
-                break;
-
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    private void setAuthMenuItemsVisibility() {
-        if(firebaseUser == null){
-            signOutMenuItem.setVisible(false);
-            signInMenuItem.setVisible(true);
-        } else {
-            signInMenuItem.setVisible(false);
-            signOutMenuItem.setVisible(true);
-        }
-    }
-    public boolean isMyServiceRunning(Class<?> serviceClass) {
-        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (serviceClass.getName().equals(service.service.getClassName())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    protected void onStart() {
+    public void onStart() {
         mGoogleApiClient.connect();
         auth.addAuthStateListener(getAuthStateListener());
         super.onStart();
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         mGoogleApiClient.connect();
         requestLocationUpdates();
         setPermissionsInfo();
@@ -581,7 +422,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    protected void onStop() {
+    public void onStop() {
         if (authStateListener != null) {
             auth.removeAuthStateListener(authStateListener);
         }
@@ -591,24 +432,22 @@ public class MainActivity extends AppCompatActivity implements
         super.onStop();
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
     private void init() {
         user = new User();
         event = new Event();
-        sendButton = (Button) findViewById(R.id.redButton);
-        bottomNavigationView = (BottomNavigationView)findViewById(R.id.bottom_navigation_view);
+        sendButton = (Button) view.findViewById(R.id.redButton);
+        bottomNavigationView = (BottomNavigationView)view.findViewById(R.id.bottom_navigation_view);
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference().child("Events");
         auth = FirebaseAuth.getInstance();
-        locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-        preferences = getSharedPreferences(Constants.SHARED_PREF_FILE, MODE_PRIVATE);
-        progressBar = (ProgressBar)findViewById(R.id.progressBar);
-        latLngTextView = (TextView)findViewById(R.id.latLngTextView);
-        userInfoTextView = (TextView)findViewById(R.id.userInfoTextView);
-        permissionsInfoTextView = (TextView)findViewById(R.id.permissionsInfoTextView);
+        locationManager = (LocationManager)getContext().getSystemService(Context.LOCATION_SERVICE);
+        preferences = getContext().getSharedPreferences(Constants.SHARED_PREF_FILE, Context.MODE_PRIVATE);
+        progressBar = (ProgressBar)view.findViewById(R.id.progressBar);
+        latLngTextView = (TextView)view.findViewById(R.id.latLngTextView);
+        userInfoTextView = (TextView)view.findViewById(R.id.userInfoTextView);
+        permissionsInfoTextView = (TextView)view.findViewById(R.id.permissionsInfoTextView);
     }
+
+
+
 }
