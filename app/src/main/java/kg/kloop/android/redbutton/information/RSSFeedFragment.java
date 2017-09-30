@@ -95,6 +95,7 @@ public class RSSFeedFragment extends Fragment {
         @Override
         protected void onPreExecute() {
             mSwipeLayout.setRefreshing(true);
+            mEditText.setText("ijnet.org/ru/rss/opportunities");
             urlLink = mEditText.getText().toString();
         }
 
@@ -105,7 +106,7 @@ public class RSSFeedFragment extends Fragment {
 
             try {
                 if(!urlLink.startsWith("http://") && !urlLink.startsWith("https://"))
-                    urlLink = "http://" + urlLink;
+                    urlLink = "https://" + urlLink;
 
                 URL url = new URL(urlLink);
                 InputStream inputStream = url.openConnection().getInputStream();
