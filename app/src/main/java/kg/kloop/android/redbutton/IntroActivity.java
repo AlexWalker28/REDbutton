@@ -85,7 +85,7 @@ public class IntroActivity extends com.heinrichreimersoftware.materialintro.app.
     }
 
     public void goToSettingsButton(View view) {
-        Intent i = new Intent(this, SettingsActivity.class);
+        Intent i = new Intent(this, SettingsFragment.class);
         i.putExtra("key", 1);
         startActivity(i);
     }

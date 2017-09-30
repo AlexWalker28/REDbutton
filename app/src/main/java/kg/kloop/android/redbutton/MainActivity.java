@@ -2,6 +2,9 @@ package kg.kloop.android.redbutton;
 
 import android.Manifest;
 import android.app.ActivityManager;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -177,8 +180,14 @@ public class MainActivity extends AppCompatActivity implements
                     case R.id.read_item:
                         break;
                     case R.id.profile_item:
-                        Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
-                        startActivity(intent);
+                        /*Intent intent = new Intent(MainActivity.this, SettingsFragment.class);
+                        startActivity(intent);*/
+                        Fragment fragment = new SettingsFragment();
+                        FragmentManager manager = getFragmentManager();
+                        FragmentTransaction transaction = manager.beginTransaction();
+                        transaction.add(R.id.main_frame_layout, fragment);
+                        transaction.addToBackStack(null);
+                        transaction.commit();
                         break;
                 }
                 return true;

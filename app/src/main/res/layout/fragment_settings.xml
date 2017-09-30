@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/wallpaper"
-    tools:context="kg.kloop.android.redbutton.SettingsActivity">
+    tools:context="kg.kloop.android.redbutton.SettingsFragment">
 
     <Button
         android:id="@+id/saveSettingsButton"

@@ -1,5 +1,6 @@
 package kg.kloop.android.redbutton;
 
+import android.app.Fragment;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -7,9 +8,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
+import android.support.annotation.Nullable;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -23,12 +26,16 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SettingsActivity extends AppCompatActivity {
+import static android.app.Activity.RESULT_OK;
+import static android.content.Context.MODE_PRIVATE;
+
+public class SettingsFragment extends Fragment {
 
     static final int REQUEST_SELECT_FIRST_PHONE_NUMBER = 1;
     static final int REQUEST_SELECT_SECOND_PHONE_NUMBER = 2;
-    private static final String TAG = "SettingsActivity";
+    private static final String TAG = "SettingsFragment";
 
+    private View view;
     private EditText firstNumberEditText;
     private EditText secondNumberEditText;
     private EditText messageEditText;
@@ -50,11 +57,10 @@ public class SettingsActivity extends AppCompatActivity {
     private Button firstNumberButton;
     private Button secondNumberButton;
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settings);
-        //getSupportActionBar().hide();
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.fragment_settings, container, false);
 
         init();
         loadDataFromPref();
@@ -81,13 +87,13 @@ public class SettingsActivity extends AppCompatActivity {
 
                 saveDataInPref(firstNumber, secondNumber, message);
                 if(isPrefSaved()){
-                    Toast.makeText(getApplicationContext(), R.string.dataSaved, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), R.string.dataSaved, Toast.LENGTH_LONG).show();
                 } else if(preferences.getString(Constants.FIRST_NUMBER, "").length() == 0 ||
-                          preferences.getString(Constants.SECOND_NUMBER, "").length() == 0 ){
-                    Toast.makeText(getApplicationContext(), R.string.enterPhoneNumbers, Toast.LENGTH_LONG).show();
+                        preferences.getString(Constants.SECOND_NUMBER, "").length() == 0 ){
+                    Toast.makeText(getContext(), R.string.enterPhoneNumbers, Toast.LENGTH_LONG).show();
                 }
                 if (preferences.getString(Constants.MESSAGE, "").length() == 0){
-                    Toast.makeText(getApplicationContext(), R.string.enterMessage, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), R.string.enterMessage, Toast.LENGTH_LONG).show();
                 }
 
                 if(firebaseUser != null){
@@ -103,7 +109,7 @@ public class SettingsActivity extends AppCompatActivity {
                 } else {
                     databaseReference.push().setValue(getUser());
                 }
-                finish();
+                //getFragmentManager().popBackStack();
             }
         });
 
@@ -119,17 +125,16 @@ public class SettingsActivity extends AppCompatActivity {
                 selectContact(REQUEST_SELECT_SECOND_PHONE_NUMBER);
             }
         });
-
-
-
+        return view;
     }
+
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             // Get the URI and query the content provider for the phone number
             Uri contactUri = data.getData();
             String[] projection = new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER};
-            Cursor cursor = getContentResolver().query(contactUri, projection,
+            Cursor cursor = getContext().getContentResolver().query(contactUri, projection,
                     null, null, null);
             // If the cursor returned is valid, get the phone number
             if (cursor != null && cursor.moveToFirst()) {
@@ -153,7 +158,7 @@ public class SettingsActivity extends AppCompatActivity {
         // Start an activity for the user to pick a phone number from contacts
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE);
-        if (intent.resolveActivity(getPackageManager()) != null) {
+        if (intent.resolveActivity(getContext().getPackageManager()) != null) {
             startActivityForResult(intent, requestCode);
         }
     }
@@ -199,7 +204,7 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStop() {
+    public void onStop() {
         super.onStop();
         if (authStateListener != null) {
             auth.removeAuthStateListener(authStateListener);
@@ -207,13 +212,13 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void init() {
-        firstNumberEditText = (EditText)findViewById(R.id.firstNumberEditText);
-        secondNumberEditText = (EditText)findViewById(R.id.secondNumberEditText);
-        firstNumberButton = (Button)findViewById(R.id.firstNumberButton);
-        secondNumberButton = (Button)findViewById(R.id.secondNumberButton);
-        messageEditText = (EditText)findViewById(R.id.messageEditText);
-        saveSettingsButton = (Button)findViewById(R.id.saveSettingsButton);
-        preferences = getSharedPreferences(Constants.SHARED_PREF_FILE, MODE_PRIVATE);
+        firstNumberEditText = (EditText)view.findViewById(R.id.firstNumberEditText);
+        secondNumberEditText = (EditText)view.findViewById(R.id.secondNumberEditText);
+        firstNumberButton = (Button)view.findViewById(R.id.firstNumberButton);
+        secondNumberButton = (Button)view.findViewById(R.id.secondNumberButton);
+        messageEditText = (EditText)view.findViewById(R.id.messageEditText);
+        saveSettingsButton = (Button)view.findViewById(R.id.saveSettingsButton);
+        preferences = getContext().getSharedPreferences(Constants.SHARED_PREF_FILE, MODE_PRIVATE);
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference().child("Users");
         auth = FirebaseAuth.getInstance();

@@ -34,7 +34,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Intro" />
         <activity
-            android:name="kg.kloop.android.redbutton.SettingsActivity"
+            android:name="kg.kloop.android.redbutton.SettingsFragment"
             android:screenOrientation="portrait" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
