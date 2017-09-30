@@ -13,17 +13,9 @@
         android:orderInCategory="2"
         android:title="@string/sign_out"/>
     <item
-        android:id="@+id/settings_item"
-        android:orderInCategory="3"
-        android:title="@string/settings"/>
-    <item
         android:id="@+id/groups"
         android:orderInCategory="4"
         android:title="@string/groups"/>
-    <item
-        android:id="@+id/information"
-        android:orderInCategory="5"
-        android:title="@string/information"/>
     <item
         android:id="@+id/help"
         android:orderInCategory="6"

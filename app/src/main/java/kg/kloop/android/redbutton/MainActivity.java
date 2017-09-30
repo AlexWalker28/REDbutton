@@ -172,10 +172,13 @@ public class MainActivity extends AppCompatActivity implements
                         }
                         break;
                     case R.id.opportunities_item:
+                        startActivity(new Intent(MainActivity.this, InformationActivity.class));
                         break;
                     case R.id.read_item:
                         break;
                     case R.id.profile_item:
+                        Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+                        startActivity(intent);
                         break;
                 }
                 return true;
@@ -478,10 +481,6 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
-            case R.id.settings_item:
-                Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
-                startActivity(intent);
-                break;
             case R.id.sign_in_item:
                 if (firebaseUser == null) {
                     //   onSignOutCleanUp();
@@ -522,9 +521,6 @@ public class MainActivity extends AppCompatActivity implements
                     Toast.makeText(this, R.string.you_need_to_log_in, Toast.LENGTH_SHORT).show();
                     break;
                 }
-            case R.id.information:
-                startActivity(new Intent(MainActivity.this, InformationActivity.class));
-                break;
             case R.id.help:
                 startActivity(new Intent(MainActivity.this, IntroActivity.class));
                 break;
