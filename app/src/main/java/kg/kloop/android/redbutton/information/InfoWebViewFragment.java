@@ -16,7 +16,7 @@ import com.example.alexwalker.sendsmsapp.R;
  * A simple {@link Fragment} subclass.
  */
 public class InfoWebViewFragment extends Fragment {
-
+    String url = "";
 
     public InfoWebViewFragment() {
         // Required empty public constructor
@@ -35,9 +35,15 @@ public class InfoWebViewFragment extends Fragment {
         // Configure the client to use when opening URLs
         webView.setWebViewClient(new WebViewClient());
         // Load the initial URL
-        webView.loadUrl("http://sozsende.info/pages");
+        if(url.length() != 0){
+            webView.loadUrl(url);
+        } else webView.loadUrl("http://sozsende.info/pages");
 
         return view;
+    }
+
+    public void setUrl(String url){
+        this.url = url;
     }
 
 }

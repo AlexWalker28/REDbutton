@@ -102,7 +102,7 @@ public class RSSFeedFragment extends Fragment {
         protected void onPostExecute(Boolean success) {
             if (success) {
                 // Fill RecyclerView
-                mRecyclerView.setAdapter(new RssFeedListAdapter(mFeedModelList));
+                mRecyclerView.setAdapter(new RssFeedListAdapter(mFeedModelList, getFragmentManager()));
                 mSwipeLayout.setRefreshing(false);
             } else {
                 Toast.makeText(getActivity(),
