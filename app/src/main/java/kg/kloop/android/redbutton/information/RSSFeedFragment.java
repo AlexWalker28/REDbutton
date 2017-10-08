@@ -14,9 +14,6 @@ import android.util.Xml;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.alexwalker.sendsmsapp.R;
@@ -37,17 +34,9 @@ import java.util.List;
 public class RSSFeedFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
-    private EditText mEditText;
-    private Button mFetchFeedButton;
     private SwipeRefreshLayout mSwipeLayout;
-    private TextView mFeedTitleTextView;
-    private TextView mFeedLinkTextView;
-    private TextView mFeedDescriptionTextView;
 
     private List<RssFeedModel> mFeedModelList;
-    private String mFeedTitle;
-    private String mFeedLink;
-    private String mFeedDescription;
 
 
     private static final String TAG = "RSSFeedFragment";
@@ -63,22 +52,11 @@ public class RSSFeedFragment extends Fragment {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_rssfeed, container, false);
 
-        mRecyclerView = (RecyclerView)view.findViewById(R.id.recyclerView);
-        mEditText = (EditText) view.findViewById(R.id.rssFeedEditText);
-        mFetchFeedButton = (Button) view.findViewById(R.id.fetchFeedButton);
+        mRecyclerView = (RecyclerView)view.findViewById(R.id.rssFeedRecyclerView);
         mSwipeLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshLayout);
-        mFeedTitleTextView = (TextView) view.findViewById(R.id.feedTitle);
-        mFeedDescriptionTextView = (TextView) view.findViewById(R.id.feedDescription);
-        mFeedLinkTextView = (TextView) view.findViewById(R.id.feedLink);
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
-        mFetchFeedButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                new FetchFeedTask().execute((Void) null);
-            }
-        });
+        new FetchFeedTask().execute((Void) null);
         mSwipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -89,15 +67,14 @@ public class RSSFeedFragment extends Fragment {
         return view;
     }
 
-    class FetchFeedTask extends AsyncTask<Void, Void, Boolean> {
+    private class FetchFeedTask extends AsyncTask<Void, Void, Boolean> {
 
         private String urlLink;
 
         @Override
         protected void onPreExecute() {
             mSwipeLayout.setRefreshing(true);
-            mEditText.setText("ijnet.org/ru/rss/opportunities");
-            urlLink = mEditText.getText().toString();
+            urlLink = "https://ijnet.org/ru/rss/opportunities";
         }
 
         @Override
@@ -123,13 +100,10 @@ public class RSSFeedFragment extends Fragment {
 
         @Override
         protected void onPostExecute(Boolean success) {
-
             if (success) {
-                mFeedTitleTextView.setText("Feed Title: " + mFeedTitle);
-                mFeedDescriptionTextView.setText("Feed Description: " + mFeedDescription);
-                mFeedLinkTextView.setText("Feed Link: " + mFeedLink);
                 // Fill RecyclerView
                 mRecyclerView.setAdapter(new RssFeedListAdapter(mFeedModelList));
+                mSwipeLayout.setRefreshing(false);
             } else {
                 Toast.makeText(getActivity(),
                         "Enter a valid Rss feed url",
@@ -177,7 +151,7 @@ public class RSSFeedFragment extends Fragment {
                 String result = "";
                 if (xmlPullParser.next() == XmlPullParser.TEXT) {
                     result = xmlPullParser.getText();
-                    xmlPullParser.nextTag();
+                    //xmlPullParser.nextTag();
                 }
 
                 if (name.equalsIgnoreCase("title")) {
@@ -186,6 +160,7 @@ public class RSSFeedFragment extends Fragment {
                     link = result;
                 } else if (name.equalsIgnoreCase("description")) {
                     description = result;
+                    Log.d("MyXmlParser", description);
                 }
 
                 if (title != null && link != null && description != null) {
@@ -194,9 +169,9 @@ public class RSSFeedFragment extends Fragment {
                         items.add(item);
                     }
                     else {
-                        mFeedTitle = title;
+                       /* mFeedTitle = title;
                         mFeedLink = link;
-                        mFeedDescription = description;
+                        mFeedDescription = description;*/
                     }
 
                     title = null;
