@@ -1,25 +1,15 @@
 package kg.kloop.android.redbutton;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
-import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.example.alexwalker.sendsmsapp.R;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import kg.kloop.android.redbutton.helpers.BottomNavigationViewHelper;
-import kg.kloop.android.redbutton.information.InformationActivity;
 
 public class SlidingMapsActivity extends AppCompatActivity {
 

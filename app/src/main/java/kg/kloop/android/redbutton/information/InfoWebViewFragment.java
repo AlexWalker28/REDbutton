@@ -2,7 +2,7 @@ package kg.kloop.android.redbutton.information;
 
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,10 +15,10 @@ import com.example.alexwalker.sendsmsapp.R;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class WebViewFragment extends Fragment {
+public class InfoWebViewFragment extends Fragment {
 
 
-    public WebViewFragment() {
+    public InfoWebViewFragment() {
         // Required empty public constructor
     }
 
@@ -35,9 +35,7 @@ public class WebViewFragment extends Fragment {
         // Configure the client to use when opening URLs
         webView.setWebViewClient(new WebViewClient());
         // Load the initial URL
-        webView.loadUrl("https://www.google.com");
-
-
+        webView.loadUrl("http://sozsende.info/pages");
 
         return view;
     }

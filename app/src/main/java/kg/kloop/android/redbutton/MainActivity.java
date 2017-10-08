@@ -1,48 +1,24 @@
 package kg.kloop.android.redbutton;
 
-import android.Manifest;
 import android.app.ActivityManager;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.content.WakefulBroadcastReceiver;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.alexwalker.sendsmsapp.R;
 import com.firebase.ui.auth.AuthUI;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
-import com.google.android.gms.location.LocationServices;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -52,7 +28,8 @@ import java.util.Arrays;
 
 import kg.kloop.android.redbutton.groups.SlidingGroupsActivity;
 import kg.kloop.android.redbutton.helpers.BottomNavigationViewHelper;
-import kg.kloop.android.redbutton.information.InformationActivity;
+import kg.kloop.android.redbutton.information.InfoWebViewFragment;
+import kg.kloop.android.redbutton.information.RSSFeedFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -94,17 +71,9 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                Fragment fragment;
-                FragmentManager manager = getFragmentManager();
-                FragmentTransaction transaction;
                 switch (item.getItemId()){
                     case R.id.home_item:
-                        fragment = new HomeFragment();
-                        manager = getFragmentManager();
-                        transaction = manager.beginTransaction();
-                        transaction.add(R.id.main_frame_layout, fragment);
-                        transaction.addToBackStack(null);
-                        transaction.commit();
+                        setFragment(new HomeFragment());
                         break;
                     case R.id.map_item:
                         if (firebaseUser != null) {
@@ -116,18 +85,13 @@ public class MainActivity extends AppCompatActivity {
                         }
                         break;
                     case R.id.opportunities_item:
-                        startActivity(new Intent(MainActivity.this, InformationActivity.class));
+                        setFragment(new RSSFeedFragment());
                         break;
                     case R.id.read_item:
+                        setFragment(new InfoWebViewFragment());
                         break;
                     case R.id.profile_item:
-                        /*Intent intent = new Intent(MainActivity.this, SettingsFragment.class);
-                        startActivity(intent);*/
-                        fragment = new SettingsFragment();
-                        transaction = manager.beginTransaction();
-                        transaction.add(R.id.main_frame_layout, fragment);
-                        transaction.addToBackStack(null);
-                        transaction.commit();
+                        setFragment(new SettingsFragment());
                         break;
                 }
                 return true;
@@ -143,6 +107,15 @@ public class MainActivity extends AppCompatActivity {
             startService(notificationServiceIntent);
         }
 
+    }
+
+    private void setFragment(Fragment fragment) {
+        FragmentManager manager = getFragmentManager();
+        FragmentTransaction transaction;
+        transaction = manager.beginTransaction();
+        transaction.add(R.id.main_frame_layout, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 
     private FirebaseAuth.AuthStateListener getAuthStateListener() {

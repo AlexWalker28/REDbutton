@@ -76,7 +76,6 @@
             android:name="kg.kloop.android.redbutton.SlidingMapsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name="kg.kloop.android.redbutton.information.InformationActivity"></activity>
     </application>
 
 </manifest>

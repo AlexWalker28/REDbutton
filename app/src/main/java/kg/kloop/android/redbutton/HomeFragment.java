@@ -2,9 +2,6 @@ package kg.kloop.android.redbutton;
 
 
 import android.Manifest;
-import android.app.ActivityManager;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -26,8 +23,6 @@ import android.support.v7.app.AlertDialog;
 import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -36,7 +31,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.alexwalker.sendsmsapp.R;
-import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -49,12 +43,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
-import java.util.Arrays;
-
-import kg.kloop.android.redbutton.groups.SlidingGroupsActivity;
-import kg.kloop.android.redbutton.helpers.BottomNavigationViewHelper;
-import kg.kloop.android.redbutton.information.InformationActivity;
 
 
 public class HomeFragment extends Fragment implements
