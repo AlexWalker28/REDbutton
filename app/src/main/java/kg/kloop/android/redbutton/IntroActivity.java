@@ -1,5 +1,8 @@
 package kg.kloop.android.redbutton;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -85,9 +88,10 @@ public class IntroActivity extends com.heinrichreimersoftware.materialintro.app.
     }
 
     public void goToSettingsButton(View view) {
-        Intent i = new Intent(this, SettingsFragment.class);
+        //TODO: there is no such activity anymore
+        /*Intent i = new Intent(this, SettingsFragment.class);
         i.putExtra("key", 1);
-        startActivity(i);
+        startActivity(i);*/
     }
 
 }

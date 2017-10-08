@@ -72,17 +72,13 @@ public class HomeFragment extends Fragment implements
     private FirebaseAuth auth;
     private FirebaseAuth.AuthStateListener authStateListener;
     private FirebaseUser firebaseUser;
-    private MenuItem signInMenuItem;
-    private MenuItem signOutMenuItem;
     private LocationManager locationManager;
     private User user;
     private Event event;
     private long timeInMillis;
-    private Button mapButton;
     private ProgressBar progressBar;
     private TextView latLngTextView;
     private TextView userInfoTextView;
-    private static final int RC_SIGN_IN = 10;
     private EventStateReceiver eventStateReceiver;
     private CustomLatLng coordinates;
     private SharedPreferences preferences;
@@ -446,6 +442,7 @@ public class HomeFragment extends Fragment implements
         latLngTextView = (TextView)view.findViewById(R.id.latLngTextView);
         userInfoTextView = (TextView)view.findViewById(R.id.userInfoTextView);
         permissionsInfoTextView = (TextView)view.findViewById(R.id.permissionsInfoTextView);
+        isFirstRun = MainActivity.isFirstRun();
     }
 
 
