@@ -26,18 +26,17 @@ public class RssFeedListAdapter
     public class FeedModelViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView titleTextView;
         private TextView descriptionTextView;
-        private TextView linkTextView;
 
         public FeedModelViewHolder(View v) {
             super(v);
             titleTextView = (TextView)v.findViewById(R.id.titleText);
             descriptionTextView = (TextView)v.findViewById(R.id.descriptionText);
-            linkTextView = (TextView)v.findViewById(R.id.linkText);
             v.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
+            v.setClickable(true);
             String link = mRssFeedModels.get(getAdapterPosition()).link;
             InfoWebViewFragment infoWebViewFragment = new InfoWebViewFragment();
             infoWebViewFragment.setUrl(link);
@@ -69,7 +68,6 @@ public class RssFeedListAdapter
         RSSFeedFragment.RssFeedModel rssFeedModel = mRssFeedModels.get(position);
         holder.titleTextView.setText(rssFeedModel.title);
         holder.descriptionTextView.setText(rssFeedModel.description);
-        holder.linkTextView.setText(rssFeedModel.link);
     }
 
     @Override
