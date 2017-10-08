@@ -1,25 +1,26 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="@dimen/activity_vertical_margin"
-    android:background="#f1efe6"
+    android:layout_marginBottom="@dimen/activity_vertical_margin"
     android:layout_marginTop="@dimen/activity_vertical_margin"
-    android:layout_marginBottom="@dimen/activity_vertical_margin">
+    android:background="?android:attr/selectableItemBackground"
+    android:clickable="true"
+    android:orientation="vertical"
+    android:padding="@dimen/activity_vertical_margin">
 
     <TextView
         android:id="@+id/titleText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textStyle="bold"
+        android:textColor="#bf6f19"
         android:textSize="18sp"
-        android:textColor="#bf6f19"/>
+        android:textStyle="bold"/>
 
     <TextView
         android:id="@+id/descriptionText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="14sp"
-        android:textColor="@android:color/black"/>
+        android:textColor="@android:color/black"
+        android:textSize="14sp"/>
 
 </LinearLayout>
