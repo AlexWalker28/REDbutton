@@ -159,7 +159,7 @@ public class RSSFeedFragment extends Fragment {
                 } else if (name.equalsIgnoreCase("link")) {
                     link = result;
                 } else if (name.equalsIgnoreCase("description")) {
-                    description = result;
+                    description = format(result);
                     Log.d("MyXmlParser", description);
                 }
 
@@ -185,6 +185,14 @@ public class RSSFeedFragment extends Fragment {
         } finally {
             inputStream.close();
         }
+    }
+
+    private String format(String string) {
+        if (string.contains("d\">") && string.contains("</div")) {
+            int first = string.indexOf("d\">") + 3;
+            int second = string.indexOf("</div");
+            return string.substring(first, second);
+        } else return string;
     }
 
     public class RssFeedModel {
