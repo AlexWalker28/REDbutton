@@ -133,6 +133,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+        bottomNavigationView.setSelectedItemId(R.id.home_item);
 
         //=====================
         //Notification service
@@ -162,11 +163,6 @@ public class MainActivity extends AppCompatActivity {
                     user.setUserEmail(userEmail);
                     user.setPhoneNumber(userPhoneNumber);
                     saveInPref(userID);
-                    if (userName != null && userEmail != null) {
-                        userInfoTextView.setText(userName + "\n" + userEmail);
-                    } else if (userPhoneNumber != null) {
-                        userInfoTextView.setText(userPhoneNumber);
-                    }
                     Log.v("User", "userData: " + userID + "\n" + userName + "\n" + userEmail);
                 } else  userInfoTextView.setText(R.string.you_need_to_log_in);
 
