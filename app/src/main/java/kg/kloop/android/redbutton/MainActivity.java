@@ -57,11 +57,7 @@ import kg.kloop.android.redbutton.information.InformationActivity;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
-    private Button sendButton;
     private BottomNavigationView bottomNavigationView;
-    private String firstPhoneNumber;
-    private String secondPhoneNumber;
-    private String message;
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference databaseReference;
     private FirebaseAuth auth;
@@ -70,17 +66,10 @@ public class MainActivity extends AppCompatActivity {
     private MenuItem signInMenuItem;
     private MenuItem signOutMenuItem;
     private User user;
-    private Event event;
-    private ProgressBar progressBar;
-    private TextView latLngTextView;
     private TextView userInfoTextView;
     private static final int RC_SIGN_IN = 10;
     private SharedPreferences preferences;
-    private LocationCallback mLocationCallback;
 
-    protected Location mCurrentLocation;
-    private String childUniqueKey;
-    private TextView permissionsInfoTextView;
     private static Boolean isFirstRun;
 
     @Override
@@ -189,36 +178,7 @@ public class MainActivity extends AppCompatActivity {
     private void saveInPref(String string) {
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(Constants.CURRENT_USER_ID, string);
-        editor.putString(Constants.DATABASE_CHILD_ID, childUniqueKey);
         editor.apply();
-    }
-
-    private void requestLocationUpdates() {
-        LocationRequest locationRequest = new LocationRequest();
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                .setInterval(0);
-        FusedLocationProviderClient locationClient = new FusedLocationProviderClient(getApplicationContext());
-        mLocationCallback = new LocationCallback(){
-            @Override
-            public void onLocationResult(LocationResult locationResult) {
-                for (Location location : locationResult.getLocations()) {
-                    // Update UI with location data
-                    if(location.getLatitude() != 0 && location.getLongitude() != 0){
-                        CustomLatLng latLng = new CustomLatLng(location.getLatitude(), location.getLongitude());
-                        event.setCoordinates(latLng);
-                    }
-                    if(event.getCoordinates().getLat() == 0 && event.getCoordinates().getLng() == 0){
-                        progressBar.setVisibility(View.VISIBLE);
-                    } else progressBar.setVisibility(View.GONE);
-                    latLngTextView.setText("lat: " + event.getCoordinates().getLat() + "\n" + "lng: " + event.getCoordinates().getLng());
-                }
-            }
-        };
-        if(android.os.Build.VERSION.SDK_INT > 22) {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                locationClient.requestLocationUpdates(locationRequest, mLocationCallback, null);
-            }
-        } else locationClient.requestLocationUpdates(locationRequest, mLocationCallback, null);
     }
 
     //============================
@@ -334,16 +294,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void init() {
         user = new User();
-        event = new Event();
-        sendButton = (Button) findViewById(R.id.redButton);
         bottomNavigationView = (BottomNavigationView)findViewById(R.id.bottom_navigation_view);
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference().child("Events");
         auth = FirebaseAuth.getInstance();
         preferences = getSharedPreferences(Constants.SHARED_PREF_FILE, MODE_PRIVATE);
-        progressBar = (ProgressBar)findViewById(R.id.progressBar);
-        latLngTextView = (TextView)findViewById(R.id.latLngTextView);
         userInfoTextView = (TextView)findViewById(R.id.userInfoTextView);
-        permissionsInfoTextView = (TextView)findViewById(R.id.permissionsInfoTextView);
     }
 }
