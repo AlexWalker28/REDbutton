@@ -4,9 +4,15 @@
     android:layout_height="match_parent"
     tools:context="kg.kloop.android.redbutton.information.InfoWebViewFragment">
 
-   <WebView
-       android:id="@+id/info_web_view"
+
+   <android.support.v4.widget.SwipeRefreshLayout
+       android:id="@+id/rss_feed_item_swipe_refresh_layout"
        android:layout_width="match_parent"
-       android:layout_height="match_parent"/>
+       android:layout_height="match_parent" >
+      <WebView
+          android:id="@+id/info_web_view"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"/>
+       </android.support.v4.widget.SwipeRefreshLayout>
 
 </FrameLayout>
