@@ -28,6 +28,7 @@ import java.util.Arrays;
 
 import kg.kloop.android.redbutton.groups.SlidingGroupsActivity;
 import kg.kloop.android.redbutton.helpers.BottomNavigationViewHelper;
+import kg.kloop.android.redbutton.helpers.NavigationHelper;
 import kg.kloop.android.redbutton.information.InfoWebViewFragment;
 import kg.kloop.android.redbutton.information.RSSFeedFragment;
 
@@ -97,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+
         bottomNavigationView.setSelectedItemId(R.id.home_item);
 
         //=====================
@@ -259,6 +261,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        if(NavigationHelper.getSelectedItemId() == 0){
+            bottomNavigationView.setSelectedItemId(R.id.home_item);
+        } else {
+            bottomNavigationView.setSelectedItemId(NavigationHelper.getSelectedItemId());
+            Log.v(TAG, "selected item: " + bottomNavigationView.getSelectedItemId());
+            Log.v(TAG, "should be selected: " + NavigationHelper.getSelectedItemId());
+        }
     }
 
     @Override
