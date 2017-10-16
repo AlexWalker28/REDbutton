@@ -246,9 +246,13 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        //TODO handle back button correctly
         if(bottomNavigationView.getSelectedItemId() == R.id.home_item) {
             finish();
+        } else if(bottomNavigationView.getSelectedItemId() == R.id.opportunities_item) {
+            Fragment currentFragment = getFragmentManager().findFragmentById(R.id.main_frame_layout);
+            if(currentFragment instanceof InfoWebViewFragment){
+                super.onBackPressed();
+            } else bottomNavigationView.setSelectedItemId(R.id.home_item);
         } else bottomNavigationView.setSelectedItemId(R.id.home_item);
     }
 
