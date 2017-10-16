@@ -243,6 +243,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        //TODO handle back button correctly
+        if(bottomNavigationView.getSelectedItemId() == R.id.home_item) {
+            finish();
+        } else bottomNavigationView.setSelectedItemId(R.id.home_item);
+    }
+
+    @Override
     protected void onStart() {
         auth.addAuthStateListener(getAuthStateListener());
         super.onStart();
