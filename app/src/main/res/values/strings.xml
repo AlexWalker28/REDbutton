@@ -51,8 +51,7 @@
     <string name="events">Events</string>
     <string name="information">Info</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
     <string name="opportunities">Opportunities</string>
     <string name="read">Read</string>
     <string name="profile">Profile</string>
