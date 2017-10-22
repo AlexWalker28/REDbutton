@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -310,7 +311,12 @@ public class HomeFragment extends Fragment implements
     }
 
     private void sendAlertMessage() {
-        if (isSMSPermissionGranted()) {
+        if(Build.VERSION.SDK_INT > 25){
+            if(!isReadPhoneStatePermissionGranted()){
+                requestReadPhoneStatePermission();
+            }
+        }
+        if (!isSMSPermissionGranted()) {
             requestSMSPermission();
         } else {
             try {
@@ -347,13 +353,21 @@ public class HomeFragment extends Fragment implements
     private void requestGPSPermission(){
         ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 2);
     }
+    private void requestReadPhoneStatePermission(){
+        ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_PHONE_STATE}, 3);
+    }
     private boolean isSMSPermissionGranted() {
-        if(ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED){
+        if(ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED){
             return true;
         }else return false;
     }
     private boolean isGPSPermissionGranted(){
-        if(ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+        if(ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+            return true;
+        }else return false;
+    }
+    private boolean isReadPhoneStatePermissionGranted(){
+        if(ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED){
             return true;
         }else return false;
     }
@@ -379,13 +393,15 @@ public class HomeFragment extends Fragment implements
 
                 }
                 break;
+            case 3: //read phone state permission
+
         }
     }
     private void setPermissionsInfo() {
-        if (isGPSPermissionGranted()){
+        if (!isGPSPermissionGranted()){
             permissionsInfoTextView.setText(R.string.noGPSPermissionText);
         } else permissionsInfoTextView.setText("");
-        if (isSMSPermissionGranted()) {
+        if (!isSMSPermissionGranted()) {
             permissionsInfoTextView.setText(R.string.noSMSPermissionText);
         } else permissionsInfoTextView.setText("");
     }

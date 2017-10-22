@@ -1,8 +1,6 @@
 package kg.kloop.android.redbutton;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
+import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -58,6 +56,15 @@ public class IntroActivity extends com.heinrichreimersoftware.materialintro.app.
                     .permission(android.Manifest.permission.SEND_SMS)
                     .build());
         }
+        if(Build.VERSION.SDK_INT > 25 && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED){
+            addSlide(new SimpleSlide.Builder() // sms permission
+                    .title(R.string.permissionsText)
+                    .description(R.string.permissionDescriptionReadPhoneState)
+                    .background(R.color.slide1)
+                    .backgroundDark(R.color.slide2)
+                    .permission(Manifest.permission.READ_PHONE_STATE)
+                    .build());
+        }
         if (ActivityCompat.checkSelfPermission(IntroActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             addSlide(new SimpleSlide.Builder() // gps permission
                     .title("")
@@ -95,4 +102,9 @@ public class IntroActivity extends com.heinrichreimersoftware.materialintro.app.
         startActivityForResult(new Intent(IntroActivity.this, MainActivity.class), REQUEST_CODE);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        NavigationHelper.setSelectedItemId(R.id.home_item);
+    }
 }
