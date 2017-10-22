@@ -44,7 +44,6 @@ public class MainActivity extends AppCompatActivity {
     private MenuItem signInMenuItem;
     private MenuItem signOutMenuItem;
     private User user;
-    private TextView userInfoTextView;
     private static final int RC_SIGN_IN = 10;
     private SharedPreferences preferences;
 
@@ -139,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
                     user.setPhoneNumber(userPhoneNumber);
                     saveInPref(userID);
                     Log.v("User", "userData: " + userID + "\n" + userName + "\n" + userEmail);
-                } else  userInfoTextView.setText(R.string.you_need_to_log_in);
+                }
 
             }
         };
@@ -289,6 +288,5 @@ public class MainActivity extends AppCompatActivity {
         databaseReference = firebaseDatabase.getReference().child("Events");
         auth = FirebaseAuth.getInstance();
         preferences = getSharedPreferences(Constants.SHARED_PREF_FILE, MODE_PRIVATE);
-        userInfoTextView = (TextView)findViewById(R.id.userInfoTextView);
     }
 }
