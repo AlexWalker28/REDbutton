@@ -110,6 +110,12 @@ public class SettingsFragment extends Fragment {
                     databaseReference.push().setValue(getUser());
                 }
                 //getFragmentManager().popBackStack();
+
+                //go back to IntroActivity
+                if(getActivity().getCallingActivity() != null) {
+                    getActivity().setResult(RESULT_OK);
+                    getActivity().finish();
+                }
             }
         });
 

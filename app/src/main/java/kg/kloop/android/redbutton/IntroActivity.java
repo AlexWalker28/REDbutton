@@ -17,12 +17,15 @@ import com.heinrichreimersoftware.materialintro.slide.SimpleSlide;
 
 import java.util.Arrays;
 
+import kg.kloop.android.redbutton.helpers.NavigationHelper;
+
 /**
  * Created by ThirtySeven on 13.05.2017.
  */
 
 public class IntroActivity extends com.heinrichreimersoftware.materialintro.app.IntroActivity {
     private static final int RC_SIGN_IN = 10;
+    private static final int REQUEST_CODE = 113;
     int version = Build.VERSION.SDK_INT;
 
     @Override
@@ -88,10 +91,8 @@ public class IntroActivity extends com.heinrichreimersoftware.materialintro.app.
     }
 
     public void goToSettingsButton(View view) {
-        //TODO: there is no such activity anymore
-        /*Intent i = new Intent(this, SettingsFragment.class);
-        i.putExtra("key", 1);
-        startActivity(i);*/
+        NavigationHelper.setSelectedItemId(R.id.profile_item);
+        startActivityForResult(new Intent(IntroActivity.this, MainActivity.class), REQUEST_CODE);
     }
 
 }
