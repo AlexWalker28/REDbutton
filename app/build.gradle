@@ -15,8 +15,8 @@ android {
         applicationId "kg.kloop.android.redbutton"
         minSdkVersion 21
         targetSdkVersion 25
-        versionCode 21
-        versionName "1.4"
+        versionCode 22
+        versionName "1.4.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -45,8 +45,10 @@ dependencies {
     compile 'com.firebaseui:firebase-ui-auth:2.1.0'
     compile 'com.android.support:support-v4:25.3.1'
     compile 'com.heinrichreimersoftware:material-intro:1.6.2'
+    compile 'com.google.firebase:firebase-crash:11.0.2'
     testCompile 'junit:junit:4.12'
 }
+
 
 
 
