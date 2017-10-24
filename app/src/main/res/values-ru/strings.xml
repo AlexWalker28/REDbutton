@@ -57,4 +57,5 @@
     <string name="profile">Профиль</string>
     <string name="home">Главная</string>
     <string name="permissionDescriptionReadPhoneState">Для корректной работы приложения необходимо это разрешение</string>
+    <string name="no_phone_numbers">Номера телефонов не указаны</string>
 </resources>

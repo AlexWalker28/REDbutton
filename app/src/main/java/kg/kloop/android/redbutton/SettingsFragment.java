@@ -26,6 +26,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.HashMap;
 import java.util.Map;
 
+import kg.kloop.android.redbutton.helpers.NavigationHelper;
+
 import static android.app.Activity.RESULT_OK;
 import static android.content.Context.MODE_PRIVATE;
 
@@ -56,6 +58,8 @@ public class SettingsFragment extends Fragment {
     private User user;
     private Button firstNumberButton;
     private Button secondNumberButton;
+    private String number;
+    private int requestCode;
 
     @Nullable
     @Override
@@ -134,9 +138,11 @@ public class SettingsFragment extends Fragment {
         return view;
     }
 
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
+            Log.v(TAG, "result ok");
             // Get the URI and query the content provider for the phone number
             Uri contactUri = data.getData();
             String[] projection = new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER};
@@ -145,14 +151,19 @@ public class SettingsFragment extends Fragment {
             // If the cursor returned is valid, get the phone number
             if (cursor != null && cursor.moveToFirst()) {
                 int numberIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
-                String number = cursor.getString(numberIndex);
+                number = cursor.getString(numberIndex);
                 // Do something with the phone number
+                this.requestCode = requestCode;
                 switch (requestCode){
                     case REQUEST_SELECT_FIRST_PHONE_NUMBER:
+                        saveDataInPref(number, secondNumber, message);
                         firstNumberEditText.setText(number);
+                        Log.v(TAG, "first number: " + number);
                         break;
                     case REQUEST_SELECT_SECOND_PHONE_NUMBER:
                         secondNumberEditText.setText(number);
+                        saveDataInPref(firstNumber, number, message);
+                        Log.v(TAG, "second number: " + number);
                         break;
                 }
             }
@@ -166,6 +177,7 @@ public class SettingsFragment extends Fragment {
         intent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE);
         if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
             startActivityForResult(intent, requestCode);
+            NavigationHelper.setSelectedItemId(R.id.profile_item);
         }
     }
 

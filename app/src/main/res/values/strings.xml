@@ -57,5 +57,6 @@
     <string name="profile">Profile</string>
     <string name="home">Home</string>
     <string name="permissionDescriptionReadPhoneState">Permission to manage phone calls is required for app to work properly</string>
+    <string name="no_phone_numbers">Phone numbers are not specified</string>
 
 </resources>
