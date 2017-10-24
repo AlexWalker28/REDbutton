@@ -323,7 +323,9 @@ public class HomeFragment extends Fragment implements
                 sendSMS(secondPhoneNumber, message);
                 Toast.makeText(getActivity(), R.string.sms_sent, Toast.LENGTH_LONG).show();
             } catch (Exception e) {
-                Toast.makeText(getActivity(), R.string.sms_fail, Toast.LENGTH_LONG).show();
+                if (firstPhoneNumber == null && secondPhoneNumber == null) {
+                    Toast.makeText(getActivity(), R.string.no_phone_numbers, Toast.LENGTH_LONG).show();
+                }
                 Log.v("SMS", "sms failed: " + e);
                 e.printStackTrace();
             }
