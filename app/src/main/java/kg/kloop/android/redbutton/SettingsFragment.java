@@ -87,13 +87,13 @@ public class SettingsFragment extends Fragment {
 
                 saveDataInPref(firstNumber, secondNumber, message);
                 if(isPrefSaved()){
-                    Toast.makeText(getContext(), R.string.dataSaved, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), R.string.dataSaved, Toast.LENGTH_LONG).show();
                 } else if(preferences.getString(Constants.FIRST_NUMBER, "").length() == 0 ||
                         preferences.getString(Constants.SECOND_NUMBER, "").length() == 0 ){
-                    Toast.makeText(getContext(), R.string.enterPhoneNumbers, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), R.string.enterPhoneNumbers, Toast.LENGTH_LONG).show();
                 }
                 if (preferences.getString(Constants.MESSAGE, "").length() == 0){
-                    Toast.makeText(getContext(), R.string.enterMessage, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), R.string.enterMessage, Toast.LENGTH_LONG).show();
                 }
 
                 if(firebaseUser != null){
@@ -140,7 +140,7 @@ public class SettingsFragment extends Fragment {
             // Get the URI and query the content provider for the phone number
             Uri contactUri = data.getData();
             String[] projection = new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER};
-            Cursor cursor = getContext().getContentResolver().query(contactUri, projection,
+            Cursor cursor = getActivity().getContentResolver().query(contactUri, projection,
                     null, null, null);
             // If the cursor returned is valid, get the phone number
             if (cursor != null && cursor.moveToFirst()) {
@@ -164,7 +164,7 @@ public class SettingsFragment extends Fragment {
         // Start an activity for the user to pick a phone number from contacts
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE);
-        if (intent.resolveActivity(getContext().getPackageManager()) != null) {
+        if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
             startActivityForResult(intent, requestCode);
         }
     }
@@ -224,7 +224,7 @@ public class SettingsFragment extends Fragment {
         secondNumberButton = (Button)view.findViewById(R.id.secondNumberButton);
         messageEditText = (EditText)view.findViewById(R.id.messageEditText);
         saveSettingsButton = (Button)view.findViewById(R.id.saveSettingsButton);
-        preferences = getContext().getSharedPreferences(Constants.SHARED_PREF_FILE, MODE_PRIVATE);
+        preferences = getActivity().getSharedPreferences(Constants.SHARED_PREF_FILE, MODE_PRIVATE);
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference().child("Users");
         auth = FirebaseAuth.getInstance();

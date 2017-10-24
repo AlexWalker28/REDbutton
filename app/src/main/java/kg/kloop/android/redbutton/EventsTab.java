@@ -57,7 +57,7 @@ public class EventsTab extends Fragment {
         getEventsDataFromFirebase();
 
 
-        adapter = new EventsListViewAdapter(getContext(), R.layout.events_listview_item, eventsArrayList);
+        adapter = new EventsListViewAdapter(getActivity(), R.layout.events_listview_item, eventsArrayList);
         eventsListView.setAdapter(adapter);
         eventsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

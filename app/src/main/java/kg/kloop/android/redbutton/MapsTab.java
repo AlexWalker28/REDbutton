@@ -188,7 +188,7 @@ public class MapsTab extends Fragment{
                     }
                     if (position == 0) {
                         if(pressedEvent.getCoordinates() == null || pressedEvent.getCoordinates().getLat() == 0 && pressedEvent.getCoordinates().getLng() == 0){
-                            Toast.makeText(getContext(), R.string.noCoordinates, Toast.LENGTH_LONG).show();
+                            Toast.makeText(getActivity(), R.string.noCoordinates, Toast.LENGTH_LONG).show();
                         } else if (pressedEvent.getCoordinates().getLat() != 0 && pressedEvent.getCoordinates().getLng() != 0) {
                             eventLatLng = new LatLng(pressedEvent.getCoordinates().getLat(), pressedEvent.getCoordinates().getLng());
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(eventLatLng, 17));

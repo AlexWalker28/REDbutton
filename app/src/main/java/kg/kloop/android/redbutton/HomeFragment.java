@@ -87,7 +87,6 @@ public class HomeFragment extends Fragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_home, container, false);
-        getContext();
         init();
         buildGoogleApiClient();
         sendButton.setOnClickListener(new View.OnClickListener() {
@@ -194,7 +193,7 @@ public class HomeFragment extends Fragment implements
     }
 
     protected synchronized void buildGoogleApiClient() {
-        mGoogleApiClient = new GoogleApiClient.Builder(getContext())
+        mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
                 .addApi(LocationServices.API)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -207,7 +206,7 @@ public class HomeFragment extends Fragment implements
         serviceIntent.putExtra(Constants.DATABASE_CHILD_ID, childUniqueKey);
         serviceIntent.putExtra(Constants.FIRST_NUMBER, firstPhoneNumber);
         serviceIntent.putExtra(Constants.SECOND_NUMBER, secondPhoneNumber);
-        getContext().startService(serviceIntent);
+        getActivity().startService(serviceIntent);
         Log.v("LocationService", "Location service should start");
     }
 
@@ -248,7 +247,7 @@ public class HomeFragment extends Fragment implements
         LocationRequest locationRequest = new LocationRequest();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
                 .setInterval(0);
-        FusedLocationProviderClient locationClient = new FusedLocationProviderClient(getContext());
+        FusedLocationProviderClient locationClient = new FusedLocationProviderClient(getActivity());
         mLocationCallback = new LocationCallback(){
             @Override
             public void onLocationResult(LocationResult locationResult) {
@@ -279,7 +278,7 @@ public class HomeFragment extends Fragment implements
     private void initReceiver() {
         eventStateReceiver = new EventStateReceiver();
         IntentFilter intentFilter = new IntentFilter(Constants.BROADCAST_ACTION);
-        LocalBroadcastManager.getInstance(getContext()).registerReceiver(eventStateReceiver, intentFilter);
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(eventStateReceiver, intentFilter);
     }
 
 
@@ -303,7 +302,7 @@ public class HomeFragment extends Fragment implements
     //SMS
     //=======================
     private void getMessageDataFromSharedPref() {
-        SharedPreferences preferences = getContext().getSharedPreferences(Constants.SHARED_PREF_FILE, Context.MODE_PRIVATE);
+        SharedPreferences preferences = getActivity().getSharedPreferences(Constants.SHARED_PREF_FILE, Context.MODE_PRIVATE);
         firstPhoneNumber = preferences.getString(Constants.FIRST_NUMBER, "");
         secondPhoneNumber = preferences.getString(Constants.SECOND_NUMBER, "");
         message = preferences.getString(Constants.MESSAGE, "");
@@ -322,9 +321,9 @@ public class HomeFragment extends Fragment implements
             try {
                 sendSMS(firstPhoneNumber, message);
                 sendSMS(secondPhoneNumber, message);
-                Toast.makeText(getContext(), R.string.sms_sent, Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), R.string.sms_sent, Toast.LENGTH_LONG).show();
             } catch (Exception e) {
-                Toast.makeText(getContext(), R.string.sms_fail, Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), R.string.sms_fail, Toast.LENGTH_LONG).show();
                 Log.v("SMS", "sms failed: " + e);
                 e.printStackTrace();
             }
@@ -357,17 +356,17 @@ public class HomeFragment extends Fragment implements
         ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_PHONE_STATE}, 3);
     }
     private boolean isSMSPermissionGranted() {
-        if(ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED){
+        if(ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED){
             return true;
         }else return false;
     }
     private boolean isGPSPermissionGranted(){
-        if(ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+        if(ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
             return true;
         }else return false;
     }
     private boolean isReadPhoneStatePermissionGranted(){
-        if(ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED){
+        if(ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED){
             return true;
         }else return false;
     }
@@ -379,9 +378,9 @@ public class HomeFragment extends Fragment implements
                     try {
                         sendSMS(firstPhoneNumber, message);
                         sendSMS(secondPhoneNumber, message);
-                        Toast.makeText(getContext(), R.string.sms_sent, Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), R.string.sms_sent, Toast.LENGTH_LONG).show();
                     } catch (Exception e) {
-                        Toast.makeText(getContext(), R.string.sms_fail, Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), R.string.sms_fail, Toast.LENGTH_LONG).show();
                         Log.v("SMS", "sms failed: " + e);
                         e.printStackTrace();
                     }
@@ -440,8 +439,8 @@ public class HomeFragment extends Fragment implements
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference().child("Events");
         auth = FirebaseAuth.getInstance();
-        locationManager = (LocationManager)getContext().getSystemService(Context.LOCATION_SERVICE);
-        preferences = getContext().getSharedPreferences(Constants.SHARED_PREF_FILE, Context.MODE_PRIVATE);
+        locationManager = (LocationManager)getActivity().getSystemService(Context.LOCATION_SERVICE);
+        preferences = getActivity().getSharedPreferences(Constants.SHARED_PREF_FILE, Context.MODE_PRIVATE);
         progressBar = (ProgressBar)view.findViewById(R.id.progressBar);
         latLngTextView = (TextView)view.findViewById(R.id.latLngTextView);
         userInfoTextView = (TextView)view.findViewById(R.id.userInfoTextView);
