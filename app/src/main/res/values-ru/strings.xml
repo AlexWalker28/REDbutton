@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Help Me Button</string>
+    <string name="app_name">Soz Sende</string>
     <string name="title_activity_maps">Карта</string>
     <string name="login_state_text">Чтобы в полной мере воспользоваться приложением, вам необходимо войти </string>
     <string name="searching_gps_text">Поиск, используя геоданные...</string>
