@@ -55,7 +55,7 @@ public class RSSFeedFragment extends Fragment {
         mRecyclerView = (RecyclerView)view.findViewById(R.id.rssFeedRecyclerView);
         mSwipeLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshLayout);
 
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         new FetchFeedTask().execute((Void) null);
         mSwipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
