@@ -5,6 +5,8 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -151,11 +153,13 @@ public class NotificationService extends Service {
 
     private void showNotification(String groupName) {
         Intent intent = new Intent(this, SlidingMapsActivity.class);
+        Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, NOTIFICATION_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(getApplicationContext())
                 .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle(user.getUserName()+ " from " + groupName + " pressed Help Me Button")
+                .setContentTitle(user.getUserName()+ " из группы " + groupName + " нужна помощь")
                 .setContentText(time)
+                .setSound(soundUri)
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true);
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
