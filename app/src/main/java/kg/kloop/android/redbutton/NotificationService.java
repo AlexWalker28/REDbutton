@@ -160,6 +160,7 @@ public class NotificationService extends Service {
                 .setContentTitle(user.getUserName()+ " из группы " + groupName + " нужна помощь")
                 .setContentText(time)
                 .setSound(soundUri)
+                .setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 })
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true);
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
