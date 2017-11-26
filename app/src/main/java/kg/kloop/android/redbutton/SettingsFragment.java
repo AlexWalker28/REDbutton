@@ -105,7 +105,9 @@ public class SettingsFragment extends Fragment {
                             if (phoneNumberLinearLayout.getChildAt(j) instanceof EditText) {
                                 String phoneNumber = ((EditText) phoneNumberLinearLayout.getChildAt(j)).getText().toString();
                                 Log.v(TAG, "phone number to save: " + phoneNumber);
-                                phoneNumbersArrayList.add(phoneNumber);
+                                if (phoneNumber.length() != 0) {
+                                    phoneNumbersArrayList.add(phoneNumber);
+                                }
                                 Log.v(TAG, "saved phone numbers: " + phoneNumbersArrayList.toString());
                             }
                         }
@@ -237,24 +239,27 @@ public class SettingsFragment extends Fragment {
 
     private void loadDataFromPref() {
         Set<String> phonesSet = preferences.getStringSet(Constants.PHONE_NUMBERS, null);
-        phoneNumbersArrayList.addAll(phonesSet);
-        phoneNumbersLinearLayout.removeAllViews();
-        for (String phoneNumber : phoneNumbersArrayList) {
-            View phoneNumberView = addPhoneNumberView(getActivity());
-            phoneNumbersLinearLayout.addView(phoneNumberView);
-        }
-        message = preferences.getString(Constants.MESSAGE, "");
-        for (int i = 0; i < phoneNumbersLinearLayout.getChildCount(); i++) {
-            if (phoneNumbersLinearLayout.getChildAt(i) instanceof LinearLayout) {
-                LinearLayout phoneNumberLinearLayout = (LinearLayout) phoneNumbersLinearLayout.getChildAt(i);
-                for (int j = 0; j < phoneNumberLinearLayout.getChildCount(); j++) {
-                    if (phoneNumberLinearLayout.getChildAt(j) instanceof EditText) {
-                        ((EditText) phoneNumberLinearLayout.getChildAt(j)).setText(phoneNumbersArrayList.get(i));
+        if (phonesSet != null) {
+            phoneNumbersLinearLayout.removeAllViewsInLayout();
+            phoneNumbersArrayList.addAll(phonesSet);
+            for (String phoneNumber : phoneNumbersArrayList) {
+                View phoneNumberView = addPhoneNumberView(getActivity());
+                phoneNumbersLinearLayout.addView(phoneNumberView);
+            }
+
+            for (int i = 0; i < phoneNumbersLinearLayout.getChildCount(); i++) {
+                if (phoneNumbersLinearLayout.getChildAt(i) instanceof LinearLayout) {
+                    LinearLayout phoneNumberLinearLayout = (LinearLayout) phoneNumbersLinearLayout.getChildAt(i);
+                    for (int j = 0; j < phoneNumberLinearLayout.getChildCount(); j++) {
+                        if (phoneNumberLinearLayout.getChildAt(j) instanceof EditText) {
+                            ((EditText) phoneNumberLinearLayout.getChildAt(j)).setText(phoneNumbersArrayList.get(j));
+                        }
                     }
                 }
             }
+            Log.v(TAG, "loaded from pref: " + phoneNumbersArrayList.toString());
         }
-        Log.v(TAG, "loaded from pref: " + phoneNumbersArrayList.toString());
+        message = preferences.getString(Constants.MESSAGE, "");
 
         messageEditText.setText(message);
 
