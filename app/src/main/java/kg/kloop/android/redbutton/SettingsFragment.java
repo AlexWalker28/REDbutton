@@ -28,7 +28,6 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
@@ -50,6 +49,7 @@ public class SettingsFragment extends Fragment {
     private EditText messageEditText;
     private Button saveSettingsButton;
     private ImageButton addPhoneNumberImageButton;
+    private LinearLayout phoneNumbersLinearLayout;
     private LinearLayout settingsLinearLayout;
     private ArrayList<String> phoneNumbersArrayList;
     private String message;
@@ -91,20 +91,25 @@ public class SettingsFragment extends Fragment {
         addPhoneNumberImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                settingsLinearLayout.addView(addPhoneNumberView(getActivity()));
+                phoneNumbersLinearLayout.addView(addPhoneNumberView(getActivity()));
             }
         });
 
         saveSettingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                for (int i = 0; i < settingsLinearLayout.getChildCount(); i++) {
-                    if (settingsLinearLayout.getChildAt(i) instanceof EditText) {
-                        String phoneNumber = ((EditText) settingsLinearLayout.getChildAt(i)).getText().toString(); //saves message instead of phone
-                        Log.v(TAG, "phone number to save: " + phoneNumber);
-                        phoneNumbersArrayList.add(phoneNumber);
-
-                        Log.v(TAG, "saved phone numbers: " + phoneNumbersArrayList.toString());
+                phoneNumbersArrayList.clear();
+                for (int i = 0; i < phoneNumbersLinearLayout.getChildCount(); i++) {
+                    if (phoneNumbersLinearLayout.getChildAt(i) instanceof LinearLayout) {
+                        LinearLayout phoneNumberLinearLayout = (LinearLayout) phoneNumbersLinearLayout.getChildAt(i);
+                        for (int j = 0; j < phoneNumberLinearLayout.getChildCount(); j++) {
+                            if (phoneNumberLinearLayout.getChildAt(j) instanceof EditText) {
+                                String phoneNumber = ((EditText) phoneNumberLinearLayout.getChildAt(j)).getText().toString();
+                                Log.v(TAG, "phone number to save: " + phoneNumber);
+                                phoneNumbersArrayList.add(phoneNumber);
+                                Log.v(TAG, "saved phone numbers: " + phoneNumbersArrayList.toString());
+                            }
+                        }
                     }
                 }
                 message = messageEditText.getText().toString();
@@ -147,15 +152,15 @@ public class SettingsFragment extends Fragment {
         addPhoneNumberImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                selectContact(REQUEST_SELECT_FIRST_PHONE_NUMBER);
+                phoneNumbersLinearLayout.addView(addPhoneNumberView(getActivity()));
             }
         });
         return view;
     }
 
     private View addPhoneNumberView(Context context) {
-        view = LayoutInflater.from(context).inflate(R.layout.add_phone_number_item, null);
-        ImageButton addContactImageButton = (ImageButton) view.findViewById(R.id.item_add_contact_image_button);
+        View phoneNumberView = LayoutInflater.from(context).inflate(R.layout.add_phone_number_item, null);
+        ImageButton addContactImageButton = (ImageButton) phoneNumberView.findViewById(R.id.item_add_contact_image_button);
         addContactImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -163,8 +168,7 @@ public class SettingsFragment extends Fragment {
             }
         });
 
-
-        return view;
+        return phoneNumberView;
     }
 
 
@@ -235,10 +239,20 @@ public class SettingsFragment extends Fragment {
     private void loadDataFromPref() {
         Set<String> phonesSet = preferences.getStringSet(PHONE_NUMBERS, null);
         phoneNumbersArrayList.addAll(phonesSet);
+        phoneNumbersLinearLayout.removeAllViews();
+        for (String phoneNumber : phoneNumbersArrayList) {
+            View phoneNumberView = addPhoneNumberView(getActivity());
+            phoneNumbersLinearLayout.addView(phoneNumberView);
+        }
         message = preferences.getString(Constants.MESSAGE, "");
-        for (int i = 0; i < settingsLinearLayout.getChildCount(); i++) {
-            if (settingsLinearLayout.getChildAt(i) instanceof EditText) {
-                ((EditText) settingsLinearLayout.getChildAt(i)).setText(phoneNumbersArrayList.get(i));
+        for (int i = 0; i < phoneNumbersLinearLayout.getChildCount(); i++) {
+            if (phoneNumbersLinearLayout.getChildAt(i) instanceof LinearLayout) {
+                LinearLayout phoneNumberLinearLayout = (LinearLayout) phoneNumbersLinearLayout.getChildAt(i);
+                for (int j = 0; j < phoneNumberLinearLayout.getChildCount(); j++) {
+                    if (phoneNumberLinearLayout.getChildAt(j) instanceof EditText) {
+                        ((EditText) phoneNumberLinearLayout.getChildAt(j)).setText(phoneNumbersArrayList.get(i));
+                    }
+                }
             }
         }
         Log.v(TAG, "loaded from pref: " + phoneNumbersArrayList.toString());
@@ -264,6 +278,7 @@ public class SettingsFragment extends Fragment {
     private void init() {
         phoneNumberEditText = (EditText)view.findViewById(R.id.item_phone_number_edit_text);
         addPhoneNumberImageButton = (ImageButton)view.findViewById(R.id.add_phone_number_image_button);
+        phoneNumbersLinearLayout = (LinearLayout)view.findViewById(R.id.phone_numbers_linear_layout);
         settingsLinearLayout = (LinearLayout)view.findViewById(R.id.settings_linear_layout);
         messageEditText = (EditText)view.findViewById(R.id.messageEditText);
         saveSettingsButton = (Button)view.findViewById(R.id.saveSettingsButton);
