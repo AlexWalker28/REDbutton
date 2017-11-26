@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
@@ -27,6 +28,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -56,6 +58,7 @@ public class HomeFragment extends Fragment implements
     private View view;
     private Button sendButton;
     private BottomNavigationView bottomNavigationView;
+    private FrameLayout progressBarFrameLayout;
     private String message;
     private ArrayList<String> phoneNumbersArrayList;
     private FirebaseDatabase firebaseDatabase;
@@ -237,11 +240,15 @@ public class HomeFragment extends Fragment implements
         if (location.getLatitude() != 0 && location.getLongitude() != 0) {
             CustomLatLng latLng = new CustomLatLng(location.getLatitude(), location.getLongitude());
             event.setCoordinates(latLng);
-            latLngTextView.setText("lat: " + event.getCoordinates().getLat() + "\nlat: " + event.getCoordinates().getLng());
+            latLngTextView.setText("");
         }
         if (event.getCoordinates().getLat() == 0 && event.getCoordinates().getLng() == 0) {
             progressBar.setVisibility(View.VISIBLE);
-        } else progressBar.setVisibility(View.GONE);
+        } else {
+            progressBarFrameLayout.setBackgroundResource(R.drawable.ic_complete);
+            progressBar.setVisibility(View.GONE);
+        }
+
     }
 
     private void requestLocationUpdates() {
@@ -260,8 +267,12 @@ public class HomeFragment extends Fragment implements
                     }
                     if(event.getCoordinates().getLat() == 0 && event.getCoordinates().getLng() == 0){
                         progressBar.setVisibility(View.VISIBLE);
-                    } else progressBar.setVisibility(View.GONE);
-                    latLngTextView.setText("lat: " + event.getCoordinates().getLat() + "\n" + "lng: " + event.getCoordinates().getLng());
+                    } else {
+                        progressBarFrameLayout.setBackgroundResource(R.drawable.ic_complete);
+                        progressBar.setVisibility(View.GONE);
+                    }
+
+                    latLngTextView.setText("");
                 }
             }
         };
@@ -441,6 +452,7 @@ public class HomeFragment extends Fragment implements
         phoneNumbersArrayList = new ArrayList<>();
         sendButton = (Button) view.findViewById(R.id.redButton);
         bottomNavigationView = (BottomNavigationView)view.findViewById(R.id.bottom_navigation_view);
+        progressBarFrameLayout = (FrameLayout)view.findViewById(R.id.progressBarFrameLayout);
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference().child("Events");
         auth = FirebaseAuth.getInstance();
