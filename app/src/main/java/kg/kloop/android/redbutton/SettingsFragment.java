@@ -39,17 +39,14 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class SettingsFragment extends Fragment {
 
-    static final int REQUEST_SELECT_FIRST_PHONE_NUMBER = 1;
-    static final int REQUEST_SELECT_SECOND_PHONE_NUMBER = 2;
+    static final int REQUEST_SELECT_PHONE_NUMBER = 1;
     private static final String TAG = "SettingsFragment";
 
     private View view;
-    private EditText phoneNumberEditText;
     private EditText messageEditText;
     private Button saveSettingsButton;
     private ImageButton addPhoneNumberImageButton;
     private LinearLayout phoneNumbersLinearLayout;
-    private LinearLayout settingsLinearLayout;
     private ArrayList<String> phoneNumbersArrayList;
     private String message;
     private SharedPreferences preferences;
@@ -64,7 +61,6 @@ public class SettingsFragment extends Fragment {
     private String userPhoneNumber;
     private User user;
     private String number;
-    private int requestCode;
 
     @Nullable
     @Override
@@ -116,12 +112,9 @@ public class SettingsFragment extends Fragment {
                 message = messageEditText.getText().toString();
 
                 saveDataInPref(phoneNumbersArrayList, message);
-                /*if(isPrefSaved()){
+                if(isPrefSaved()){
                     Toast.makeText(getActivity(), R.string.dataSaved, Toast.LENGTH_LONG).show();
-                } else if(preferences.getString(Constants.FIRST_NUMBER, "").length() == 0 ||
-                        preferences.getString(Constants.SECOND_NUMBER, "").length() == 0 ){
-                    Toast.makeText(getActivity(), R.string.enterPhoneNumbers, Toast.LENGTH_LONG).show();
-                }*/
+                }
                 if (preferences.getString(Constants.MESSAGE, "").length() == 0){
                     Toast.makeText(getActivity(), R.string.enterMessage, Toast.LENGTH_LONG).show();
                 }
@@ -131,8 +124,6 @@ public class SettingsFragment extends Fragment {
                     childUpdates.put("/userID", userID);
                     childUpdates.put("/userName", userName);
                     childUpdates.put("/userEmail", userEmail);
-                    /*childUpdates.put("/firstNumber", firstNumber);
-                    childUpdates.put("/secondNumber", secondNumber);*/
                     childUpdates.put("/phoneNumbers", phoneNumbersArrayList);
                     childUpdates.put("/message", message);
                     childUpdates.put("/userPhoneNumber", userPhoneNumber);
@@ -165,7 +156,7 @@ public class SettingsFragment extends Fragment {
         addContactImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                selectContact(REQUEST_SELECT_FIRST_PHONE_NUMBER);
+                selectContact(REQUEST_SELECT_PHONE_NUMBER);
             }
         });
 
@@ -187,20 +178,13 @@ public class SettingsFragment extends Fragment {
                 int numberIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
                 number = cursor.getString(numberIndex);
                 // Do something with the phone number
-                this.requestCode = requestCode;
                 switch (requestCode){
-                    case REQUEST_SELECT_FIRST_PHONE_NUMBER:
+                    case REQUEST_SELECT_PHONE_NUMBER:
                         phoneNumbersArrayList.add(number);
                         saveDataInPref(phoneNumbersArrayList, message);
-                        //phoneNumberEditText.setText(number);
                         loadDataFromPref();
                         Log.v(TAG, "first number: " + number);
                         break;
-                    /*case REQUEST_SELECT_SECOND_PHONE_NUMBER:
-                        secondNumberEditText.setText(number);
-                        saveDataInPref(firstNumber, number, message);
-                        Log.v(TAG, "second number: " + number);
-                        break;*/
                 }
                 cursor.close();
             }
@@ -230,13 +214,12 @@ public class SettingsFragment extends Fragment {
     }
 
 
-    /*private boolean isPrefSaved() {
-        if(preferences.getString(Constants.FIRST_NUMBER, "").length() != 0 &&
-                preferences.getString(Constants.SECOND_NUMBER, "").length() != 0 &&
+    private boolean isPrefSaved() {
+        if(preferences.getString(Constants.PHONE_NUMBERS, "").length() != 0 &&
                 preferences.getString(Constants.MESSAGE, "").length() != 0){
             return true;
         } else return false;
-    }*/
+    }
 
     private void loadDataFromPref() {
         Set<String> phonesSet = preferences.getStringSet(Constants.PHONE_NUMBERS, null);
@@ -281,10 +264,8 @@ public class SettingsFragment extends Fragment {
     }
 
     private void init() {
-        phoneNumberEditText = (EditText)view.findViewById(R.id.item_phone_number_edit_text);
         addPhoneNumberImageButton = (ImageButton)view.findViewById(R.id.add_phone_number_image_button);
         phoneNumbersLinearLayout = (LinearLayout)view.findViewById(R.id.phone_numbers_linear_layout);
-        settingsLinearLayout = (LinearLayout)view.findViewById(R.id.settings_linear_layout);
         messageEditText = (EditText)view.findViewById(R.id.messageEditText);
         saveSettingsButton = (Button)view.findViewById(R.id.saveSettingsButton);
         phoneNumbersArrayList = new ArrayList<>();
