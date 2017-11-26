@@ -20,6 +20,9 @@ import android.util.Log;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.ArrayList;
+import java.util.Set;
+
 
 public class LocationService extends Service {
     private static final String TAG = "LocationService";
@@ -30,8 +33,7 @@ public class LocationService extends Service {
     DatabaseReference databaseReference;
     CustomLatLng coordinates;
     String childKey;
-    String firstPhoneNumber;
-    String secondPhoneNumber;
+    ArrayList<String> phoneNumbersArrayList;
 
     @Nullable
     @Override
@@ -43,6 +45,7 @@ public class LocationService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.v(TAG, "Location service is running");
         event = new Event();
+        phoneNumbersArrayList = new ArrayList<>();
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference("Events");
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -87,8 +90,7 @@ public class LocationService extends Service {
                     Log.v(TAG, "Location: " + event.getCoordinates().getLat() + " " + event.getCoordinates().getLng());
                 }
                 databaseReference.child(childKey).child("coordinates").setValue(coordinates);
-                sendSMS(firstPhoneNumber);
-                sendSMS(secondPhoneNumber);
+                sendSMS(phoneNumbersArrayList);
                 stopSelf();
                 Log.v(TAG, "Location service should stop (onLocationChanged)");
                 locationManager.removeUpdates(locationListener);
@@ -112,24 +114,25 @@ public class LocationService extends Service {
 
     }
 
-    private void sendSMS(String phoneNumber) {
+    private void sendSMS(ArrayList<String> numbersArrayList) {
         SmsManager smsManager = SmsManager.getDefault();
         String message = "My coordinates: ";
-        if (coordinates != null) { //send SMS with coordinates
-            smsManager.sendTextMessage(phoneNumber, null, message
-                    + "\nhttp://maps.google.com/maps?q="
-                    + coordinates.getLat()
-                    + "," + coordinates.getLng(), null, null);
+        for (String phoneNumber : numbersArrayList) {
+            if (coordinates != null) { //send SMS with coordinates
+                smsManager.sendTextMessage(phoneNumber, null, message
+                        + "\nhttp://maps.google.com/maps?q="
+                        + coordinates.getLat()
+                        + "," + coordinates.getLng(), null, null);
+            }
         }
     }
 
     private void getDataFromPref(){
         SharedPreferences preferences = getSharedPreferences(Constants.SHARED_PREF_FILE, MODE_PRIVATE);
         childKey = preferences.getString(Constants.DATABASE_CHILD_ID, null);
-        firstPhoneNumber = preferences.getString(Constants.FIRST_NUMBER, null);
-        secondPhoneNumber = preferences.getString(Constants.SECOND_NUMBER, null);
-        Log.v(TAG, "childKey: " + childKey + "\nfirst number: " + firstPhoneNumber
-                                + "\nsecond number: " + secondPhoneNumber);
+        Set<String> phoneNumbersSet = preferences.getStringSet(Constants.PHONE_NUMBERS, null);
+        phoneNumbersArrayList.addAll(phoneNumbersSet);
+        Log.v(TAG, "childKey: " + childKey + "\n phone numbers: " + phoneNumbersArrayList.toString());
     }
 
 }

@@ -45,6 +45,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.ArrayList;
+import java.util.Set;
+
 
 public class HomeFragment extends Fragment implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
@@ -53,9 +56,8 @@ public class HomeFragment extends Fragment implements
     private View view;
     private Button sendButton;
     private BottomNavigationView bottomNavigationView;
-    private String firstPhoneNumber;
-    private String secondPhoneNumber;
     private String message;
+    private ArrayList<String> phoneNumbersArrayList;
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference databaseReference;
     private FirebaseAuth auth;
@@ -204,8 +206,7 @@ public class HomeFragment extends Fragment implements
     private void startLocationService() {
         Intent serviceIntent = new Intent(getActivity(), LocationService.class);
         serviceIntent.putExtra(Constants.DATABASE_CHILD_ID, childUniqueKey);
-        serviceIntent.putExtra(Constants.FIRST_NUMBER, firstPhoneNumber);
-        serviceIntent.putExtra(Constants.SECOND_NUMBER, secondPhoneNumber);
+        serviceIntent.putExtra(Constants.PHONE_NUMBERS, phoneNumbersArrayList);
         getActivity().startService(serviceIntent);
         Log.v("LocationService", "Location service should start");
     }
@@ -303,10 +304,10 @@ public class HomeFragment extends Fragment implements
     //=======================
     private void getMessageDataFromSharedPref() {
         SharedPreferences preferences = getActivity().getSharedPreferences(Constants.SHARED_PREF_FILE, Context.MODE_PRIVATE);
-        firstPhoneNumber = preferences.getString(Constants.FIRST_NUMBER, "");
-        secondPhoneNumber = preferences.getString(Constants.SECOND_NUMBER, "");
+        Set<String> phonesSet = preferences.getStringSet(Constants.PHONE_NUMBERS, null);
+        phoneNumbersArrayList.addAll(phonesSet);
         message = preferences.getString(Constants.MESSAGE, "");
-        Log.v("data", firstPhoneNumber + "\n" + secondPhoneNumber + "\n" + message);
+        Log.v("data", phoneNumbersArrayList.toString() + "\n" + message);
     }
 
     private void sendAlertMessage() {
@@ -319,11 +320,10 @@ public class HomeFragment extends Fragment implements
             requestSMSPermission();
         } else {
             try {
-                sendSMS(firstPhoneNumber, message);
-                sendSMS(secondPhoneNumber, message);
+                sendSMS(phoneNumbersArrayList, message);
                 Toast.makeText(getActivity(), R.string.sms_sent, Toast.LENGTH_LONG).show();
             } catch (Exception e) {
-                if (firstPhoneNumber == null && secondPhoneNumber == null) {
+                if (phoneNumbersArrayList.size() == 0) {
                     Toast.makeText(getActivity(), R.string.no_phone_numbers, Toast.LENGTH_LONG).show();
                 }
                 Log.v("SMS", "sms failed: " + e);
@@ -331,15 +331,18 @@ public class HomeFragment extends Fragment implements
             }
         }
     }
-    private void sendSMS(String phoneNumber, String message) {
+    private void sendSMS(ArrayList<String> phoneNumbersArrayList, String message) {
         SmsManager smsManager = SmsManager.getDefault();
-        if(event.getCoordinates() != null) { //send SMS with coordinates
-            smsManager.sendTextMessage(phoneNumber, null, message
-                    + "\nhttp://maps.google.com/maps?q="
-                    + event.getCoordinates().getLat()
-                    + "," + event.getCoordinates().getLng(), null, null);
-        } else { //send SMS without coordinates (SMS with coordinates will be sent from service)
-            smsManager.sendTextMessage(phoneNumber, null, message, null, null);
+        for (String phoneNumber : phoneNumbersArrayList) {
+            if(event.getCoordinates() != null) { //send SMS with coordinates
+                smsManager.sendTextMessage(phoneNumber, null, message
+                        + "\nhttp://maps.google.com/maps?q="
+                        + event.getCoordinates().getLat()
+                        + "," + event.getCoordinates().getLng(), null, null);
+            } else { //send SMS without coordinates (SMS with coordinates will be sent from service)
+                smsManager.sendTextMessage(phoneNumber, null, message, null, null);
+            }
+
         }
     }
 
@@ -378,8 +381,7 @@ public class HomeFragment extends Fragment implements
             case 1: //sms permission
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     try {
-                        sendSMS(firstPhoneNumber, message);
-                        sendSMS(secondPhoneNumber, message);
+                        sendSMS(phoneNumbersArrayList, message);
                         Toast.makeText(getActivity(), R.string.sms_sent, Toast.LENGTH_LONG).show();
                     } catch (Exception e) {
                         Toast.makeText(getActivity(), R.string.sms_fail, Toast.LENGTH_LONG).show();
@@ -436,6 +438,7 @@ public class HomeFragment extends Fragment implements
     private void init() {
         user = new User();
         event = new Event();
+        phoneNumbersArrayList = new ArrayList<>();
         sendButton = (Button) view.findViewById(R.id.redButton);
         bottomNavigationView = (BottomNavigationView)view.findViewById(R.id.bottom_navigation_view);
         firebaseDatabase = FirebaseDatabase.getInstance();

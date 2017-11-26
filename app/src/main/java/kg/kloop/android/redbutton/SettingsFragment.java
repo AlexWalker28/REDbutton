@@ -42,7 +42,6 @@ public class SettingsFragment extends Fragment {
     static final int REQUEST_SELECT_FIRST_PHONE_NUMBER = 1;
     static final int REQUEST_SELECT_SECOND_PHONE_NUMBER = 2;
     private static final String TAG = "SettingsFragment";
-    private static final String PHONE_NUMBERS = "phoneNumbers";
 
     private View view;
     private EditText phoneNumberEditText;
@@ -115,12 +114,12 @@ public class SettingsFragment extends Fragment {
                 message = messageEditText.getText().toString();
 
                 saveDataInPref(phoneNumbersArrayList, message);
-                if(isPrefSaved()){
+                /*if(isPrefSaved()){
                     Toast.makeText(getActivity(), R.string.dataSaved, Toast.LENGTH_LONG).show();
                 } else if(preferences.getString(Constants.FIRST_NUMBER, "").length() == 0 ||
                         preferences.getString(Constants.SECOND_NUMBER, "").length() == 0 ){
                     Toast.makeText(getActivity(), R.string.enterPhoneNumbers, Toast.LENGTH_LONG).show();
-                }
+                }*/
                 if (preferences.getString(Constants.MESSAGE, "").length() == 0){
                     Toast.makeText(getActivity(), R.string.enterMessage, Toast.LENGTH_LONG).show();
                 }
@@ -221,23 +220,23 @@ public class SettingsFragment extends Fragment {
         phonesSet.addAll(phoneNumbersArrayList);
         SharedPreferences.Editor editor = preferences.edit();
         editor.clear();
-        editor.putStringSet(PHONE_NUMBERS, phonesSet);
+        editor.putStringSet(Constants.PHONE_NUMBERS, phonesSet);
         editor.putString(Constants.MESSAGE, message);
         editor.apply();
         Log.v(TAG, "phone numbers saved in prefs: " + phoneNumbersArrayList.toString());
     }
 
 
-    private boolean isPrefSaved() {
+    /*private boolean isPrefSaved() {
         if(preferences.getString(Constants.FIRST_NUMBER, "").length() != 0 &&
                 preferences.getString(Constants.SECOND_NUMBER, "").length() != 0 &&
                 preferences.getString(Constants.MESSAGE, "").length() != 0){
             return true;
         } else return false;
-    }
+    }*/
 
     private void loadDataFromPref() {
-        Set<String> phonesSet = preferences.getStringSet(PHONE_NUMBERS, null);
+        Set<String> phonesSet = preferences.getStringSet(Constants.PHONE_NUMBERS, null);
         phoneNumbersArrayList.addAll(phonesSet);
         phoneNumbersLinearLayout.removeAllViews();
         for (String phoneNumber : phoneNumbersArrayList) {
