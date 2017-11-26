@@ -192,7 +192,8 @@ public class SettingsFragment extends Fragment {
                     case REQUEST_SELECT_FIRST_PHONE_NUMBER:
                         phoneNumbersArrayList.add(number);
                         saveDataInPref(phoneNumbersArrayList, message);
-                        phoneNumberEditText.setText(number);
+                        //phoneNumberEditText.setText(number);
+                        loadDataFromPref();
                         Log.v(TAG, "first number: " + number);
                         break;
                     /*case REQUEST_SELECT_SECOND_PHONE_NUMBER:
@@ -252,7 +253,7 @@ public class SettingsFragment extends Fragment {
                     LinearLayout phoneNumberLinearLayout = (LinearLayout) phoneNumbersLinearLayout.getChildAt(i);
                     for (int j = 0; j < phoneNumberLinearLayout.getChildCount(); j++) {
                         if (phoneNumberLinearLayout.getChildAt(j) instanceof EditText) {
-                            ((EditText) phoneNumberLinearLayout.getChildAt(j)).setText(phoneNumbersArrayList.get(j));
+                            ((EditText) phoneNumberLinearLayout.getChildAt(j)).setText(phoneNumbersArrayList.get(i));
                         }
                     }
                 }
