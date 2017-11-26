@@ -101,7 +101,7 @@ public class HomeFragment extends Fragment implements
                     } else {
                         timeInMillis = System.currentTimeMillis();
                         user = new User(user.getUserID(), user.getUserName(), user.getUserEmail(),
-                                user.getFirstNumber(), user.getSecondNumber(), message);
+                                user.getPhoneNumbers(), message);
                         coordinates = event.getCoordinates();
                         event = new Event(coordinates, user, timeInMillis);
                         childUniqueKey = databaseReference.push().getKey();

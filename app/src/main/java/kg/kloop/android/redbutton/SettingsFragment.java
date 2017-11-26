@@ -1,6 +1,7 @@
 package kg.kloop.android.redbutton;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -15,6 +16,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.alexwalker.sendsmsapp.R;
@@ -23,8 +26,12 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 
 import kg.kloop.android.redbutton.helpers.NavigationHelper;
 
@@ -36,14 +43,15 @@ public class SettingsFragment extends Fragment {
     static final int REQUEST_SELECT_FIRST_PHONE_NUMBER = 1;
     static final int REQUEST_SELECT_SECOND_PHONE_NUMBER = 2;
     private static final String TAG = "SettingsFragment";
+    private static final String PHONE_NUMBERS = "phoneNumbers";
 
     private View view;
-    private EditText firstNumberEditText;
-    private EditText secondNumberEditText;
+    private EditText phoneNumberEditText;
     private EditText messageEditText;
     private Button saveSettingsButton;
-    private String firstNumber;
-    private String secondNumber;
+    private ImageButton addPhoneNumberImageButton;
+    private LinearLayout settingsLinearLayout;
+    private ArrayList<String> phoneNumbersArrayList;
     private String message;
     private SharedPreferences preferences;
     private FirebaseDatabase firebaseDatabase;
@@ -56,8 +64,6 @@ public class SettingsFragment extends Fragment {
     private String userEmail;
     private String userPhoneNumber;
     private User user;
-    private Button firstNumberButton;
-    private Button secondNumberButton;
     private String number;
     private int requestCode;
 
@@ -82,14 +88,28 @@ public class SettingsFragment extends Fragment {
         };
         auth.addAuthStateListener(authStateListener);
 
+        addPhoneNumberImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                settingsLinearLayout.addView(addPhoneNumberView(getActivity()));
+            }
+        });
+
         saveSettingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                firstNumber = firstNumberEditText.getText().toString();
-                secondNumber = secondNumberEditText.getText().toString();
+                for (int i = 0; i < settingsLinearLayout.getChildCount(); i++) {
+                    if (settingsLinearLayout.getChildAt(i) instanceof EditText) {
+                        String phoneNumber = ((EditText) settingsLinearLayout.getChildAt(i)).getText().toString(); //saves message instead of phone
+                        Log.v(TAG, "phone number to save: " + phoneNumber);
+                        phoneNumbersArrayList.add(phoneNumber);
+
+                        Log.v(TAG, "saved phone numbers: " + phoneNumbersArrayList.toString());
+                    }
+                }
                 message = messageEditText.getText().toString();
 
-                saveDataInPref(firstNumber, secondNumber, message);
+                saveDataInPref(phoneNumbersArrayList, message);
                 if(isPrefSaved()){
                     Toast.makeText(getActivity(), R.string.dataSaved, Toast.LENGTH_LONG).show();
                 } else if(preferences.getString(Constants.FIRST_NUMBER, "").length() == 0 ||
@@ -105,8 +125,9 @@ public class SettingsFragment extends Fragment {
                     childUpdates.put("/userID", userID);
                     childUpdates.put("/userName", userName);
                     childUpdates.put("/userEmail", userEmail);
-                    childUpdates.put("/firstNumber", firstNumber);
-                    childUpdates.put("/secondNumber", secondNumber);
+                    /*childUpdates.put("/firstNumber", firstNumber);
+                    childUpdates.put("/secondNumber", secondNumber);*/
+                    childUpdates.put("/phoneNumbers", phoneNumbersArrayList);
                     childUpdates.put("/message", message);
                     childUpdates.put("/userPhoneNumber", userPhoneNumber);
                     databaseReference.child(userID).updateChildren(childUpdates);
@@ -123,18 +144,26 @@ public class SettingsFragment extends Fragment {
             }
         });
 
-        firstNumberButton.setOnClickListener(new View.OnClickListener() {
+        addPhoneNumberImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 selectContact(REQUEST_SELECT_FIRST_PHONE_NUMBER);
             }
         });
-        secondNumberButton.setOnClickListener(new View.OnClickListener() {
+        return view;
+    }
+
+    private View addPhoneNumberView(Context context) {
+        view = LayoutInflater.from(context).inflate(R.layout.add_phone_number_item, null);
+        ImageButton addContactImageButton = (ImageButton) view.findViewById(R.id.item_add_contact_image_button);
+        addContactImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                selectContact(REQUEST_SELECT_SECOND_PHONE_NUMBER);
+                selectContact(REQUEST_SELECT_FIRST_PHONE_NUMBER);
             }
         });
+
+
         return view;
     }
 
@@ -156,16 +185,18 @@ public class SettingsFragment extends Fragment {
                 this.requestCode = requestCode;
                 switch (requestCode){
                     case REQUEST_SELECT_FIRST_PHONE_NUMBER:
-                        saveDataInPref(number, secondNumber, message);
-                        firstNumberEditText.setText(number);
+                        phoneNumbersArrayList.add(number);
+                        saveDataInPref(phoneNumbersArrayList, message);
+                        phoneNumberEditText.setText(number);
                         Log.v(TAG, "first number: " + number);
                         break;
-                    case REQUEST_SELECT_SECOND_PHONE_NUMBER:
+                    /*case REQUEST_SELECT_SECOND_PHONE_NUMBER:
                         secondNumberEditText.setText(number);
                         saveDataInPref(firstNumber, number, message);
                         Log.v(TAG, "second number: " + number);
-                        break;
+                        break;*/
                 }
+                cursor.close();
             }
 
         }
@@ -181,15 +212,15 @@ public class SettingsFragment extends Fragment {
         }
     }
 
-    private void saveDataInPref(String firstNumber, String secondNumber, String message) {
+    private void saveDataInPref(ArrayList<String> phoneNumbersArrayList, String message) {
+        Set<String> phonesSet = new LinkedHashSet<>();
+        phonesSet.addAll(phoneNumbersArrayList);
         SharedPreferences.Editor editor = preferences.edit();
         editor.clear();
-        editor.putString(Constants.FIRST_NUMBER, firstNumber);
-        editor.putString(Constants.SECOND_NUMBER, secondNumber);
+        editor.putStringSet(PHONE_NUMBERS, phonesSet);
         editor.putString(Constants.MESSAGE, message);
         editor.apply();
-        Log.v(TAG, "saved first number: " + firstNumber
-                + "\nsaved second number: " + secondNumber);
+        Log.v(TAG, "phone numbers saved in prefs: " + phoneNumbersArrayList.toString());
     }
 
 
@@ -202,21 +233,22 @@ public class SettingsFragment extends Fragment {
     }
 
     private void loadDataFromPref() {
-        firstNumber = preferences.getString(Constants.FIRST_NUMBER, "");
-        secondNumber = preferences.getString(Constants.SECOND_NUMBER, "");
+        Set<String> phonesSet = preferences.getStringSet(PHONE_NUMBERS, null);
+        phoneNumbersArrayList.addAll(phonesSet);
         message = preferences.getString(Constants.MESSAGE, "");
+        for (int i = 0; i < settingsLinearLayout.getChildCount(); i++) {
+            if (settingsLinearLayout.getChildAt(i) instanceof EditText) {
+                ((EditText) settingsLinearLayout.getChildAt(i)).setText(phoneNumbersArrayList.get(i));
+            }
+        }
+        Log.v(TAG, "loaded from pref: " + phoneNumbersArrayList.toString());
 
-        firstNumberEditText.setText(firstNumber);
-        secondNumberEditText.setText(secondNumber);
         messageEditText.setText(message);
-        Log.v(TAG, "loaded first number: " + firstNumber
-                + "\nloaded second number: " + secondNumber);
 
     }
 
     public User getUser() {
-        user = new User(userID, userName, userEmail,
-                firstNumber, secondNumber, message);
+        user = new User(userID, userName, userEmail, phoneNumbersArrayList, message);
         Log.v("User", "userDataFromSettingActivity: " + userID + "\n" + userName + "\n" + userEmail);
         return user;
     }
@@ -230,12 +262,12 @@ public class SettingsFragment extends Fragment {
     }
 
     private void init() {
-        firstNumberEditText = (EditText)view.findViewById(R.id.firstNumberEditText);
-        secondNumberEditText = (EditText)view.findViewById(R.id.secondNumberEditText);
-        firstNumberButton = (Button)view.findViewById(R.id.firstNumberButton);
-        secondNumberButton = (Button)view.findViewById(R.id.secondNumberButton);
+        phoneNumberEditText = (EditText)view.findViewById(R.id.item_phone_number_edit_text);
+        addPhoneNumberImageButton = (ImageButton)view.findViewById(R.id.add_phone_number_image_button);
+        settingsLinearLayout = (LinearLayout)view.findViewById(R.id.settings_linear_layout);
         messageEditText = (EditText)view.findViewById(R.id.messageEditText);
         saveSettingsButton = (Button)view.findViewById(R.id.saveSettingsButton);
+        phoneNumbersArrayList = new ArrayList<>();
         preferences = getActivity().getSharedPreferences(Constants.SHARED_PREF_FILE, MODE_PRIVATE);
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference().child("Users");

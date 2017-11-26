@@ -58,4 +58,6 @@
     <string name="home">Главная</string>
     <string name="permissionDescriptionReadPhoneState">Для корректной работы приложения необходимо это разрешение</string>
     <string name="no_phone_numbers">Номера телефонов не указаны</string>
+    <string name="enter_phone_number">Введите номер</string>
+    <string name="enter_message">Введите сообщение</string>
 </resources>

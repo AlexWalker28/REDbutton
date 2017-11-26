@@ -58,5 +58,8 @@
     <string name="home">Home</string>
     <string name="permissionDescriptionReadPhoneState">Permission to manage phone calls is required for app to work properly</string>
     <string name="no_phone_numbers">Phone numbers are not specified</string>
+    <string name="enter_phone_number">Enter phone number</string>
+    <string name="enter_message">Enter message</string>
+    <string name="add_phone_number">Add phone number</string>
 
 </resources>

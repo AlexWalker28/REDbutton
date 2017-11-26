@@ -1,5 +1,8 @@
 package kg.kloop.android.redbutton;
 
+import java.util.List;
+import java.util.Set;
+
 /**
  * Created by alexwalker on 16.04.17.
  */
@@ -8,30 +11,27 @@ class User {
     private String userID;
     private String userName;
     private String userEmail;
-    private String firstNumber;
-    private String secondNumber;
+    private List<String> phoneNumbers;
     private String message;
     private String phoneNumber;
 
     public User() {
     }
 
-    public User(String userID, String userName, String userEmail, String firstNumber, String secondNumber, String message, String phoneNumber) {
+    public User(String userID, String userName, String userEmail, List<String> phoneNumbers, String message, String phoneNumber) {
         this.userID = userID;
         this.userName = userName;
         this.userEmail = userEmail;
-        this.firstNumber = firstNumber;
-        this.secondNumber = secondNumber;
+        this.phoneNumbers = phoneNumbers;
         this.message = message;
         this.phoneNumber = phoneNumber;
     }
 
-    public User(String userID, String userName, String userEmail, String firstNumber, String secondNumber, String message) {
+    public User(String userID, String userName, String userEmail, List<String> phoneNumbers, String message) {
         this.userID = userID;
         this.userName = userName;
         this.userEmail = userEmail;
-        this.firstNumber = firstNumber;
-        this.secondNumber = secondNumber;
+        this.phoneNumbers = phoneNumbers;
         this.message = message;
     }
 
@@ -59,20 +59,12 @@ class User {
         this.userEmail = userEmail;
     }
 
-    public String getFirstNumber() {
-        return firstNumber;
+    public List<String> getPhoneNumbers() {
+        return phoneNumbers;
     }
 
-    public void setFirstNumber(String firstNumber) {
-        this.firstNumber = firstNumber;
-    }
-
-    public String getSecondNumber() {
-        return secondNumber;
-    }
-
-    public void setSecondNumber(String secondNumber) {
-        this.secondNumber = secondNumber;
+    public void setPhoneNumbers(List<String> phoneNumbers) {
+        this.phoneNumbers = phoneNumbers;
     }
 
     public String getMessage() {
