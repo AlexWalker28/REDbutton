@@ -215,7 +215,7 @@ public class SettingsFragment extends Fragment {
 
 
     private boolean isPrefSaved() {
-        if(preferences.getString(Constants.PHONE_NUMBERS, "").length() != 0 &&
+        if(preferences.getStringSet(Constants.PHONE_NUMBERS, null) != null &&
                 preferences.getString(Constants.MESSAGE, "").length() != 0){
             return true;
         } else return false;

@@ -30,19 +30,12 @@ public class IntroActivity extends com.heinrichreimersoftware.materialintro.app.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        /*addSlide(new SimpleSlide.Builder()
-                .title(R.string.helloText)
-                .description(R.string.helloDiscription)
-                .background(R.color.slide1)
-                .backgroundDark(R.color.colorPrimary)
-                .scrollable(false)
-                .build());*/
-        addSlide(new FragmentSlide.Builder() //приветствие
+        addSlide(new FragmentSlide.Builder() // sign in or register
                 .background(R.color.slide1)
                 .backgroundDark(R.color.slide2)
                 .fragment(R.layout.slide_1, R.style.AppTheme)
                 .build());
-        addSlide(new FragmentSlide.Builder() // добавление номеров и сообщения
+        addSlide(new FragmentSlide.Builder() // add phone numbers and message
                 .background(R.color.slide1)
                 .backgroundDark(R.color.slide2)
                 .fragment(R.layout.slide_2, R.style.AppTheme)
@@ -106,5 +99,11 @@ public class IntroActivity extends com.heinrichreimersoftware.materialintro.app.
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         NavigationHelper.setSelectedItemId(R.id.home_item);
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case RC_SIGN_IN:
+                    nextSlide();
+            }
+        }
     }
 }
